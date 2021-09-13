@@ -91,5 +91,9 @@
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown",
     "**/*.css": "stylelint-config-prettier-check"
+  },
+  "jest": {
+    "verbose": true,
+    "testEnvironment": "jsdom"
   }
 }
