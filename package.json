@@ -1,0 +1,25 @@
+{
+  "name": "yandex.middlefrontend.mario",
+  "version": "1.0.0",
+  "description": "Учебный проект Yandex.Praktikum",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Berlevog/yandex.middlefrontend.mario.git"
+  },
+  "keywords": [
+    "react",
+    "typescript",
+    "game",
+    "mario"
+  ],
+  "author": "Leonid Artemev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Berlevog/yandex.middlefrontend.mario/issues"
+  },
+  "homepage": "https://github.com/Berlevog/yandex.middlefrontend.mario#readme"
+}
