@@ -67,7 +67,8 @@ module.exports = (env, argv) => {
 		},
 		devServer: {
 			port: 3000,
-			open: "chrome"
+			open: "chrome",
+			historyApiFallback: true
 		},
 		plugins: [
 			new HtmlWebpackPlugin({
