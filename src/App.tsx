@@ -5,25 +5,26 @@ import { createBrowserHistory } from "history";
 import React from "react";
 import { Route, Router, Switch } from "react-router-dom";
 import { Login, Registration } from "./pages";
+import { Game } from "./pages/Game";
 
 const history = createBrowserHistory();
-const StubComponent = () => (<div>Under construction! 👻</div>);
+const StubComponent = () => <div>Under construction! 👻</div>;
 
 function App() {
-	return (
-		<div className="App">
-			<Router history={history}>
-				<Switch>
-					<Route exact path="/" component={StubComponent} />
-					<Route exact path="/login" component={Login} />
-					<Route exact path="/registration" component={Registration} />
-					<Route exact path="/app" component={StubComponent} />
-					<Route exact path="/leaderboard" component={StubComponent} />
-					<Route exact path="/forum" component={StubComponent} />
-				</Switch>
-			</Router>
-		</div>
-	);
+  return (
+    <div className="App">
+      <Router history={history}>
+        <Switch>
+          <Route exact path="/" component={StubComponent} />
+          <Route exact path="/login" component={Login} />
+          <Route exact path="/registration" component={Registration} />
+          <Route exact path="/app" component={Game} />
+          <Route exact path="/app/leaders" component={StubComponent} />
+          <Route exact path="/forum" component={StubComponent} />
+        </Switch>
+      </Router>
+    </div>
+  );
 }
 
 export default App;
