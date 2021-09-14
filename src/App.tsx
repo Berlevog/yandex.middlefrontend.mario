@@ -18,7 +18,7 @@ function App() {
 					<Route exact path="/login" component={Login} />
 					<Route exact path="/registration" component={Registration} />
 					<Route exact path="/app" component={StubComponent} />
-					<Route exact path="/leaderboard" component={StubComponent} />
+					<Route exact path="/app/leaders" component={StubComponent} />
 					<Route exact path="/forum" component={StubComponent} />
 				</Switch>
 			</Router>
