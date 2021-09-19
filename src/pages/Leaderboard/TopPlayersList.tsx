@@ -7,7 +7,7 @@ import TableRow from "@material-ui/core/TableRow";
 import Title from "./Title";
 import { data } from "./mockData";
 
-export default function Orders() {
+export default function TopPlayersList() {
   return (
     <React.Fragment>
       <Title>Топ игроков</Title>
