@@ -1,9 +1,7 @@
 import React from "react";
 
 function Registration() {
-  return (
-    <div></div>
-  );
+  return <div></div>;
 }
 
 export default Registration;
