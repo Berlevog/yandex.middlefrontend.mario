@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/Berlevog/yandex.middlefrontend.mario#readme",
   "dependencies": {
+    "eventemitter3": "^4.0.7",
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
     "react": "^17.0.2",
