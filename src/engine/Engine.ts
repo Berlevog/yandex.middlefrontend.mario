@@ -6,12 +6,14 @@ export namespace Engine {
 
   export interface IPoint extends IPointData {}
 
-  export interface IRectData {
-    x: number;
-    y: number;
-    w: number;
-    h: number;
+  export interface ISizeData {
+    width: number;
+    height: number;
   }
+
+  export interface ISize extends ISizeData {}
+
+  export interface IRectData extends IPointData, ISizeData {}
 
   export interface IRect extends IRectData {}
 

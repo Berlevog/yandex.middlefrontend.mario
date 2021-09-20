@@ -2,40 +2,64 @@ import { ResourceImage } from "../pages/Game/Resources";
 import { Engine, Sprite } from "./Engine";
 
 enum PlayerState {
-  "WAIT",
-  "RUNNING",
-  "IN_AIR",
+  "WAITING" = "player/WAITING",
+  "RUNNING" = "player/RUNNING",
+  "JUMPING" = "player/JUMPING",
+}
+
+enum PlayerDirection {
+  "LEFT",
+  "RIGHT",
+}
+
+// todo на будущее добавить в игру грибы и размеры персонажа
+enum PlayerSize {
+  "NORMAL",
+  "BIG",
 }
 
 class Player extends Sprite {
   public sprite: ResourceImage;
-  private playerState: PlayerState = PlayerState.WAIT;
+  private playerState: PlayerState = PlayerState.WAITING;
+  private playerDirection: PlayerDirection = PlayerDirection.RIGHT;
+  private textureSize: Engine.ISizeData = { width: 128, height: 128 };
   private animateRunningInterval: number | NodeJS.Timer | undefined;
-  private runningState = 0;
+  private runningFrame = 0;
+  private jumpingFrame = 0;
+  private playerSize: Engine.ISizeData = { width: 64, height: 64 };
 
   constructor() {
     super();
     this.sprite = new ResourceImage("images/player.png");
     this.registerEvents();
-    this.setPlayerState(PlayerState.WAIT);
+    this.setPlayerState(PlayerState.WAITING);
   }
 
-  getPlayerImage(
-    state: PlayerState
-  ): [HTMLImageElement, number, number, number, number, number, number, number, number] | undefined {
+  getPlayerImage(state: PlayerState): [HTMLImageElement, number, number, number, number] | undefined {
+    let position: Engine.IPoint = { x: 0, y: 0 };
+
     switch (state) {
-      case PlayerState.WAIT:
-        return [this.sprite.img, 2, 9, 14, 16, this.position.x, this.position.y, 50, 50];
+      case PlayerState.WAITING:
+        position = { x: 0, y: 0 };
+        break;
       case PlayerState.RUNNING:
-        if (this.runningState === 0) {
-          return [this.sprite.img, 43, 9, 14, 16, this.position.x, this.position.y, 50, 50];
-        } else if (this.runningState === 1) {
-          return [this.sprite.img, 60, 9, 14, 16, this.position.x, this.position.y, 50, 50];
-        } else if (this.runningState === 2) {
-          return [this.sprite.img, 78, 9, 14, 16, this.position.x, this.position.y, 50, 50];
-        }
+        position = this.getRunningImagePosition(this.runningFrame);
+        break;
+      case PlayerState.JUMPING:
+        position = this.getJumpingImagePosition(this.jumpingFrame);
+        break;
     }
-    return undefined;
+    return [this.sprite.img, position.x, position.y, this.textureSize.width, this.textureSize.height];
+  }
+
+  getRunningImagePosition(runningFrame: number): Engine.IPoint {
+    const start = 256;
+    const step = this.textureSize.width;
+    return { x: start + step * runningFrame, y: 0 };
+  }
+
+  getJumpingImagePosition(jumpingFrame: number): Engine.IPoint {
+    return { x: 43, y: 9 }; //todo сделать прыжки
   }
 
   registerEvents() {
@@ -46,29 +70,29 @@ class Player extends Sprite {
 
   handleChangeState() {
     switch (this.playerState) {
-      case PlayerState.WAIT:
-        this.stopAnimateRunningState();
+      case PlayerState.WAITING:
+        this.stopAnimaterunningFrame();
         break;
       case PlayerState.RUNNING:
-        this.animateRunningState();
+        this.animaterunningFrame();
         break;
     }
   }
 
-  animateRunningState() {
+  animaterunningFrame() {
     // @ts-ignore
     this.animateRunningInterval = setInterval(() => {
-      if (this.runningState >= 2) {
-        this.runningState = 0;
+      if (this.runningFrame >= 2) {
+        this.runningFrame = 0;
       } else {
-        this.runningState++;
+        this.runningFrame++;
       }
-      // this.runningState = 2;
-      console.log(this.runningState);
-    }, 100);
+      // this.runningFrame = 2;
+      console.log(this.runningFrame);
+    }, 120);
   }
 
-  stopAnimateRunningState() {
+  stopAnimaterunningFrame() {
     if (this.animateRunningInterval) {
       // @ts-ignore
       clearInterval(this.animateRunningInterval);
@@ -78,13 +102,13 @@ class Player extends Sprite {
   handleKeyup = () => {
     switch (this.playerState) {
       case PlayerState.RUNNING:
-        this.setPlayerState(PlayerState.WAIT);
+        this.setPlayerState(PlayerState.WAITING);
         break;
     }
   };
 
   canPlayerRun() {
-    return this.playerState !== PlayerState.IN_AIR;
+    return this.playerState !== PlayerState.JUMPING;
   }
 
   setPlayerState(state: PlayerState) {
@@ -98,14 +122,14 @@ class Player extends Sprite {
     switch (e.key) {
       case "ArrowRight":
         if (this.canPlayerRun()) {
-          this.position.x = this.position.x + 20;
+          this.position.x = this.position.x + 16;
           this.setPlayerState(PlayerState.RUNNING);
         }
 
         break;
       case "ArrowLeft":
         if (this.canPlayerRun()) {
-          this.position.x = this.position.x - 20;
+          this.position.x = this.position.x - 16;
           this.setPlayerState(PlayerState.RUNNING);
         }
         break;
@@ -119,7 +143,7 @@ class Player extends Sprite {
     if (img) {
       context.save();
       // context.scale(-1, 1);
-      context.drawImage(...img);
+      context.drawImage(...img, this.position.x, this.position.y, this.playerSize.width, this.playerSize.height);
       context.restore();
     }
   }
