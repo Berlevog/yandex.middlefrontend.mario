@@ -4,7 +4,7 @@
 import { createBrowserHistory } from "history";
 import React from "react";
 import { Route, Router, Switch } from "react-router-dom";
-import { Login, Registration, Leaderboard } from "./pages";
+import { Login, Registration, Leaderboard, Forum } from "./pages";
 import { Game } from "./pages/Game";
 
 const history = createBrowserHistory();
@@ -20,7 +20,7 @@ function App() {
           <Route exact path="/registration" component={Registration} />
           <Route exact path="/app" component={Game} />
           <Route exact path="/leaderboard" component={Leaderboard} />
-          <Route exact path="/forum" component={StubComponent} />
+          <Route exact path="/forum" component={Forum} />
         </Switch>
       </Router>
     </div>
