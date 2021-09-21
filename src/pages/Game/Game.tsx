@@ -1,9 +1,28 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Application from "../../engine/Application";
 import Player from "../../engine/Player";
+import { DefaultLayout } from "../../layouts";
+
+import { Start } from "./components/Start";
+
+export type ResultsProps = {
+  score: number;
+  coins: number;
+  time: number;
+};
 
 function Game() {
   const appRef = useRef<Application>(null);
+
+  const [results, setResults] = useState<ResultsProps>({
+    score: 0,
+    coins: 0,
+    time: 0,
+  });
+
+  const handleStart = () => {
+    console.log("start");
+  };
 
   useEffect(() => {
     const obj = new Player();
@@ -12,10 +31,12 @@ function Game() {
       appRef.current.addChild(obj);
     }
   }, []);
+
   return (
-    <div>
-      <Application ref={appRef} width={1500} height={300} color={"#93BBEC"} />
-    </div>
+    <DefaultLayout>
+      <Start results={results} onStart={handleStart} />
+      {/* <Application ref={appRef} width={1000} height={300} color={"#93BBEC"} /> */}
+    </DefaultLayout>
   );
 }
 
