@@ -4,6 +4,8 @@ import Player from "../../engine/Player";
 import { DefaultLayout } from "../../layouts";
 
 import { Start } from "./components/Start";
+import { End } from "./components/End";
+import { generateResults } from "./mockData";
 
 export type ResultsProps = {
   score: number;
@@ -35,7 +37,8 @@ function Game() {
   return (
     <DefaultLayout>
       <Start results={results} onStart={handleStart} />
-      {/* <Application ref={appRef} width={1000} height={300} color={"#93BBEC"} /> */}
+      <Application ref={appRef} width={1000} height={300} color={"#93BBEC"} />
+      <End results={generateResults()} />
     </DefaultLayout>
   );
 }

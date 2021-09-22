@@ -3,15 +3,14 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { ResultsProps } from "../../Game";
 
-type StartProps = {
-  onStart: () => void;
+type EndProps = {
   results: ResultsProps;
 };
 const useStyles = makeStyles(() => ({
   root: {
     width: 1024,
     height: 702,
-    background: "url(images/game-start.png) center center no-repeat",
+    background: "url(images/game-end.png) center center no-repeat",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -37,10 +36,17 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const Start: FC<StartProps> = ({ onStart, results }) => {
+const End: FC<EndProps> = ({ results }) => {
   const [mode, setMode] = useState(1);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    window.addEventListener("keyup", (event: React.KeyboardEvent<HTMLElement>) => {
+      switch (event.key) {
+        case "Enter":
+          break;
+      }
+    });
+  }, []);
 
   const handleClick = (event: React.MouseEvent) => {
     const mode = parseInt(event.target.attributes["data-players"].value);
@@ -57,14 +63,14 @@ const Start: FC<StartProps> = ({ onStart, results }) => {
       </div>
       <ul className={classes.options}>
         <li data-players={1} onClick={handleClick} className={mode === 1 ? classes.active : ""}>
-          1 player game
+          continue
         </li>
         <li data-players={2} onClick={handleClick} className={mode === 2 ? classes.active : ""}>
-          2 player game
+          gameover
         </li>
       </ul>
     </div>
   );
 };
 
-export default Start;
+export default End;
