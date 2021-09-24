@@ -8,7 +8,9 @@ class CopyPublicPlugin {
       (stats /* stats is passed as an argument when done hook is tapped.  */) => {
         fs.copySync(path.join(__dirname, "public"), path.join(__dirname, "build"), {
           dereference: true,
-          filter: (file) => file !== "index.html",
+          filter: (file) => {
+            return file !== path.join(__dirname, "public", "index.html");
+          },
         });
       }
     );
