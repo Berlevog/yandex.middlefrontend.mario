@@ -1,10 +1,10 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
 
 module.exports = (env, argv) => {
-  const cssLoader =
-    argv.mode === "production" ? MiniCssExtractPlugin.loader : "style-loader";
+  const cssLoader = argv.mode === "production" ? MiniCssExtractPlugin.loader : "style-loader";
   return {
     mode: argv.mode,
     entry: {
@@ -23,16 +23,20 @@ module.exports = (env, argv) => {
     module: {
       rules: [
         {
+          test: /\.(png|svg|jpg|jpeg|gif)$/i,
+          type: "asset/resource",
+        },
+        {
+          test: /\.(woff|woff2|eot|ttf|otf)$/i,
+          type: "asset/resource",
+        },
+        {
           test: /\.(ts|js)x?$/,
           exclude: /node_modules/,
           use: {
             loader: "babel-loader",
             options: {
-              presets: [
-                "@babel/preset-env",
-                "@babel/preset-react",
-                "@babel/preset-typescript",
-              ],
+              presets: ["@babel/preset-env", "@babel/preset-react", "@babel/preset-typescript"],
             },
           },
         },
@@ -73,10 +77,21 @@ module.exports = (env, argv) => {
     },
     plugins: [
       new HtmlWebpackPlugin({
-        template: "./public/index.html",
+        template: "./public/index.tml",
       }),
       new MiniCssExtractPlugin({
-        filename: "[name].[contenthash:5].css",
+        filename: "[name].[contenthash:5]css",
+      }),
+      new CopyWebpackPlugin({
+        patterns: [
+          {
+            from: "public",
+            to: "",
+            globOptions: {
+              ignore: ["**/index.hml"],
+            },
+          },
+        ],
       }),
     ],
   };
