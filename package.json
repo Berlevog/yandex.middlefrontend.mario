@@ -37,6 +37,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
+    "@babel/plugin-proposal-async-generator-functions": "^7.15.4",
     "@babel/plugin-transform-runtime": "^7.15.0",
     "@babel/preset-env": "^7.15.6",
     "@babel/preset-react": "^7.14.5",
@@ -50,9 +51,9 @@
     "@types/react": "^17.0.19",
     "@types/react-dom": "^17.0.9",
     "@types/react-router-dom": "^5.1.8",
-    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.3",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
     "@typescript-eslint/parser": "^4.31.1",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.3",
     "autoprefixer": "^10.3.4",
     "babel-loader": "^8.2.2",
     "css-loader": "^6.2.0",

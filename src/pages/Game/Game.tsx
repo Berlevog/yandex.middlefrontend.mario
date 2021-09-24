@@ -1,21 +1,36 @@
+import { Box } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import React, { useEffect, useRef } from "react";
 import Application from "../../engine/Application";
 import Player from "../../engine/Player";
+import World from "../../engine/World";
+
+const useStyles = makeStyles(() => ({
+  root: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#000",
+    height: "100vh",
+  },
+}));
 
 function Game() {
   const appRef = useRef<Application>(null);
+  const classes = useStyles();
 
   useEffect(() => {
-    const obj = new Player();
-    obj.position.y = 100;
+    const player = new Player();
+    const world = new World(player);
     if (appRef.current) {
-      appRef.current.addChild(obj);
+      appRef.current.addChild(world);
+      appRef.current.addChild(player);
     }
   }, []);
   return (
-    <div>
-      <Application ref={appRef} width={1500} height={300} color={"#93BBEC"} />
-    </div>
+    <Box className={classes.root}>
+      <Application ref={appRef} width={800} height={500} color={"#93BBEC"} />
+    </Box>
   );
 }
 
