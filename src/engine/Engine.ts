@@ -157,6 +157,22 @@ export class DisplayObject extends EventEmitter {
     this.rect.y = this._position.y;
   }
 
+  get width() {
+    return this.rect.width;
+  }
+
+  set width(w: number) {
+    this.rect.width = w;
+  }
+
+  get height() {
+    return this.rect.height;
+  }
+
+  set height(h: number) {
+    this.rect.height = h;
+  }
+
   // AABB Algorithm
   testHit(rect: Engine.IRect): boolean {
     return isAABBColision(this.rect, rect);
@@ -171,6 +187,8 @@ export class DisplayObject extends EventEmitter {
   }
 
   render(renderer: Engine.IRenderer) {}
+
+  destroy() {}
 }
 
 export class Sprite extends DisplayObject {}

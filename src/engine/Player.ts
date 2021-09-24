@@ -34,6 +34,7 @@ class Player extends Sprite {
   private animateJumpInterval: number | NodeJS.Timer | undefined;
   private curentJumpAltitude: number = 0;
   private keysPressed: any = {};
+  public isFalling = true;
 
   constructor() {
     super();
@@ -44,16 +45,6 @@ class Player extends Sprite {
     this.rect = { x: 0, y: 0, width: this.playerSize.width, height: this.playerSize.height };
     this.pivot = { x: Math.floor(this.playerSize.width / 2), y: Math.floor(this.playerSize.height / 2) };
     this.restart();
-  }
-
-  private _isFalling = false;
-
-  get isFalling(): boolean {
-    return this._isFalling;
-  }
-
-  set isFalling(value: boolean) {
-    this._isFalling = value;
   }
 
   registerEvents() {
@@ -116,53 +107,23 @@ class Player extends Sprite {
   }
 
   handleKeysPressed(keys: any) {
-    console.log(keys);
+    if (keys["ArrowRight"]) {
+      this.positionX = this.positionX + 16;
+    } else if (keys["ArrowLeft"]) {
+      this.positionX = this.positionX - 16;
+    }
+    if (keys["ArrowUp"]) {
+      this.setPlayerState(PlayerState.JUMPING);
+    }
   }
 
   handleKeydown = (e: KeyboardEvent) => {
     this.keysPressed[e.key] = true;
     this.emit("keypressed", this.keysPressed);
-
-    switch (e.key) {
-      case "ArrowRight":
-        if (this.canPlayerRun()) {
-          this.setPlayerState(PlayerState.RUNNING);
-          this.positionX = this.positionX + 16;
-        }
-
-        break;
-      case "ArrowLeft":
-        if (this.canPlayerRun()) {
-          this.setPlayerState(PlayerState.RUNNING);
-          this.positionX = this.positionX - 16;
-          if (this.positionX < 0) {
-            this.positionX = 0;
-          }
-        }
-        break;
-      case "ArrowDown":
-      // if (this.canPlayerRun()) {
-      //   this.positionY = this.positionY + 16;
-      // }
-      // break;
-      case "ArrowUp":
-        // this.positionY = this.positionY + 16;
-        this.setPlayerState(PlayerState.JUMPING);
-        break;
-    }
   };
 
   handleKeyup = (e: KeyboardEvent) => {
     delete this.keysPressed[e.key];
-
-    switch (this.playerState) {
-      case PlayerState.RUNNING:
-        this.setPlayerState(PlayerState.WAITING);
-        break;
-      case PlayerState.JUMPING:
-        // this.setPlayerState(PlayerState.WAITING);
-        break;
-    }
   };
 
   handleChangeState() {
@@ -207,10 +168,10 @@ class Player extends Sprite {
         this.curentJumpAltitude++;
         this.positionY = this.positionY - this.jumpSpeed;
         if (this.keysPressed["ArrowRight"]) {
-          this.positionX = this.positionX + this.jumpSpeed;
+          this.positionX = this.positionX + 1;
         }
         if (this.keysPressed["ArrowLeft"]) {
-          this.positionX = this.positionX - this.jumpSpeed;
+          this.positionX = this.positionX - 1;
         }
       } else {
         this.setPlayerState(PlayerState.FALLING);
@@ -242,6 +203,7 @@ class Player extends Sprite {
   calcPhysics() {
     switch (this.playerState) {
       case PlayerState.FALLING:
+        // todo второй закон Ньютона
         this.positionY = this.positionY + this.fallingSpeed;
         break;
       // case PlayerState.JUMPING:
@@ -267,7 +229,7 @@ class Player extends Sprite {
     this.calcPhysics();
 
     if (this.positionY > canvas.height) {
-      this.restart();
+      this.gameOver();
     }
 
     const img = this.getPlayerImage(this.playerState);
@@ -276,6 +238,16 @@ class Player extends Sprite {
       context.drawImage(...img, this.positionX, this.positionY, this.playerSize.width, this.playerSize.height);
       context.restore();
     }
+    this.playerState = this.isFalling ? PlayerState.FALLING : PlayerState.WAITING;
+  }
+
+  destroy() {
+    clearInterval(this.animateRunningInterval as NodeJS.Timeout);
+    clearInterval(this.animateJumpInterval as NodeJS.Timeout);
+  }
+
+  gameOver() {
+    console.log("Game Over");
   }
 }
 

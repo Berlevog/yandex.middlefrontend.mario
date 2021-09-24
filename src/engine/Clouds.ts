@@ -50,4 +50,8 @@ export default class Clouds extends DisplayObject {
       cloud.render(renderer);
     });
   }
+
+  destroy() {
+    clearInterval(this.interval);
+  }
 }

@@ -1,7 +1,7 @@
 import { ResourceImage } from "../pages/Game/Resources";
 import Clouds from "./Clouds";
 import { Engine, getAABBColision, Sprite } from "./Engine";
-import Player, { PlayerState } from "./Player";
+import Player from "./Player";
 
 const SHIFT_WIDTH: number = 120;
 const LAND_Y: number = 207;
@@ -11,7 +11,7 @@ export default class World extends Sprite {
   private player: Player;
   private groundRects: Engine.IRect[];
   private audio: HTMLAudioElement;
-  private debugAreas: boolean = true;
+  private debugAreas: boolean = false;
   private clouds: Clouds;
 
   constructor(player: Player) {
@@ -21,8 +21,9 @@ export default class World extends Sprite {
     this.sprite = new ResourceImage("images/world.png");
 
     this.groundRects = [
-      { x: 0, y: LAND_Y, width: 800, height: 32 },
+      { x: 0, y: LAND_Y, width: 1105, height: 32 },
       { x: 448, y: LAND_Y - 32, width: 32, height: 64 },
+      { x: 608, y: LAND_Y - 48, width: 32, height: 80 },
     ];
     this.audio = document.createElement("audio");
     this.audio.autoplay = true;
@@ -38,21 +39,17 @@ export default class World extends Sprite {
 
   checkCollisions() {
     //ground
-    let isFallen = true;
+    let isFalling = true;
 
     this.groundRects.forEach((ground) => {
       if (this.player.testHit(ground)) {
         const aabbColision = getAABBColision(ground, this.player.rect);
+
         if (aabbColision?.bottom) {
-          // this.player.positionY = ground.y - this.player.rect.height + 1;
-          // if (this.player.playerState === PlayerState.FALLING) {
-          //   // isFallen = false;
-          //   console.log("fall", this.player.playerState);
-          //   this.player.playerState = PlayerState.WAITING;
-          //   // this.player.setPlayerState(PlayerState.WAITING);
-          // }
+          this.player.positionY = ground.y - this.player.rect.height + 1;
+          isFalling = false;
         } else {
-          this.player.setPlayerState(PlayerState.FALLING);
+          // this.player.setPlayerState(PlayerState.FALLING);
           if (aabbColision?.top) {
             this.player.positionY = ground.y + ground.height - 1;
           }
@@ -65,9 +62,8 @@ export default class World extends Sprite {
         }
       } else {
       }
+      this.player.isFalling = isFalling;
     });
-
-    // this.player.isFalling = isFallen;
   }
 
   shiftWorld(canvas: HTMLCanvasElement) {
@@ -76,6 +72,9 @@ export default class World extends Sprite {
         const shift = Math.min(this.sprite.img.width + this.positionX - canvas.width, SHIFT_WIDTH);
         this.positionX = this.positionX - shift;
         this.player.positionX = this.player.positionX - shift;
+        this.groundRects.forEach((rect) => {
+          rect.x = rect.x - shift;
+        });
       }
 
       this.clouds.getClouds().forEach((cloud) => {
