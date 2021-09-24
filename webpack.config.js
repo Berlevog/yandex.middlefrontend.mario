@@ -1,7 +1,8 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
+const CopyPublicPlugin = require("./webpack.copy_public.plugin");
+const fs = require("fs-extra");
 
 module.exports = (env, argv) => {
   const cssLoader = argv.mode === "production" ? MiniCssExtractPlugin.loader : "style-loader";
@@ -77,22 +78,12 @@ module.exports = (env, argv) => {
     },
     plugins: [
       new HtmlWebpackPlugin({
-        template: "./public/index.tml",
+        template: "./public/index.html",
       }),
       new MiniCssExtractPlugin({
         filename: "[name].[contenthash:5]css",
       }),
-      new CopyWebpackPlugin({
-        patterns: [
-          {
-            from: "public",
-            to: "",
-            globOptions: {
-              ignore: ["**/index.hml"],
-            },
-          },
-        ],
-      }),
+      new CopyPublicPlugin(),
     ],
   };
 };
