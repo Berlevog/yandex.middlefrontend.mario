@@ -1,15 +1,15 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useState, useCallback } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { ResultsProps } from "../../Game";
 
-enum MODE {
+export enum START_MODE {
   "ONE_PLAYER" = "1 player",
   "TWO_PLAYER" = "2 player",
 }
 
 type StartProps = {
-  onStart: () => void;
+  onStart: (startMode: START_MODE) => void;
   results: ResultsProps;
 };
 
@@ -45,18 +45,23 @@ const useStyles = makeStyles(() => ({
 }));
 
 const Start: FC<StartProps> = ({ onStart, results }) => {
-  const [mode, setMode] = useState(MODE.ONE_PLAYER);
+  const [mode, setMode] = useState(START_MODE.ONE_PLAYER);
+
+  const toggleMode = () => {
+    const newMode = mode === START_MODE.ONE_PLAYER ? START_MODE.TWO_PLAYER : START_MODE.ONE_PLAYER;
+    setMode(newMode);
+  };
 
   const keyListener = (event: React.KeyboardEvent) => {
     switch (event.key) {
       case "Enter":
-        onStart();
+        onStart(mode);
         break;
       case "ArrowUp":
-        setMode(MODE.ONE_PLAYER);
-        break;
       case "ArrowDown":
-        setMode(MODE.TWO_PLAYER);
+        toggleMode();
+        break;
+      default:
         break;
     }
   };
@@ -64,15 +69,16 @@ const Start: FC<StartProps> = ({ onStart, results }) => {
   useEffect(() => {
     document.addEventListener("keyup", keyListener);
     return () => document.removeEventListener("keyup", keyListener);
-  }, []);
+  }, [mode]);
 
   const handleClick = (event: React.MouseEvent) => {
     const target = event.target as HTMLLIElement;
     const mode = target.dataset.gameMode;
-    setMode(mode as MODE);
+    setMode(mode as START_MODE);
   };
 
   const classes = useStyles();
+
   return (
     <div className={classes.root}>
       <div className={classes.results}>
@@ -82,18 +88,18 @@ const Start: FC<StartProps> = ({ onStart, results }) => {
       </div>
       <ul className={classes.options}>
         <li
-          data-game-mode={MODE.ONE_PLAYER}
+          data-game-mode={START_MODE.ONE_PLAYER}
           onClick={handleClick}
-          className={mode === MODE.ONE_PLAYER ? classes.active : ""}
+          className={mode === START_MODE.ONE_PLAYER ? classes.active : ""}
         >
-          {MODE.ONE_PLAYER} game
+          {START_MODE.ONE_PLAYER} game
         </li>
         <li
-          data-game-mode={MODE.TWO_PLAYER}
+          data-game-mode={START_MODE.TWO_PLAYER}
           onClick={handleClick}
-          className={mode === MODE.TWO_PLAYER ? classes.active : ""}
+          className={mode === START_MODE.TWO_PLAYER ? classes.active : ""}
         >
-          {MODE.TWO_PLAYER} game
+          {START_MODE.TWO_PLAYER} game
         </li>
       </ul>
     </div>

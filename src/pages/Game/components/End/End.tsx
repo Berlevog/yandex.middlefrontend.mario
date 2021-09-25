@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { ResultsProps } from "../../Game";
 
-export enum END_MODE {
+export const enum END_MODE {
   "CONTINUE" = "continue",
   "EXIT" = "exit",
 }
@@ -47,16 +47,19 @@ const useStyles = makeStyles(() => ({
 const End: FC<EndProps> = ({ onEnd, results }) => {
   const [mode, setMode] = useState(END_MODE.CONTINUE);
 
+  const toggleMode = () => {
+    const newMode = mode === END_MODE.CONTINUE ? END_MODE.EXIT : END_MODE.CONTINUE;
+    setMode(newMode);
+  };
+
   const keyListener = (event: React.KeyboardEvent) => {
     switch (event.key) {
       case "Enter":
         onEnd(mode);
         break;
       case "ArrowUp":
-        setMode(END_MODE.CONTINUE);
-        break;
       case "ArrowDown":
-        setMode(END_MODE.EXIT);
+        toggleMode();
         break;
     }
   };
@@ -64,7 +67,7 @@ const End: FC<EndProps> = ({ onEnd, results }) => {
   useEffect(() => {
     document.addEventListener("keyup", keyListener);
     return () => document.removeEventListener("keyup", keyListener);
-  }, []);
+  }, [mode]);
 
   const handleClick = (event: React.MouseEvent) => {
     const target = event.target as HTMLLIElement;

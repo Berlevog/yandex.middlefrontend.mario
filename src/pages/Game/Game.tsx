@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import Application from "../../engine/Application";
 import Player from "../../engine/Player";
+import { useHistory } from "react-router-dom";
+
 import { DefaultLayout } from "../../layouts";
 
-import { Start } from "./components/Start";
+import { Start, START_MODE } from "./components/Start";
 import { End, END_MODE } from "./components/End";
 import { generateResults } from "./mockData";
 
@@ -22,6 +24,8 @@ enum GameStage {
 function Game() {
   const appRef = useRef<Application>(null);
 
+  const history = useHistory();
+
   const [results, setResults] = useState<ResultsProps>({
     score: 0,
     coins: 0,
@@ -30,17 +34,32 @@ function Game() {
 
   const [stage, setStage] = useState(GameStage.START);
 
-  const handleStart = () => {
-    alert("start game ");
-    setStage(GameStage.GAME);
+  const mockEndGame = () => {
     setTimeout(() => {
       setResults(generateResults());
       setStage(GameStage.END);
     }, 3000);
   };
 
+  const handleStart = (startMode: START_MODE) => {
+    alert(`start game. mode: ${startMode}`);
+    setStage(GameStage.GAME);
+    mockEndGame();
+  };
+
   const handleEnd = (endMode: END_MODE) => {
-    alert(endMode);
+    switch (endMode) {
+      case END_MODE.CONTINUE:
+        setStage(GameStage.GAME);
+
+        mockEndGame();
+
+        break;
+
+      case END_MODE.EXIT:
+        history.push("/leaderboard");
+        break;
+    }
   };
 
   useEffect(() => {
@@ -60,7 +79,7 @@ function Game() {
   }
 
   if (stage === GameStage.GAME) {
-    return <Application ref={appRef} width={1000} height={300} color={"#93BBEC"} />;
+    return <Application ref={appRef} width={1500} height={300} color={"#93BBEC"} />;
   }
 
   if (stage === GameStage.END) {
