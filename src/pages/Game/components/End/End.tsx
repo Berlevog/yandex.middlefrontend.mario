@@ -3,9 +3,16 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { ResultsProps } from "../../Game";
 
+export enum END_MODE {
+  "CONTINUE" = "continue",
+  "EXIT" = "exit",
+}
+
 type EndProps = {
+  onEnd: (mode: END_MODE) => void;
   results: ResultsProps;
 };
+
 const useStyles = makeStyles(() => ({
   root: {
     width: 1024,
@@ -33,27 +40,40 @@ const useStyles = makeStyles(() => ({
   },
   active: {
     listStyle: "square",
+    listStyleImage: "url(/images/frog.png)",
   },
 }));
 
-const End: FC<EndProps> = ({ results }) => {
-  const [mode, setMode] = useState(1);
+const End: FC<EndProps> = ({ onEnd, results }) => {
+  const [mode, setMode] = useState(END_MODE.CONTINUE);
+
+  const keyListener = (event: React.KeyboardEvent) => {
+    switch (event.key) {
+      case "Enter":
+        onEnd(mode);
+        break;
+      case "ArrowUp":
+        setMode(END_MODE.CONTINUE);
+        break;
+      case "ArrowDown":
+        setMode(END_MODE.EXIT);
+        break;
+    }
+  };
 
   useEffect(() => {
-    window.addEventListener("keyup", (event: React.KeyboardEvent<HTMLElement>) => {
-      switch (event.key) {
-        case "Enter":
-          break;
-      }
-    });
+    document.addEventListener("keyup", keyListener);
+    return () => document.removeEventListener("keyup", keyListener);
   }, []);
 
   const handleClick = (event: React.MouseEvent) => {
-    const mode = parseInt(event.target.attributes["data-players"].value);
-    setMode(mode);
+    const target = event.target as HTMLLIElement;
+    const mode = target.dataset.gameMode;
+    setMode(mode as END_MODE);
   };
 
   const classes = useStyles();
+
   return (
     <div className={classes.root}>
       <div className={classes.results}>
@@ -62,11 +82,19 @@ const End: FC<EndProps> = ({ results }) => {
         <div>{results.time}</div>
       </div>
       <ul className={classes.options}>
-        <li data-players={1} onClick={handleClick} className={mode === 1 ? classes.active : ""}>
-          continue
+        <li
+          data-game-mode={END_MODE.CONTINUE}
+          onClick={handleClick}
+          className={mode === END_MODE.CONTINUE ? classes.active : ""}
+        >
+          {END_MODE.CONTINUE}
         </li>
-        <li data-players={2} onClick={handleClick} className={mode === 2 ? classes.active : ""}>
-          gameover
+        <li
+          data-game-mode={END_MODE.EXIT}
+          onClick={handleClick}
+          className={mode === END_MODE.EXIT ? classes.active : ""}
+        >
+          {END_MODE.EXIT}
         </li>
       </ul>
     </div>

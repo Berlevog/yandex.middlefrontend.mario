@@ -3,10 +3,16 @@ import { makeStyles } from "@material-ui/core/styles";
 
 import { ResultsProps } from "../../Game";
 
+enum MODE {
+  "ONE_PLAYER" = "1 player",
+  "TWO_PLAYER" = "2 player",
+}
+
 type StartProps = {
   onStart: () => void;
   results: ResultsProps;
 };
+
 const useStyles = makeStyles(() => ({
   root: {
     width: 1024,
@@ -34,17 +40,36 @@ const useStyles = makeStyles(() => ({
   },
   active: {
     listStyle: "square",
+    listStyleImage: "url(/images/frog.png)",
   },
 }));
 
 const Start: FC<StartProps> = ({ onStart, results }) => {
-  const [mode, setMode] = useState(1);
+  const [mode, setMode] = useState(MODE.ONE_PLAYER);
 
-  useEffect(() => {}, []);
+  const keyListener = (event: React.KeyboardEvent) => {
+    switch (event.key) {
+      case "Enter":
+        onStart();
+        break;
+      case "ArrowUp":
+        setMode(MODE.ONE_PLAYER);
+        break;
+      case "ArrowDown":
+        setMode(MODE.TWO_PLAYER);
+        break;
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("keyup", keyListener);
+    return () => document.removeEventListener("keyup", keyListener);
+  }, []);
 
   const handleClick = (event: React.MouseEvent) => {
-    const mode = parseInt(event.target.attributes["data-players"].value);
-    setMode(mode);
+    const target = event.target as HTMLLIElement;
+    const mode = target.dataset.gameMode;
+    setMode(mode as MODE);
   };
 
   const classes = useStyles();
@@ -56,11 +81,19 @@ const Start: FC<StartProps> = ({ onStart, results }) => {
         <div>{results.time}</div>
       </div>
       <ul className={classes.options}>
-        <li data-players={1} onClick={handleClick} className={mode === 1 ? classes.active : ""}>
-          1 player game
+        <li
+          data-game-mode={MODE.ONE_PLAYER}
+          onClick={handleClick}
+          className={mode === MODE.ONE_PLAYER ? classes.active : ""}
+        >
+          {MODE.ONE_PLAYER} game
         </li>
-        <li data-players={2} onClick={handleClick} className={mode === 2 ? classes.active : ""}>
-          2 player game
+        <li
+          data-game-mode={MODE.TWO_PLAYER}
+          onClick={handleClick}
+          className={mode === MODE.TWO_PLAYER ? classes.active : ""}
+        >
+          {MODE.TWO_PLAYER} game
         </li>
       </ul>
     </div>

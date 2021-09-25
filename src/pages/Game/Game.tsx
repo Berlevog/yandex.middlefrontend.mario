@@ -4,7 +4,7 @@ import Player from "../../engine/Player";
 import { DefaultLayout } from "../../layouts";
 
 import { Start } from "./components/Start";
-import { End } from "./components/End";
+import { End, END_MODE } from "./components/End";
 import { generateResults } from "./mockData";
 
 export type ResultsProps = {
@@ -12,6 +12,12 @@ export type ResultsProps = {
   coins: number;
   time: number;
 };
+
+enum GameStage {
+  "START" = "start",
+  "GAME" = "game",
+  "END" = "end",
+}
 
 function Game() {
   const appRef = useRef<Application>(null);
@@ -22,8 +28,19 @@ function Game() {
     time: 0,
   });
 
+  const [stage, setStage] = useState(GameStage.START);
+
   const handleStart = () => {
-    console.log("start");
+    alert("start game ");
+    setStage(GameStage.GAME);
+    setTimeout(() => {
+      setResults(generateResults());
+      setStage(GameStage.END);
+    }, 3000);
+  };
+
+  const handleEnd = (endMode: END_MODE) => {
+    alert(endMode);
   };
 
   useEffect(() => {
@@ -34,13 +51,25 @@ function Game() {
     }
   }, []);
 
-  return (
-    <DefaultLayout>
-      <Start results={results} onStart={handleStart} />
-      <Application ref={appRef} width={1000} height={300} color={"#93BBEC"} />
-      <End results={generateResults()} />
-    </DefaultLayout>
-  );
+  if (stage === GameStage.START) {
+    return (
+      <DefaultLayout>
+        <Start results={results} onStart={handleStart} />
+      </DefaultLayout>
+    );
+  }
+
+  if (stage === GameStage.GAME) {
+    return <Application ref={appRef} width={1000} height={300} color={"#93BBEC"} />;
+  }
+
+  if (stage === GameStage.END) {
+    return (
+      <DefaultLayout>
+        <End onEnd={handleEnd} results={results} />
+      </DefaultLayout>
+    );
+  }
 }
 
 export default Game;
