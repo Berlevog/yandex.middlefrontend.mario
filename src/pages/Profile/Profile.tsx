@@ -2,8 +2,11 @@ import React, { useEffect, useState, useCallback } from "react";
 import { getUser, signout } from "../../services/auth";
 import { User } from "../../services/auth";
 import TextField from "@material-ui/core/TextField";
+import { useHistory } from "react-router";
 
 export default function Profile() {
+  const history = useHistory();
+
   const [user, setUser] = useState<User>();
 
   const updateUser = useCallback(() => {
@@ -11,7 +14,7 @@ export default function Profile() {
   }, []);
 
   const signOut = useCallback(() => {
-    signout().then(() => setUser(undefined));
+    signout().then(() => history.push("/login"));
   }, []);
 
   useEffect(updateUser, []);

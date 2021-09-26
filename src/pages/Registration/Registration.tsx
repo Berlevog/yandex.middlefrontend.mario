@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
@@ -78,17 +78,15 @@ export default function Registration() {
     initialValues,
     validationSchema: signUpSchema,
     onSubmit: (values) => {
-      console.log(JSON.stringify(values));
-      alert(JSON.stringify(values, null, 2));
-      signup(values)
-        .then((data) => console.log("response", data))
-        .then(() => getUser())
-        .then((data) => {
-          console.log("user", data);
-          history.push("/app");
-        });
+      signup(values).then((data) => {
+        history.push("/profile");
+      });
     },
   });
+
+  useEffect(() => {
+    getUser().then(() => history.push("/profile"));
+  }, []);
 
   return (
     <Grid container component="main" className={classes.main}>
