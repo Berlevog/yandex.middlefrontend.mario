@@ -81,7 +81,7 @@ module.exports = (env, argv) => {
         template: "./public/index.html",
       }),
       new MiniCssExtractPlugin({
-        filename: "[name].[contenthash:5]css",
+        filename: "[name].[contenthash:5].css",
       }),
       new CopyPublicPlugin(),
     ],
