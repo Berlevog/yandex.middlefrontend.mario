@@ -37,7 +37,7 @@ class Application extends PureComponent<ApplicationProps> {
   }
 
   componentWillUnmount() {
-    cancelAnimationFrame(this.requestIdRef.current);
+    this.destroy();
   }
 
   addChild(child: DisplayObject) {
@@ -70,6 +70,13 @@ class Application extends PureComponent<ApplicationProps> {
   render() {
     const { width, height, color } = this.props;
     return <canvas ref={this.canvasRef} width={width} height={height} style={{ backgroundColor: color }} />;
+  }
+
+  destroy() {
+    cancelAnimationFrame(this.requestIdRef.current);
+    this.children.forEach((child) => {
+      child.destroy();
+    });
   }
 }
 

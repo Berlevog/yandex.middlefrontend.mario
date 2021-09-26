@@ -1,6 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import { Box } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import React, { useEffect, useRef, useState  } from "react";
 import Application from "../../engine/Application";
+import PhysicalObject from "../../engine/PhysicalObject";
 import Player from "../../engine/Player";
+
 import { useHistory } from "react-router-dom";
 
 import { DefaultLayout } from "../../layouts";
@@ -8,6 +12,8 @@ import { DefaultLayout } from "../../layouts";
 import { Start, START_MODE } from "./components/Start";
 import { End, END_MODE } from "./components/End";
 import { generateResults } from "./mockData";
+
+import World from "../../engine/World";
 
 export type ResultsProps = {
   score: number;
@@ -21,8 +27,19 @@ enum GameStage {
   "END" = "end",
 }
 
+const useStyles = makeStyles(() => ({
+  root: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#000",
+    height: "100vh",
+  },
+}));
+
 function Game() {
   const appRef = useRef<Application>(null);
+  const classes = useStyles();
 
   const history = useHistory();
 
@@ -63,13 +80,15 @@ function Game() {
   };
 
   useEffect(() => {
-    const obj = new Player();
-    obj.position.y = 100;
+    const player = new Player();
+    const obj = new PhysicalObject();
+    const world = new World(player);
     if (appRef.current) {
+      appRef.current.addChild(world);
+      appRef.current.addChild(player);
       appRef.current.addChild(obj);
     }
   }, []);
-
   if (stage === GameStage.START) {
     return (
       <DefaultLayout>
@@ -79,7 +98,11 @@ function Game() {
   }
 
   if (stage === GameStage.GAME) {
-    return <Application ref={appRef} width={1500} height={300} color={"#93BBEC"} />;
+    return (
+      <Box className={classes.root}>
+        <Application ref={appRef} width={800} height={500} color={"#93BBEC"} />
+      </Box>
+    );
   }
 
   if (stage === GameStage.END) {

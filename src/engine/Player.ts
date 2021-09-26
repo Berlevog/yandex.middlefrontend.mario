@@ -1,38 +1,77 @@
 import { ResourceImage } from "../pages/Game/Resources";
-import { Engine, Sprite } from "./Engine";
+import { Engine, linearEquation, Sprite } from "./Engine";
 
-enum PlayerState {
+export enum PlayerState {
   "WAITING" = "player/WAITING",
   "RUNNING" = "player/RUNNING",
   "JUMPING" = "player/JUMPING",
+  "FALLING" = "player/FALLING",
 }
 
-enum PlayerDirection {
+export enum PlayerDirection {
   "LEFT",
   "RIGHT",
 }
 
 // todo на будущее добавить в игру грибы и размеры персонажа
-enum PlayerSize {
+export enum PlayerSize {
   "NORMAL",
   "BIG",
 }
 
 class Player extends Sprite {
   public sprite: ResourceImage;
-  private playerState: PlayerState = PlayerState.WAITING;
-  private playerDirection: PlayerDirection = PlayerDirection.RIGHT;
+  public playerState: PlayerState = PlayerState.FALLING;
+  // private playerDirection: PlayerDirection = PlayerDirection.RIGHT;
   private textureSize: Engine.ISizeData = { width: 128, height: 128 };
   private animateRunningInterval: number | NodeJS.Timer | undefined;
   private runningFrame = 0;
   private jumpingFrame = 0;
-  private playerSize: Engine.ISizeData = { width: 64, height: 64 };
+  private playerSize: Engine.ISizeData = { width: 24, height: 24 };
+  private fallingSpeed = 5;
+  private jumpSpeed = 4;
+  private jumpAltitude = 30;
+  private animateJumpInterval: number | NodeJS.Timer | undefined;
+  private curentJumpAltitude: number = 0;
+  private keysPressed: any = {};
+  public isFalling = true;
 
   constructor() {
     super();
     this.sprite = new ResourceImage("images/player.png");
     this.registerEvents();
     this.setPlayerState(PlayerState.WAITING);
+    // this.rect = { x: 30, y: 0, width: this.playerSize.width - 60, height: this.playerSize.height };
+    this.rect = { x: 0, y: 0, width: this.playerSize.width, height: this.playerSize.height };
+    this.pivot = { x: Math.floor(this.playerSize.width / 2), y: Math.floor(this.playerSize.height / 2) };
+    this.restart();
+  }
+
+  registerEvents() {
+    document.addEventListener("keydown", this.handleKeydown);
+    document.addEventListener("keyup", this.handleKeyup);
+    this.on("playerstate", this.handleChangeState);
+    this.on("keypressed", this.handleKeysPressed);
+  }
+
+  movePlayer(point: Engine.IPoint, speed: number = 1, callback?: Function, keyframes?: [], animationType?: any) {
+    const startDistance = this.distanceTo(point);
+    console.log("start", startDistance);
+    const interval = setInterval(() => {
+      const distance = this.distanceTo(point);
+      console.log(distance);
+      if (distance && distance > speed) {
+        const progress = distance / startDistance;
+        const dX = this.positionX - point.x;
+        const x = this.positionX + Math.min(speed, distance);
+        const y = linearEquation(this.position, point, x);
+        console.log(x, y);
+        this.position = { x, y };
+      } else {
+        this.position = point;
+        clearInterval(interval);
+      }
+    }, 10);
   }
 
   getPlayerImage(state: PlayerState): [HTMLImageElement, number, number, number, number] | undefined {
@@ -45,8 +84,11 @@ class Player extends Sprite {
       case PlayerState.RUNNING:
         position = this.getRunningImagePosition(this.runningFrame);
         break;
+      case PlayerState.FALLING:
+        position = { x: 128, y: 0 };
+        break;
       case PlayerState.JUMPING:
-        position = this.getJumpingImagePosition(this.jumpingFrame);
+        position = this.getJumpingImagePosition(this.jumpingFrame, this.curentJumpAltitude / this.jumpAltitude);
         break;
     }
     return [this.sprite.img, position.x, position.y, this.textureSize.width, this.textureSize.height];
@@ -58,28 +100,47 @@ class Player extends Sprite {
     return { x: start + step * runningFrame, y: 0 };
   }
 
-  getJumpingImagePosition(jumpingFrame: number): Engine.IPoint {
-    return { x: 43, y: 9 }; //todo сделать прыжки
+  getJumpingImagePosition(jumpingFrame: number, animationPercent: number): Engine.IPoint {
+    const start = 256; // пока возьму текстуру из бега
+    const step = this.textureSize.width;
+    return { x: start + step * jumpingFrame, y: 0 };
   }
 
-  registerEvents() {
-    document.addEventListener("keydown", this.handleKeydown);
-    document.addEventListener("keyup", this.handleKeyup);
-    this.on("playerstate", this.handleChangeState);
+  handleKeysPressed(keys: any) {
+    if (keys["ArrowRight"]) {
+      this.positionX = this.positionX + 16;
+    } else if (keys["ArrowLeft"]) {
+      this.positionX = this.positionX - 16;
+    }
+    if (keys["ArrowUp"]) {
+      this.setPlayerState(PlayerState.JUMPING);
+    }
   }
+
+  handleKeydown = (e: KeyboardEvent) => {
+    this.keysPressed[e.key] = true;
+    this.emit("keypressed", this.keysPressed);
+  };
+
+  handleKeyup = (e: KeyboardEvent) => {
+    delete this.keysPressed[e.key];
+  };
 
   handleChangeState() {
     switch (this.playerState) {
       case PlayerState.WAITING:
-        this.stopAnimaterunningFrame();
+        this.stopAnimateRunningFrame();
         break;
       case PlayerState.RUNNING:
-        this.animaterunningFrame();
+        this.animateRunningFrame();
+        break;
+      case PlayerState.JUMPING:
+        this.animateJumpFrame();
         break;
     }
   }
 
-  animaterunningFrame() {
+  animateRunningFrame() {
     // @ts-ignore
     this.animateRunningInterval = setInterval(() => {
       if (this.runningFrame >= 2) {
@@ -88,27 +149,48 @@ class Player extends Sprite {
         this.runningFrame++;
       }
       // this.runningFrame = 2;
-      console.log(this.runningFrame);
     }, 120);
   }
 
-  stopAnimaterunningFrame() {
+  stopAnimateRunningFrame() {
     if (this.animateRunningInterval) {
       // @ts-ignore
       clearInterval(this.animateRunningInterval);
     }
   }
 
-  handleKeyup = () => {
-    switch (this.playerState) {
-      case PlayerState.RUNNING:
-        this.setPlayerState(PlayerState.WAITING);
-        break;
+  animateJumpFrame() {
+    // @ts-ignore
+    this.curentJumpAltitude = 0;
+    this.jumpingFrame = 0;
+    this.animateJumpInterval = setInterval(() => {
+      if (this.curentJumpAltitude < this.jumpAltitude) {
+        this.curentJumpAltitude++;
+        this.positionY = this.positionY - this.jumpSpeed;
+        if (this.keysPressed["ArrowRight"]) {
+          this.positionX = this.positionX + 1;
+        }
+        if (this.keysPressed["ArrowLeft"]) {
+          this.positionX = this.positionX - 1;
+        }
+      } else {
+        this.setPlayerState(PlayerState.FALLING);
+        clearInterval(this.animateJumpInterval as NodeJS.Timeout);
+      }
+      // this.positionY = this.positionY + 10;
+      // this.runningFrame = 2;
+    }, 10);
+  }
+
+  stopAnimateJumpFrame() {
+    if (this.animateJumpInterval) {
+      // @ts-ignore
+      clearInterval(this.animateJumpInterval);
     }
-  };
+  }
 
   canPlayerRun() {
-    return this.playerState !== PlayerState.JUMPING;
+    return true;
   }
 
   setPlayerState(state: PlayerState) {
@@ -118,34 +200,54 @@ class Player extends Sprite {
     }
   }
 
-  handleKeydown = (e: KeyboardEvent) => {
-    switch (e.key) {
-      case "ArrowRight":
-        if (this.canPlayerRun()) {
-          this.position.x = this.position.x + 16;
-          this.setPlayerState(PlayerState.RUNNING);
-        }
-
+  calcPhysics() {
+    switch (this.playerState) {
+      case PlayerState.FALLING:
+        // todo второй закон Ньютона
+        this.positionY = this.positionY + this.fallingSpeed;
         break;
-      case "ArrowLeft":
-        if (this.canPlayerRun()) {
-          this.position.x = this.position.x - 16;
-          this.setPlayerState(PlayerState.RUNNING);
-        }
-        break;
+      // case PlayerState.JUMPING:
+      //   if (this.curentJumpAltitude < this.jumpAltitude) {
+      //     this.curentJumpAltitude++;
+      //     this.positionY = this.positionY - this.jumpSpeed;
+      //   } else {
+      //     // console.log("fall");
+      //     // this.setPlayerState(PlayerState.FALLING);
+      //   }
+      //
+      //   break;
     }
-  };
+  }
+
+  restart() {
+    this.positionY = 175;
+    this.playerState = PlayerState.WAITING;
+  }
 
   render(renderer: Engine.IRenderer) {
     const { canvas, context } = renderer;
+    this.calcPhysics();
+
+    if (this.positionY > canvas.height) {
+      this.gameOver();
+    }
 
     const img = this.getPlayerImage(this.playerState);
     if (img) {
       context.save();
-      // context.scale(-1, 1);
-      context.drawImage(...img, this.position.x, this.position.y, this.playerSize.width, this.playerSize.height);
+      context.drawImage(...img, this.positionX, this.positionY, this.playerSize.width, this.playerSize.height);
       context.restore();
     }
+    this.playerState = this.isFalling ? PlayerState.FALLING : PlayerState.WAITING;
+  }
+
+  destroy() {
+    clearInterval(this.animateRunningInterval as NodeJS.Timeout);
+    clearInterval(this.animateJumpInterval as NodeJS.Timeout);
+  }
+
+  gameOver() {
+    console.log("Game Over");
   }
 }
 
