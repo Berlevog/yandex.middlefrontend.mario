@@ -14,18 +14,7 @@ import { SchemaOf } from "yup";
 import { useFormik } from "formik";
 import { useHistory } from "react-router";
 
-function Copyright(props: any) {
-  return (
-    <Typography variant="body2" align="center" {...props}>
-      {"Copyright © "}
-      <Link color="inherit" href="https://github.com/Berlevog">
-        Berlevog Team
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+import { Footer } from "../../components/Footer";
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -132,7 +121,7 @@ export default function Login() {
               </Grid>
             </Box>
           </Box>
-          <Copyright sx={{ mt: 5 }} />
+          <Footer />
         </Grid>
       </Slide>
     </Grid>

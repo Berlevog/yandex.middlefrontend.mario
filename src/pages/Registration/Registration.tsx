@@ -11,23 +11,11 @@ import { Slide } from "@material-ui/core";
 import { useFormik } from "formik";
 import { SchemaOf } from "yup";
 import InputMask from "react-input-mask";
+import { Footer } from "../../components/Footer";
 
 import { UserSchema } from "../../constants/validationSchema";
 import { getUser, signup, SignupProps } from "../../services/auth";
 import { useHistory } from "react-router";
-
-function Copyright(props: any) {
-  return (
-    <Typography variant="body2" align="center" {...props}>
-      {"Copyright © "}
-      <Link color="inherit" href="https://github.com/Berlevog">
-        Berlevog Team
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -223,7 +211,7 @@ export default function Registration() {
               </Grid>
             </Box>
           </Box>
-          <Copyright sx={{ mt: 5 }} />
+          <Footer />
         </Grid>
       </Slide>
     </Grid>
