@@ -1,28 +1,91 @@
 /*
  * Copyright (c) 2021. Written by Leonid Artemev (me@artemev.it)
  */
-import { createBrowserHistory } from "history";
 import React from "react";
+import { createBrowserHistory } from "history";
 import { Route, Router, Switch } from "react-router-dom";
-import { Login, Registration, Leaderboard, Forum } from "./pages";
+import { Login, Registration, Leaderboard, Forum, Profile } from "./pages";
+import { createTheme, ThemeProvider } from "@material-ui/core";
+
 import { Game } from "./pages/Game";
+
+declare module "@material-ui/core/styles" {
+  interface Theme {
+    loginPage: {
+      background: string;
+      backdropFilter: string;
+    };
+  }
+  // allow configuration using `createTheme`
+  interface ThemeOptions {
+    loginPage?: {
+      background: string;
+      backdropFilter: string;
+    };
+  }
+}
 
 const history = createBrowserHistory();
 const StubComponent = () => <div>Under construction! 👻</div>;
 
+const darkTheme = createTheme({
+  typography: {
+    fontFamily: [
+      "-apple-system",
+      "BlinkMacSystemFont",
+      '"Segoe UI"',
+      "Roboto",
+      '"Helvetica Neue"',
+      "Arial",
+      "sans-serif",
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(","),
+  },
+  loginPage: {
+    background: "#00000033",
+    backdropFilter: "blur(10px)",
+  },
+});
+
+const lightTheme = createTheme({
+  typography: {
+    fontFamily: [
+      "-apple-system",
+      "BlinkMacSystemFont",
+      '"Segoe UI"',
+      "Roboto",
+      '"Helvetica Neue"',
+      "Arial",
+      "sans-serif",
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(","),
+  },
+  loginPage: {
+    background: "#FFFFFF88",
+    backdropFilter: "blur(3px)",
+  },
+});
+
 function App() {
   return (
     <div className="App">
-      <Router history={history}>
-        <Switch>
-          <Route exact path="/" component={StubComponent} />
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/registration" component={Registration} />
-          <Route exact path="/app" component={Game} />
-          <Route exact path="/leaderboard" component={Leaderboard} />
-          <Route exact path="/forum" component={Forum} />
-        </Switch>
-      </Router>
+      <ThemeProvider theme={lightTheme}>
+        <Router history={history}>
+          <Switch>
+            <Route exact path="/" component={StubComponent} />
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/registration" component={Registration} />
+            <Route exact path="/app" component={Game} />
+            <Route exact path="/leaderboard" component={Leaderboard} />
+            <Route exact path="/forum" component={Forum} />
+            <Route exact path="/profile" component={Profile} />
+          </Switch>
+        </Router>
+      </ThemeProvider>
     </div>
   );
 }
