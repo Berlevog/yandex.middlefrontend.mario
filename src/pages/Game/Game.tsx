@@ -88,7 +88,7 @@ function Game() {
       appRef.current.addChild(player);
       appRef.current.addChild(obj);
     }
-  }, []);
+  }, [stage]);
   if (stage === GameStage.START) {
     return (
       <DefaultLayout>
