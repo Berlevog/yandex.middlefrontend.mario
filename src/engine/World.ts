@@ -10,7 +10,6 @@ export default class World extends Sprite {
   public sprite: ResourceImage;
   private player: Player;
   private groundRects: Engine.IRect[];
-  private audio: HTMLAudioElement;
   private debugAreas: boolean = false;
   private clouds: Clouds;
 
@@ -25,16 +24,6 @@ export default class World extends Sprite {
       { x: 448, y: LAND_Y - 32, width: 32, height: 64 },
       { x: 608, y: LAND_Y - 48, width: 32, height: 80 },
     ];
-    this.audio = document.createElement("audio");
-    this.audio.autoplay = true;
-    this.audio.loop = true;
-    this.playAudioTheme();
-  }
-
-  playAudioTheme() {
-    if (this.audio.canPlayType("audio/ogg")) {
-      this.audio.setAttribute("src", "music/world01.ogg");
-    }
   }
 
   checkCollisions() {

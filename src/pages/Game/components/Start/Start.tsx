@@ -1,5 +1,5 @@
-import React, { FC, useEffect, useState, useCallback } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import React, { FC, useEffect, useState } from "react";
 
 import { ResultsProps } from "../../Game";
 
@@ -37,6 +37,7 @@ const useStyles = makeStyles(() => ({
     listStyle: "none",
     color: "white",
     fontSize: 54,
+    cursor: "pointer",
   },
   active: {
     listStyle: "square",
@@ -52,7 +53,7 @@ const Start: FC<StartProps> = ({ onStart, results }) => {
     setMode(newMode);
   };
 
-  const keyListener = (event: React.KeyboardEvent) => {
+  const handleKeyUp = (event: KeyboardEvent) => {
     switch (event.key) {
       case "Enter":
         onStart(mode);
@@ -67,14 +68,15 @@ const Start: FC<StartProps> = ({ onStart, results }) => {
   };
 
   useEffect(() => {
-    document.addEventListener("keyup", keyListener);
-    return () => document.removeEventListener("keyup", keyListener);
+    document.addEventListener("keyup", handleKeyUp);
+    return () => document.removeEventListener("keyup", handleKeyUp);
   }, [mode]);
 
   const handleClick = (event: React.MouseEvent) => {
-    const target = event.target as HTMLLIElement;
+    const target = event.currentTarget as HTMLLIElement;
     const mode = target.dataset.gameMode;
     setMode(mode as START_MODE);
+    onStart(mode as START_MODE);
   };
 
   const classes = useStyles();
