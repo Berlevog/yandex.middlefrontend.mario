@@ -19,6 +19,10 @@ export enum PlayerSize {
   "BIG",
 }
 
+type PlayerProps = {
+  onGameOver: Function;
+};
+
 class Player extends Sprite {
   public sprite: ResourceImage;
   public playerState: PlayerState = PlayerState.FALLING;
@@ -35,9 +39,13 @@ class Player extends Sprite {
   private curentJumpAltitude: number = 0;
   private keysPressed: any = {};
   public isFalling = true;
+  private props: PlayerProps;
+  private audio: HTMLAudioElement;
 
-  constructor() {
+  constructor(props: PlayerProps) {
     super();
+    this.props = props;
+
     this.sprite = new ResourceImage("images/player.png");
     this.registerEvents();
     this.setPlayerState(PlayerState.WAITING);
@@ -45,6 +53,8 @@ class Player extends Sprite {
     this.rect = { x: 0, y: 0, width: this.playerSize.width, height: this.playerSize.height };
     this.pivot = { x: Math.floor(this.playerSize.width / 2), y: Math.floor(this.playerSize.height / 2) };
     this.restart();
+    this.audio = document.createElement("audio");
+    this.audio.setAttribute("src", "music/killed.ogg");
   }
 
   registerEvents() {
@@ -247,7 +257,8 @@ class Player extends Sprite {
   }
 
   gameOver() {
-    console.log("Game Over");
+    this.audio.play();
+    this.audio.onended = () => this.props.onGameOver();
   }
 }
 

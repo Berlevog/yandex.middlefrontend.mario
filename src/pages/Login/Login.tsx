@@ -1,20 +1,20 @@
-import React, { useEffect } from "react";
+import { Slide } from "@material-ui/core";
+import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
-import Link from "@material-ui/core/Link";
-import Box from "@material-ui/core/Box";
 import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
+import Link from "@material-ui/core/Link";
 import { makeStyles } from "@material-ui/core/styles";
-import { Slide } from "@material-ui/core";
-import { getUser, signin, SigninProps } from "../../services/auth";
-import { UserSchema } from "../../constants/validationSchema";
-import { SchemaOf } from "yup";
+import TextField from "@material-ui/core/TextField";
+import Typography from "@material-ui/core/Typography";
 import { useFormik } from "formik";
+import React, { useEffect } from "react";
 import { useHistory } from "react-router";
+import { SchemaOf } from "yup";
 
 import { Footer } from "../../components/Footer";
+import { UserSchema } from "../../constants/validationSchema";
+import { getUser, signin, SigninProps } from "../../services/auth";
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -28,8 +28,8 @@ const useStyles = makeStyles((theme) => ({
   },
 
   formContainer: {
-    background: theme.loginPage.background,
-    backdropFilter: theme.loginPage.backdropFilter,
+    background: theme.loginPage?.background,
+    backdropFilter: theme.loginPage?.backdropFilter,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -48,18 +48,20 @@ export default function Login() {
   const classes = useStyles();
   const history = useHistory();
 
+  const gotoApp = () => {
+    history.push("/app");
+  };
+
   const formik = useFormik({
     initialValues,
     validationSchema: signInSchema,
     onSubmit: (values) => {
-      signin(values).then((data) => {
-        history.push("/profile");
-      });
+      signin(values).then(gotoApp);
     },
   });
 
   useEffect(() => {
-    getUser().then(() => history.push("/profile"));
+    getUser().then(gotoApp);
   }, []);
 
   return (

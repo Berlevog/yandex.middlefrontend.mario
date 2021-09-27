@@ -1,13 +1,13 @@
 /*
  * Copyright (c) 2021. Written by Leonid Artemev (me@artemev.it)
  */
-import React from "react";
-import { createBrowserHistory } from "history";
-import { Route, Router, Switch } from "react-router-dom";
-import { Login, Registration, Leaderboard, Forum, Profile } from "./pages";
 import { createTheme, ThemeProvider } from "@material-ui/core";
+import { createBrowserHistory } from "history";
+import React from "react";
+import { Route, Router, Switch } from "react-router-dom";
+import { Forum, Leaderboard, Login, Profile, Registration } from "./pages";
 
-import { Game } from "./pages/Game";
+import { GamePages } from "./pages/Game";
 
 declare module "@material-ui/core/styles" {
   interface Theme {
@@ -79,7 +79,7 @@ function App() {
             <Route exact path="/" component={StubComponent} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/registration" component={Registration} />
-            <Route exact path="/app" component={Game} />
+            <Route exact path="/app" component={GamePages} />
             <Route exact path="/leaderboard" component={Leaderboard} />
             <Route exact path="/forum" component={Forum} />
             <Route exact path="/profile" component={Profile} />

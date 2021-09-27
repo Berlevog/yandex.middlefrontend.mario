@@ -1,5 +1,5 @@
-import React, { FC, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import React, { FC, useEffect, useState } from "react";
 
 import { ResultsProps } from "../../Game";
 
@@ -37,6 +37,7 @@ const useStyles = makeStyles(() => ({
     listStyle: "none",
     color: "white",
     fontSize: 54,
+    cursor: "pointer",
   },
   active: {
     listStyle: "square",
@@ -52,7 +53,7 @@ const End: FC<EndProps> = ({ onEnd, results }) => {
     setMode(newMode);
   };
 
-  const keyListener = (event: React.KeyboardEvent) => {
+  const handleKeyUp = (event: KeyboardEvent) => {
     switch (event.key) {
       case "Enter":
         onEnd(mode);
@@ -65,20 +66,22 @@ const End: FC<EndProps> = ({ onEnd, results }) => {
   };
 
   useEffect(() => {
-    document.addEventListener("keyup", keyListener);
-    return () => document.removeEventListener("keyup", keyListener);
+    document.addEventListener("keyup", handleKeyUp);
+    return () => document.removeEventListener("keyup", handleKeyUp);
   }, [mode]);
 
   const handleClick = (event: React.MouseEvent) => {
     const target = event.target as HTMLLIElement;
     const mode = target.dataset.gameMode;
     setMode(mode as END_MODE);
+    onEnd(mode as END_MODE);
   };
 
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
+      <audio src={"music/game-over.ogg"} autoPlay />
       <div className={classes.results}>
         <div className={classes.score}>{results.score}</div>
         <div className={classes.coins}>{results.coins}</div>
