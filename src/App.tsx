@@ -3,7 +3,7 @@
  */
 import { createTheme, ThemeProvider } from "@material-ui/core";
 import { createBrowserHistory } from "history";
-import React from "react";
+import React, { useEffect } from "react";
 import { Route, Router, Switch } from "react-router-dom";
 import { Forum, Leaderboard, Login, Profile, Registration } from "./pages";
 
@@ -26,7 +26,13 @@ declare module "@material-ui/core/styles" {
 }
 
 const history = createBrowserHistory();
-const StubComponent = () => <div>Under construction! 👻</div>;
+const StubComponent = () => {
+  const gotoApp = () => {
+    history.push("/app");
+  };
+  useEffect(gotoApp, []);
+  return <div>Under construction! 👻</div>;
+};
 
 const darkTheme = createTheme({
   typography: {
