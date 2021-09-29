@@ -4,7 +4,7 @@
 import { createTheme, ThemeProvider } from "@material-ui/core";
 import { createBrowserHistory } from "history";
 import React from "react";
-import { Route, Router, Switch } from "react-router-dom";
+import { Route, Router, Switch, Redirect } from "react-router-dom";
 import { Forum, Leaderboard, Login, Profile, Registration } from "./pages";
 
 import { GamePages } from "./pages/Game";
@@ -26,7 +26,6 @@ declare module "@material-ui/core/styles" {
 }
 
 const history = createBrowserHistory();
-const StubComponent = () => <div>Under construction! 👻</div>;
 
 const darkTheme = createTheme({
   typography: {
@@ -76,7 +75,9 @@ function App() {
       <ThemeProvider theme={lightTheme}>
         <Router history={history}>
           <Switch>
-            <Route exact path="/" component={StubComponent} />
+            <Route exact path="/">
+              <Redirect to="/app" />
+            </Route>
             <Route exact path="/login" component={Login} />
             <Route exact path="/registration" component={Registration} />
             <Route exact path="/app" component={GamePages} />
