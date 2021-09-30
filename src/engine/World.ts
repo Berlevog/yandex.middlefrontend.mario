@@ -1,6 +1,10 @@
 import { ResourceImage } from "../pages/Game/Resources";
 import Clouds from "./Clouds";
-import { Engine, MapObject, PhysicalObject, Rect, Sprite } from "./Engine";
+import { Engine } from "./Engine";
+import { MapObject } from "./MapObject";
+import { PhysicalObject } from "./PhysicalObject";
+import { Rect } from "./Rect";
+import { Sprite } from "./Sprite";
 
 const SHIFT_WIDTH: number = 120;
 const LAND_Y: number = 207;

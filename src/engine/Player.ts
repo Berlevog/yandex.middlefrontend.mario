@@ -1,5 +1,8 @@
 import { ResourceImage } from "../pages/Game/Resources";
-import { Engine, linearEquation, MapObject, PhysicalObject, Point } from "./Engine";
+import { Engine, linearEquation } from "./Engine";
+import { MapObject } from "./MapObject";
+import { PhysicalObject } from "./PhysicalObject";
+import { Point } from "./Point";
 
 export enum PlayerState {
   "WAITING" = "player/WAITING",

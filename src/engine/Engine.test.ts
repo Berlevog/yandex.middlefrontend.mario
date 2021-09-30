@@ -1,4 +1,6 @@
-import { distanceTo, getAABBCollision, isAABBCollision, linearEquation, Point, Rect } from "./Engine";
+import { distanceTo, getAABBCollision, isAABBCollision, linearEquation } from "./Engine";
+import { Point } from "./Point";
+import { Rect } from "./Rect";
 
 describe("AABB Collision detection works well", () => {
   it("Return false if no collision detected", () => {

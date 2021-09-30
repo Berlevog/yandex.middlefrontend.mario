@@ -1,5 +1,7 @@
 import { ResourceImage } from "../pages/Game/Resources";
-import { DisplayObject, Engine, Point } from "./Engine";
+import { DisplayObject } from "./DisplayObject";
+import { Engine } from "./Engine";
+import { Point } from "./Point";
 
 type CloudProps = {
   size: number;
