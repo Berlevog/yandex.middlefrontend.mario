@@ -52,9 +52,6 @@ export namespace Engine {
 
 import { ResourceImage } from "../pages/Game/Resources";
 
-export const FREE_FALL_VELOCITY = 9.81;
-export const AIR_DENSITY = 1.2;
-
 export function linearEquation(pointA: Engine.IPoint, pointB: Engine.IPoint, x: number) {
   const k = (pointA.y - pointB.y) / (pointA.x - pointB.x);
   const b = pointB.y - k * pointB.x;

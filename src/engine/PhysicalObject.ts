@@ -1,40 +1,47 @@
-import { AIR_DENSITY, Engine, FREE_FALL_VELOCITY } from "./Engine";
+import { Engine } from "./Engine";
 import { MapObject } from "./MapObject";
+import { Vector } from "./Point";
 import { Rect } from "./Rect";
+
+export const FREE_FALL_VELOCITY = 9.81;
+export const AIR_DENSITY = 1.2;
 
 export class PhysicalObject extends MapObject implements Engine.IPhysicalObject {
   public mass: number = 0;
   public type: Engine.PhysicalObjectType = "solid";
+  public velocity: Vector = new Vector();
+  public a: Vector = new Vector({ x: 0, y: 0 });
   protected timeStep = 0.02;
   protected velocityY: number;
   protected bounciness: number;
   protected ay: number;
   protected dragCoefficient: number;
-  protected a: number;
-  private params: any;
+  protected A: number;
+  protected velocityX: number;
   private interval: NodeJS.Timeout;
 
   constructor(props: Engine.PhysicalObjectProps) {
     super(props);
     this.width = 24;
     this.height = 24;
-    this.mass = 0.2;
+    this.mass = 10.1;
     this.velocityY = 0;
-    this.bounciness = -0.5;
-    this.ay = 0;
+    this.velocityX = 0;
+    this.bounciness = 0;
+    this.ay = -2;
     this.dragCoefficient = 0.47;
-    this.a = (Math.PI * Math.pow(this.width, 2)) / 10000;
+    this.A = (Math.PI * Math.pow(this.width, 2)) / 10000;
 
     this.rect = new Rect({ x: 50, y: 50, width: this.width, height: this.height });
 
-    //todo clear
     this.interval = setInterval(this.physics, this.timeStep * 1000);
     this.on("collision", this.handleCollision);
   }
 
   handleCollision = (object: MapObject) => {
-    if (this.y + this.height > object.y && this.velocityY > 0) {
-      this.velocityY *= this.bounciness;
+    if (this.y + this.height > object.y && this.velocity.y > 0) {
+      this.velocity.y *= this.bounciness;
+      this.velocity.x = 0;
       this.y = object.y - this.height;
     }
   };
@@ -46,22 +53,54 @@ export class PhysicalObject extends MapObject implements Engine.IPhysicalObject 
 
   /* Air resistance force; this would affect both x- and y-directions, but we're only looking at the y-axis in this example. */
   getAirResistance = () => {
-    return -(0.5 * AIR_DENSITY * this.dragCoefficient * this.a * Math.pow(this.velocityY, 2));
+    return new Vector({
+      x: -(0.5 * AIR_DENSITY * this.dragCoefficient * this.A * Math.pow(this.velocity.x, 2)),
+      y: -(0.5 * AIR_DENSITY * this.dragCoefficient * this.A * Math.pow(this.velocity.y, 2)),
+    });
   };
+  getUserDefinedForceResistance() {
+    return 0;
+  }
 
   physics = () => {
-    let fy = this.getWeightForce() + this.getAirResistance();
+    let f = this.getAirResistance();
+    f.x += this.getUserDefinedForceResistance();
+    f.y += this.getWeightForce();
 
     /* Varlet integration for the y-direction */
-    let dy = this.velocityY * this.timeStep + (this.ay / 2) * Math.pow(this.timeStep, 2);
+    let delta = new Vector({
+      x: this.velocity.x * this.timeStep + (this.a.x / 2) * Math.pow(this.timeStep, 2),
+      y: this.velocity.y * this.timeStep + (this.a.y / 2) * Math.pow(this.timeStep, 2),
+    });
 
     /* The following line is because the math assumes meters but we're assuming 1 cm per pixel, so we need to scale the results */
-    this.y = Math.round(this.y + dy * 100);
+    this.y = Math.round(this.y + delta.y * 100);
+    this.x = Math.round(this.x + delta.x * 100);
 
-    let new_ay = fy / this.mass;
-    let avg_ay = (new_ay + this.ay) / 2;
-    this.velocityY += avg_ay * this.timeStep;
+    this.velocity.addScaled(
+      {
+        x: (f.x / this.mass + this.a.x) / 2,
+        y: (f.y / this.mass + this.a.y) / 2,
+      },
+      this.timeStep
+    );
+
+    // this.velocity.x = this.velocity.x / 2;
+    // let ke = 0.5 * this.mass * Math.pow(this.velocity.x, 2);
+    // let pl = this.A * Math.pow(this.velocity.x, 2) * this.timeStep;
+    // ke -= pl;
+    //
+    // this.velocity.x = Math.sqrt((2 * ke) / this.mass);
   };
+
+  addForce(vector: Vector) {
+    if (this.velocity.x < 4) {
+      this.velocity.x += vector.x;
+    }
+    // if (this.velocity.y > 0) {
+    this.velocity.y = this.velocity.y + vector.y;
+    // }
+  }
 
   render(renderer: Engine.IRenderer) {
     const { context } = renderer;

@@ -2,6 +2,8 @@ import { ResourceImage } from "../pages/Game/Resources";
 import Clouds from "./Clouds";
 import { Engine } from "./Engine";
 import { MapObject } from "./MapObject";
+import Brick from "./objects/Brick";
+import Pipe from "./objects/Pipe";
 import { PhysicalObject } from "./PhysicalObject";
 import { Rect } from "./Rect";
 import { Sprite } from "./Sprite";
@@ -28,21 +30,29 @@ export default class World extends Sprite {
     this.sprite = new ResourceImage("images/world.png");
 
     this.groundRects = [
-      { x: 0, y: LAND_Y, width: 1105, height: 32 },
+      // { x: 0, y: LAND_Y, width: 1105, height: 32 },
       // { x: 448, y: LAND_Y - 32, width: 32, height: 64 },
-      { x: 608, y: LAND_Y - 48, width: 32, height: 80 },
+      // { x: 608, y: LAND_Y - 48, width: 32, height: 80 },
     ];
 
     const obj1 = new MapObject({ texture: new ResourceImage("images/world.png") });
     obj1.rect = new Rect({ x: 0, y: LAND_Y, width: 1105, height: 32 });
-    this.mapObjects = [obj1];
+    this.mapObjects = [
+      obj1,
+      new Pipe({ x: 448, y: LAND_Y, height: 32 }),
+      new Brick({ x: 320, y: LAND_Y - 64, count: 5 }),
+      new Brick({ x: 520, y: LAND_Y - 128, count: 5 }),
+      new Pipe({ x: 608, y: LAND_Y, height: 48 }),
+      new Pipe({ x: 736, y: LAND_Y, height: 64 }),
+      new Pipe({ x: 912, y: LAND_Y, height: 64 }),
+    ];
   }
 
   detectCollisions() {
     this.mapObjects.forEach((object) => {
       if (this.player.testHit(object.rect)) {
-        this.player.collide(object);
-        object.collide(this.player);
+        this.player.collide(object, this.player.getHit(object.rect));
+        object.collide(this.player, this.player.getHit(object.rect));
       }
     });
   }
@@ -82,7 +92,7 @@ export default class World extends Sprite {
         const shift = Math.min(this.sprite.img.width + this.x - canvas.width, SHIFT_WIDTH);
         this.x = this.x - shift;
         this.player.x = this.player.x - shift;
-        this.groundRects.forEach((rect) => {
+        this.mapObjects.forEach((rect) => {
           rect.x = rect.x - shift;
         });
       }
@@ -108,10 +118,14 @@ export default class World extends Sprite {
 
     if (this.debugAreas) {
       context.fillStyle = "blue";
-      this.groundRects.forEach((ground) => {
+      this.mapObjects.forEach((ground) => {
         context.fillRect(ground.x, ground.y, ground.width, ground.height);
       });
     }
+
+    this.mapObjects.forEach((object) => {
+      object.render(renderer);
+    });
 
     this.clouds.render(renderer);
     context.restore();

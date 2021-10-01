@@ -2,7 +2,7 @@ import { ResourceImage } from "../pages/Game/Resources";
 import { Engine, linearEquation } from "./Engine";
 import { MapObject } from "./MapObject";
 import { PhysicalObject } from "./PhysicalObject";
-import { Point } from "./Point";
+import { Point, Vector } from "./Point";
 
 export enum PlayerState {
   "WAITING" = "player/WAITING",
@@ -30,11 +30,25 @@ class Player extends PhysicalObject {
   public playerState: PlayerState = PlayerState.FALLING;
   public isFalling = true;
   public props: PlayerProps;
+  // private playerDirection: PlayerDirection = PlayerDirection.RIGHT;
+  private textureSize: Engine.ISizeData = { width: 128, height: 128 };
+  private animateRunningInterval: number | NodeJS.Timer | undefined;
+  private runningFrame = 0;
+  private jumpingFrame = 0;
+  private playerSize: Engine.ISizeData = { width: 24, height: 24 };
+  private fallingSpeed = 5;
+  private jumpSpeed = 4;
+  private jumpAltitude = 30;
+  private animateJumpInterval: number | NodeJS.Timer | undefined;
+  private curentJumpAltitude: number = 0;
+  private keysPressed: any = {};
+  private audio: HTMLAudioElement;
+  private ground: boolean = false;
 
   constructor(props: PlayerProps) {
     super({ ...props, texture: new ResourceImage("images/player.png") });
     this.props = props;
-    this.bounciness = -0.2;
+    this.bounciness = 0;
     this.registerEvents();
     this.setPlayerState(PlayerState.WAITING);
     // this.rect = { x: 30, y: 0, width: this.playerSize.width - 60, height: this.playerSize.height };
@@ -53,23 +67,13 @@ class Player extends PhysicalObject {
     this.on("collision", this.handleCollision);
   }
 
-  // private playerDirection: PlayerDirection = PlayerDirection.RIGHT;
-  private textureSize: Engine.ISizeData = { width: 128, height: 128 };
-  private animateRunningInterval: number | NodeJS.Timer | undefined;
-  private runningFrame = 0;
-  private jumpingFrame = 0;
-  private playerSize: Engine.ISizeData = { width: 24, height: 24 };
-  private fallingSpeed = 5;
-  private jumpSpeed = 4;
-  private jumpAltitude = 30;
-  private animateJumpInterval: number | NodeJS.Timer | undefined;
-  private curentJumpAltitude: number = 0;
-  private keysPressed: any = {};
-  private audio: HTMLAudioElement;
-
   handleCollision = (object: MapObject) => {
-    // console.log("collision event", object);
+    this.ground = this.y + this.height === object.y;
   };
+
+  getUserDefinedForceResistance(): number {
+    return this.ground ? 0.5 : 0;
+  }
 
   render(renderer: Engine.IRenderer) {
     const { canvas, context } = renderer;
@@ -150,12 +154,25 @@ class Player extends PhysicalObject {
 
   handleKeysPressed(keys: any) {
     if (keys["ArrowRight"]) {
-      this.x = this.x + 16;
+      if (!this.ground) {
+        this.velocity.x = 0;
+        this.addForce(new Vector({ x: 0.5, y: 0 }));
+      } else {
+        this.addForce(new Vector({ x: 1.5, y: 0 }));
+      }
     } else if (keys["ArrowLeft"]) {
-      this.x = this.x - 16;
+      if (!this.ground) {
+        this.velocity.x = 0;
+        this.addForce(new Vector({ x: -0.5, y: 0 }));
+      } else {
+        this.addForce(new Vector({ x: -1.5, y: 0 }));
+      }
     }
     if (keys["ArrowUp"]) {
-      this.setPlayerState(PlayerState.JUMPING);
+      if (this.ground) {
+        this.ground = false;
+        this.addForce(new Vector({ x: 0, y: -2 }));
+      }
     }
   }
 

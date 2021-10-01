@@ -4,18 +4,18 @@ export class Point implements Engine.IPoint {
   public x: number = 0;
   public y: number = 0;
 
-  constructor({ x, y }: Engine.IPointData) {
+  constructor({ x, y }: Engine.IPointData = { x: 0, y: 0 }) {
     this.x = x;
     this.y = y;
   }
 
-  add(point: Engine.IPoint): Point {
+  add(point: Engine.IPointData): Point {
     this.x += point.x;
     this.y += point.y;
     return this;
   }
 
-  subtract(point: Engine.IPoint): Point {
+  subtract(point: Engine.IPointData): Point {
     this.x -= point.x;
     this.y -= point.y;
     return this;
@@ -37,9 +37,11 @@ export class Point implements Engine.IPoint {
     return this;
   }
 
-  addScaled(point: Engine.IPoint, k: number) {
+  addScaled(point: Engine.IPointData, k: number) {
     this.x += k * point.x;
     this.y += k * point.y;
     return this;
   }
 }
+
+export class Vector extends Point {}
