@@ -7,12 +7,15 @@ import Link from "@material-ui/core/Link";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
+import { AxiosError } from "axios";
 import { useFormik } from "formik";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { SchemaOf } from "yup";
+import { Alert } from "../../components/Alert";
 
 import { Footer } from "../../components/Footer";
+import { UNKNOWN_ERROR } from "../../config/constants";
 import { UserSchema } from "../../constants/validationSchema";
 import { getUser, signin, SigninProps } from "../../services/auth";
 
@@ -52,11 +55,20 @@ export default function Login() {
     history.push("/app");
   };
 
+  const [error, setError] = useState("");
+
+  const handleError = (e: AxiosError) => {
+    const error = e?.response?.data?.reason;
+    setError(error || UNKNOWN_ERROR);
+  };
+
+  const handleCloseAlert = () => setError("");
+
   const formik = useFormik({
     initialValues,
     validationSchema: signInSchema,
     onSubmit: (values) => {
-      signin(values).then(gotoApp);
+      signin(values).then(gotoApp).catch(handleError);
     },
   });
 
@@ -126,6 +138,7 @@ export default function Login() {
           <Footer />
         </Grid>
       </Slide>
+      {!!error && <Alert message={error} severity="error" onClose={handleCloseAlert} />}
     </Grid>
   );
 }
