@@ -5,12 +5,17 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import { ErrorHandler } from "./components/ErrorHandler";
+import { Provider } from "react-redux";
+import { store } from "./store";
+
 import "./index.css";
 
 ReactDOM.render(
   <React.StrictMode>
     <ErrorHandler>
-      <App />
+      <Provider store={store}>
+        <App />
+      </Provider>
     </ErrorHandler>
   </React.StrictMode>,
   document.getElementById("root")
