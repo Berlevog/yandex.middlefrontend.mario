@@ -1,4 +1,6 @@
 import { combineReducers } from "redux";
-import { userReducer as loader } from "./loader";
+import { loaderReducer } from "./loader";
 
-export default combineReducers({ loader });
+import leaderboardReducer from "../slices/leaderboardSlice";
+
+export default combineReducers({ loader: loaderReducer, leaderboard: leaderboardReducer });

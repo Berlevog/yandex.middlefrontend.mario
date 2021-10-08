@@ -16,7 +16,7 @@ type ActionType = {
   type: actions;
 };
 
-export function userReducer(state: LoaderState = defaultState, { type }: ActionType): LoaderState {
+export function loaderReducer(state: LoaderState = defaultState, { type }: ActionType): LoaderState {
   switch (type) {
     case actions.PENDING:
       return {

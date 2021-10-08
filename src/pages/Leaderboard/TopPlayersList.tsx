@@ -1,42 +1,23 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Title from "./Title";
-import { getResults, UserResult } from "../../services/leaderboard";
+import { UserResult } from "../../services/leaderboard";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { loadPending, loadSuccess, loadFailed } from "../../store/reducers/loader";
 import { Loader } from "../../components/Loader";
+import { fetchLeaderboard } from "../../store/thunks/leaderboard";
 
 export default function TopPlayersList() {
-  const [results, setResults] = useState<UserResult[]>([]);
-
   const dispatch = useAppDispatch();
 
-  function getLeaderboardResults() {
-    return (dispatch) => {
-      dispatch(loadPending());
-      getResults()
-        .then((response) => {
-          dispatch(loadSuccess());
-          setResults(response);
-        })
-        .catch(() => dispatch(loadFailed()));
-    };
-  }
-
-  const updateResults = useCallback(() => {
-    dispatch(getLeaderboardResults());
+  useEffect(() => {
+    dispatch(fetchLeaderboard());
   }, []);
 
-  useEffect(updateResults, []);
-
-  const isLoading = useAppSelector(({ loader }) => loader.loading);
-  if (isLoading) {
-    return <Loader />;
-  }
+  const results: UserResult[] = useAppSelector(({ leaderboard }) => leaderboard.entities);
 
   return (
     <React.Fragment>
