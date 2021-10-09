@@ -8,25 +8,26 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import SportsEsportsIcon from "@material-ui/icons/SportsEsports";
 import ForumIcon from "@material-ui/icons/Forum";
 import Avatar from "@material-ui/core/Avatar";
-
 import { DEFAULT_AVATAR } from "../../config/constants";
+
 import useAuth from "../../utils/useAuth";
+import { Link } from "react-router-dom";
 
 export const mainListItems = (
   <div>
-    <ListItem button component="a" href="/app">
+    <ListItem button component={Link} to="/app">
       <ListItemIcon>
         <SportsEsportsIcon />
       </ListItemIcon>
       <ListItemText primary="Game" />
     </ListItem>
-    <ListItem button component="a" href="/leaderboard">
+    <ListItem button component={Link} to="/leaderboard">
       <ListItemIcon>
         <ShowChartIcon />
       </ListItemIcon>
       <ListItemText primary="Leaderboard" />
     </ListItem>
-    <ListItem button component="a" href="/forum">
+    <ListItem button component={Link} to="/forum">
       <ListItemIcon>
         <ForumIcon />
       </ListItemIcon>
@@ -48,7 +49,7 @@ export function secondaryListItems() {
   let avatar;
   return (
     <div>
-      <ListItem button component="a" href="/profile">
+      <ListItem button component={Link} to="/profile">
         <ListItemIcon>
           <Avatar alt="userName" src={avatar || DEFAULT_AVATAR} />
         </ListItemIcon>
