@@ -1,18 +1,22 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { mount } from "enzyme";
+import { mount, ReactWrapper } from "enzyme";
 import Menu from "./Menu";
+import store from "../../store";
+import { Provider } from "react-redux";
+import { BrowserRouter } from "react-router-dom";
 
-describe("render header", () => {
-  it("renders without crashing", () => {
-    const div = document.createElement("div");
-
-    ReactDOM.render(<Menu open={true} />, div);
-    ReactDOM.unmountComponentAtNode(div);
+describe("render menu", () => {
+  let wrapper: ReactWrapper;
+  beforeEach(() => {
+    wrapper = mount(
+      <BrowserRouter>
+        <Provider store={store}>
+          <Menu open={false} />
+        </Provider>
+      </BrowserRouter>
+    );
   });
-
-  it("props 'open' passed successfully", () => {
-    const menu = mount(<Menu open={false} />);
-    expect(menu.prop("open")).toEqual(false);
+  it("renders without crashing", () => {
+    expect(wrapper.length).toEqual(1);
   });
 });
