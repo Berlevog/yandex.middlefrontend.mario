@@ -39,6 +39,9 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     flexDirection: "column",
   },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
 }));
 
 export const signInSchema = UserSchema.pick(["login", "password"]) as SchemaOf<SigninProps>;
@@ -123,7 +126,7 @@ export default function Login() {
                   helperText={formik.touched.password && formik.errors.password}
                 />
 
-                <Button type="submit" color="primary" fullWidth variant="contained">
+                <Button type="submit" color="primary" fullWidth variant="contained" className={classes.submit}>
                   Sign In
                 </Button>
               </form>

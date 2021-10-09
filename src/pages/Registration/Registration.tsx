@@ -40,6 +40,9 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     flexDirection: "column",
   },
+  register: {
+    margin: theme.spacing(3, 0, 2),
+  },
 }));
 
 export const signUpSchema = UserSchema.pick([
@@ -213,7 +216,7 @@ export default function Registration() {
                   helperText={formik.touched.password_confirm && formik.errors.password_confirm}
                 />
 
-                <Button color="primary" variant="contained" fullWidth type="submit">
+                <Button color="primary" variant="contained" fullWidth type="submit" className={classes.register}>
                   Sign Up
                 </Button>
               </form>

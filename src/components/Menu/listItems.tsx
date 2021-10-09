@@ -9,6 +9,7 @@ import SportsEsportsIcon from "@material-ui/icons/SportsEsports";
 import ForumIcon from "@material-ui/icons/Forum";
 import Avatar from "@material-ui/core/Avatar";
 import { DEFAULT_AVATAR } from "../../config/constants";
+import { makeStyles } from "@material-ui/core/styles";
 
 import useAuth from "../../utils/useAuth";
 import { Link } from "react-router-dom";
@@ -36,6 +37,13 @@ export const mainListItems = (
   </div>
 );
 
+const useStyles = makeStyles(() => ({
+  avatar: {
+    width: 24,
+    height: 24,
+  },
+}));
+
 export function secondaryListItems() {
   const history = useHistory();
 
@@ -47,11 +55,14 @@ export function secondaryListItems() {
   }, []);
 
   let avatar;
+
+  const classes = useStyles();
+
   return (
     <div>
       <ListItem button component={Link} to="/profile">
         <ListItemIcon>
-          <Avatar alt="userName" src={avatar || DEFAULT_AVATAR} />
+          <Avatar alt="userName" src={avatar || DEFAULT_AVATAR} className={classes.avatar} />
         </ListItemIcon>
         <ListItemText primary="Profile" />
       </ListItem>
