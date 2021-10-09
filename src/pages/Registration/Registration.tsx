@@ -8,7 +8,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { useFormik } from "formik";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import InputMask from "react-input-mask";
 import { useHistory } from "react-router";
 import { SchemaOf } from "yup";
@@ -16,9 +16,10 @@ import { Footer } from "../../components/Footer";
 import { Alert } from "../../components/Alert";
 
 import { UserSchema } from "../../constants/validationSchema";
-import { getUser, signup, SignupProps } from "../../services/auth";
+import { SignupProps } from "../../services/auth";
 import { AxiosError } from "axios";
 import { UNKNOWN_ERROR } from "../../config/constants";
+import useAuth from "../../utils/useAuth";
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -65,6 +66,8 @@ export default function Registration() {
   const classes = useStyles();
   const history = useHistory();
 
+  const auth = useAuth();
+
   const gotoApp = () => {
     history.push("/app");
   };
@@ -82,13 +85,9 @@ export default function Registration() {
     initialValues,
     validationSchema: signUpSchema,
     onSubmit: (values) => {
-      signup(values).then(gotoApp).catch(handleError);
+      auth.register(values).then(gotoApp).catch(handleError);
     },
   });
-
-  useEffect(() => {
-    getUser().then(gotoApp);
-  }, []);
 
   return (
     <Grid container component="main" className={classes.main}>

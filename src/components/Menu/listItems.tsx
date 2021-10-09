@@ -7,8 +7,10 @@ import ShowChartIcon from "@material-ui/icons/ShowChart";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import SportsEsportsIcon from "@material-ui/icons/SportsEsports";
 import ForumIcon from "@material-ui/icons/Forum";
+import Avatar from "@material-ui/core/Avatar";
 
-import { signout } from "../../services/auth";
+import { DEFAULT_AVATAR } from "../../config/constants";
+import useAuth from "../../utils/useAuth";
 
 export const mainListItems = (
   <div>
@@ -36,12 +38,22 @@ export const mainListItems = (
 export function secondaryListItems() {
   const history = useHistory();
 
+  const auth = useAuth();
+
   const signOut = useCallback(() => {
-    signout().then(() => history.push("/login"));
+    auth.logout();
+    history.push("/login");
   }, []);
 
+  let avatar;
   return (
     <div>
+      <ListItem button component="a" href="/profile">
+        <ListItemIcon>
+          <Avatar alt="userName" src={avatar || DEFAULT_AVATAR} />
+        </ListItemIcon>
+        <ListItemText primary="Profile" />
+      </ListItem>
       <ListItem button onClick={signOut}>
         <ListItemIcon>
           <ExitToAppIcon />
