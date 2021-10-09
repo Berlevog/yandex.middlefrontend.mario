@@ -6,7 +6,11 @@ import Box from "@material-ui/core/Box";
 import { Header } from "../../components/Header";
 import { Menu } from "../../components/Menu";
 import { Footer } from "../../components/Footer";
+import { Loader } from "../../components/Loader";
 import { NO_CONTENT } from "../../config/constants";
+
+import { RootState } from "../../store/store";
+import { useAppSelector } from "../../store/hooks";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,6 +36,12 @@ const DefaultLayout: FC = ({ children }) => {
   const toggleDrawerOpen = () => {
     setOpen(!open);
   };
+
+  const loading = useAppSelector(({ loader }) => loader.loading);
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className={classes.root}>

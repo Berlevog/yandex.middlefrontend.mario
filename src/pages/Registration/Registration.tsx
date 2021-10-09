@@ -8,14 +8,17 @@ import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { useFormik } from "formik";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import InputMask from "react-input-mask";
 import { useHistory } from "react-router";
 import { SchemaOf } from "yup";
 import { Footer } from "../../components/Footer";
+import { Alert } from "../../components/Alert";
 
 import { UserSchema } from "../../constants/validationSchema";
 import { getUser, signup, SignupProps } from "../../services/auth";
+import { AxiosError } from "axios";
+import { UNKNOWN_ERROR } from "../../config/constants";
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -66,11 +69,20 @@ export default function Registration() {
     history.push("/app");
   };
 
+  const [error, setError] = useState("");
+
+  const handleError = (e: AxiosError) => {
+    const error = e?.response?.data?.reason;
+    setError(error || UNKNOWN_ERROR);
+  };
+
+  const handleCloseAlert = () => setError("");
+
   const formik = useFormik({
     initialValues,
     validationSchema: signUpSchema,
     onSubmit: (values) => {
-      signup(values).then(gotoApp);
+      signup(values).then(gotoApp).catch(handleError);
     },
   });
 
@@ -216,6 +228,7 @@ export default function Registration() {
           <Footer />
         </Grid>
       </Slide>
+      {!!error && <Alert message={error} severity="error" onClose={handleCloseAlert} />}
     </Grid>
   );
 }

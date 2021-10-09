@@ -46,6 +46,9 @@ type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 const Menu: FC<Props> = ({ open, onClick }) => {
   const classes = useStyles();
 
+  const mainList = mainListItems;
+  const secondaryList = secondaryListItems();
+
   return (
     <Drawer
       variant="permanent"
@@ -60,9 +63,9 @@ const Menu: FC<Props> = ({ open, onClick }) => {
         </IconButton>
       </div>
       <Divider />
-      <List>{mainListItems}</List>
+      <List>{mainList}</List>
       <Divider />
-      <List>{secondaryListItems}</List>
+      <List>{secondaryList}</List>
     </Drawer>
   );
 };
