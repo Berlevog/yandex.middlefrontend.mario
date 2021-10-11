@@ -38,19 +38,25 @@ export namespace Engine {
     right: boolean;
     left: boolean;
   }
+  export enum ObjectType {
+    SOLID = "Type/LAND",
+    ENEMY = "Type/ENEMY",
+    COIN = "Type/COIN",
+    BRICK = "Type/BRICK",
+  }
 
-  export type PhysicalObjectType = "solid" | "resource" | "enemy";
   export type DisplayObjectProps = {};
   export type SpriteProps = { texture: ResourceImage } & DisplayObjectProps;
   export type PhysicalObjectProps = {} & SpriteProps;
 
   export interface IPhysicalObject {
     mass: number;
-    type: PhysicalObjectType;
+    type: ObjectType;
   }
 }
 
 import { ResourceImage } from "../pages/Game/Resources";
+import { Point } from "./Point";
 
 export function linearEquation(pointA: Engine.IPoint, pointB: Engine.IPoint, x: number) {
   const k = (pointA.y - pointB.y) / (pointA.x - pointB.x);
@@ -69,6 +75,49 @@ export function isAABBCollision(rect1: Engine.IRect, rect2: Engine.IRect): boole
     rect1.y < rect2.y + rect2.height &&
     rect1.y + rect1.height > rect2.y
   );
+}
+
+export function getAngle(p1: Engine.IPoint, p2: Engine.IPoint) {
+  const ac = (p1.y - p2.y) / (p1.x - p2.x);
+  return (Math.atan(ac) * 180) / Math.PI;
+}
+
+export function getEdges(rect: Engine.IRect) {
+  return {
+    topLeft: new Point({ x: rect.x, y: rect.y }),
+    topMiddle: new Point({ x: Math.floor(rect.x + rect.width / 2), y: rect.y }),
+    topRight: new Point({ x: Math.floor(rect.x + rect.width), y: rect.y }),
+    leftMiddle: new Point({ x: rect.x, y: Math.floor(rect.y + rect.height / 2) }),
+    rightMiddle: new Point({ x: rect.x + rect.width, y: Math.floor(rect.y + rect.height / 2) }),
+    bottomLeft: new Point({ x: rect.x, y: rect.y + rect.height }),
+    bottomMiddle: new Point({ x: Math.floor(rect.x + rect.width / 2), y: rect.y + rect.height }),
+    bottomRight: new Point({ x: Math.floor(rect.x + rect.width), y: rect.y + rect.height }),
+  };
+}
+
+export function isPointInside(point: Engine.IPoint, rect: Engine.IRect) {
+  return point.x > rect.x && point.x < rect.x + rect.width && point.y > rect.y && point.y < rect.y + rect.height;
+}
+
+export function getCollision(rect1: Engine.IRect, rect2: Engine.IRect) {
+  const rect1Edges = getEdges(rect1);
+  return {
+    topLeft: isPointInside(rect1Edges.topLeft, rect2),
+    topMiddle: isPointInside(rect1Edges.topMiddle, rect2),
+    topRight: isPointInside(rect1Edges.topRight, rect2),
+    leftMiddle: isPointInside(rect1Edges.leftMiddle, rect2),
+    rightMiddle: isPointInside(rect1Edges.rightMiddle, rect2),
+    bottomLeft: isPointInside(rect1Edges.bottomLeft, rect2),
+    bottomMiddle: isPointInside(rect1Edges.bottomMiddle, rect2),
+    bottomRight: isPointInside(rect1Edges.bottomRight, rect2),
+  };
+}
+
+export function getCollisions(rect1: Engine.IRect, rect2: Engine.IRect) {
+  return {
+    rect1: getCollision(rect1, rect2),
+    rect2: getCollision(rect2, rect1),
+  };
 }
 
 export function getAABBCollision(rect1: Engine.IRect, rect2: Engine.IRect): Engine.IHit | null {

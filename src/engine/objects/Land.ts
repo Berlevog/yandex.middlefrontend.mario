@@ -2,19 +2,17 @@ import { ResourceImage } from "../../pages/Game/Resources";
 import { Engine } from "../Engine";
 import { MapObject } from "../MapObject";
 
-type BrickProps = {
+type LandProps = {
   x: number;
   y: number;
-  count?: number;
-  isPortal?: boolean;
-  isHaunted?: boolean;
+  count: number;
 };
 
-export default class Brick extends MapObject {
-  private count: number;
+export default class Land extends MapObject {
   public type = Engine.ObjectType.SOLID;
+  private count: number;
 
-  constructor(props: BrickProps) {
+  constructor(props: LandProps) {
     super({ ...props, texture: new ResourceImage("images/brick.png") });
     this.count = props.count || 1;
     this.height = 16;

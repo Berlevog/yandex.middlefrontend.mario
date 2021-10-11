@@ -3,9 +3,9 @@ import Clouds from "./Clouds";
 import { Engine } from "./Engine";
 import { MapObject } from "./MapObject";
 import Brick from "./objects/Brick";
+import Land from "./objects/Land";
 import Pipe from "./objects/Pipe";
 import { PhysicalObject } from "./PhysicalObject";
-import { Rect } from "./Rect";
 import { Sprite } from "./Sprite";
 
 const SHIFT_WIDTH: number = 120;
@@ -35,10 +35,8 @@ export default class World extends Sprite {
       // { x: 608, y: LAND_Y - 48, width: 32, height: 80 },
     ];
 
-    const obj1 = new MapObject({ texture: new ResourceImage("images/world.png") });
-    obj1.rect = new Rect({ x: 0, y: LAND_Y, width: 1105, height: 32 });
     this.mapObjects = [
-      obj1,
+      new Land({ x: 0, y: LAND_Y, count: 69 }),
       new Pipe({ x: 448, y: LAND_Y, height: 32 }),
       new Brick({ x: 320, y: LAND_Y - 64, count: 5 }),
       new Brick({ x: 520, y: LAND_Y - 128, count: 5 }),
@@ -51,8 +49,8 @@ export default class World extends Sprite {
   detectCollisions() {
     this.mapObjects.forEach((object) => {
       if (this.player.testHit(object.rect)) {
-        this.player.collide(object, this.player.getHit(object.rect));
-        object.collide(this.player, this.player.getHit(object.rect));
+        this.player.collide(object, this.player.direction());
+        object.collide(this.player, this.player.direction());
       }
     });
   }

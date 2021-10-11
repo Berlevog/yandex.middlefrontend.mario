@@ -1,4 +1,4 @@
-import { Engine } from "./Engine";
+import { Engine, getCollision } from "./Engine";
 import { MapObject } from "./MapObject";
 import { Vector } from "./Point";
 import { Rect } from "./Rect";
@@ -8,7 +8,7 @@ export const AIR_DENSITY = 1.2;
 
 export class PhysicalObject extends MapObject implements Engine.IPhysicalObject {
   public mass: number = 0;
-  public type: Engine.PhysicalObjectType = "solid";
+  public type = Engine.ObjectType.SOLID;
   public velocity: Vector = new Vector();
   public a: Vector = new Vector({ x: 0, y: 0 });
   protected timeStep = 0.02;
@@ -24,10 +24,10 @@ export class PhysicalObject extends MapObject implements Engine.IPhysicalObject 
     super(props);
     this.width = 24;
     this.height = 24;
-    this.mass = 10.1;
+    this.mass = 70;
     this.velocityY = 0;
     this.velocityX = 0;
-    this.bounciness = 0;
+    this.bounciness = 0.4;
     this.ay = -2;
     this.dragCoefficient = 0.47;
     this.A = (Math.PI * Math.pow(this.width, 2)) / 10000;
@@ -39,10 +39,34 @@ export class PhysicalObject extends MapObject implements Engine.IPhysicalObject 
   }
 
   handleCollision = (object: MapObject) => {
-    if (this.y + this.height > object.y && this.velocity.y > 0) {
-      this.velocity.y *= this.bounciness;
-      this.velocity.x = 0;
-      this.y = object.y - this.height;
+    if (object.type === Engine.ObjectType.SOLID) {
+      const hit = getCollision(this, object);
+      if (hit.leftMiddle && this.velocity.x < 0) {
+        console.log("left");
+        this.velocity.x = 0;
+        this.x = object.x + object.width;
+      }
+      if (hit.rightMiddle && this.velocity.x > 0) {
+        console.log("right");
+        this.velocity.x = 0;
+        this.x = object.x - this.width;
+      }
+
+      if (hit.bottomMiddle) {
+        this.velocity.y *= this.bounciness;
+        this.velocity.x = 0.2;
+
+        this.y = object.y - this.height;
+      } else if (hit.topMiddle) {
+        this.velocity.y *= -this.bounciness;
+        this.y = object.y + object.height;
+      }
+
+      // if (this.y >= object.y + object.height && this.velocity.y > 0) {
+      //   this.velocity.y *= -this.bounciness;
+      //   this.velocity.x = 0;
+      //   this.y = object.y + object.height;
+      // }
     }
   };
 
@@ -58,6 +82,7 @@ export class PhysicalObject extends MapObject implements Engine.IPhysicalObject 
       y: -(0.5 * AIR_DENSITY * this.dragCoefficient * this.A * Math.pow(this.velocity.y, 2)),
     });
   };
+
   getUserDefinedForceResistance() {
     return 0;
   }

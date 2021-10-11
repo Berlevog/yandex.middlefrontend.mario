@@ -20,6 +20,9 @@ export class Point implements Engine.IPoint {
     this.y -= point.y;
     return this;
   }
+  clone(): Point {
+    return new Point({ x: this.x, y: this.y });
+  }
 
   length(): number {
     return 0;
