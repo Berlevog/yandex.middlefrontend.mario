@@ -1,11 +1,58 @@
-import React from "react";
-import CanvasComponent from "../../engine/CanvasComponent";
+import { Box } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import React, { useEffect, useRef } from "react";
+import Application from "../../engine/Application";
+import PhysicalObject from "../../engine/PhysicalObject";
+import Player from "../../engine/Player";
 
-function Game() {
+import World from "../../engine/World";
+
+export type ResultsProps = {
+  score: number;
+  coins: number;
+  time: number;
+};
+
+enum GameStage {
+  "START" = "start",
+  "GAME" = "game",
+  "END" = "end",
+}
+
+const useStyles = makeStyles(() => ({
+  root: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#000",
+    height: "100vh",
+  },
+}));
+
+type GameProps = {
+  onGameOver: Function;
+};
+
+function Game({ onGameOver }: GameProps) {
+  const appRef = useRef<Application>(null);
+  const classes = useStyles();
+
+  useEffect(() => {
+    const player = new Player({ onGameOver });
+    const obj = new PhysicalObject();
+    const world = new World(player);
+    if (appRef.current) {
+      appRef.current.addChild(world);
+      appRef.current.addChild(player);
+      appRef.current.addChild(obj);
+    }
+  }, []);
+
   return (
-    <div>
-      <CanvasComponent />
-    </div>
+    <Box className={classes.root}>
+      <Application ref={appRef} width={800} height={500} color={"#93BBEC"} />
+      <audio src={"music/world01.ogg"} loop autoPlay />
+    </Box>
   );
 }
 
