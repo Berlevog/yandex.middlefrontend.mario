@@ -11,6 +11,8 @@ type PipeProps = {
 };
 
 export default class Pipe extends MapObject {
+  public type = Engine.ObjectType.SOLID;
+
   constructor(props: PipeProps) {
     super({ ...props, texture: new ResourceImage("images/pipe.png") });
     this.height = props.height;

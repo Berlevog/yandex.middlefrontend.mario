@@ -78,7 +78,6 @@ class Player extends PhysicalObject {
   render(renderer: Engine.IRenderer) {
     const { canvas, context } = renderer;
     // this.calcPhysics();
-
     if (this.y > canvas.height) {
       this.gameOver();
     }
@@ -89,6 +88,7 @@ class Player extends PhysicalObject {
       context.drawImage(...img, this.x, this.y, this.playerSize.width, this.playerSize.height);
       context.restore();
     }
+
     // this.playerState = this.isFalling ? PlayerState.FALLING : PlayerState.WAITING;
   }
 

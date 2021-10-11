@@ -1,17 +1,38 @@
 import EventEmitter from "eventemitter3";
-import { distanceTo, Engine, getAABBCollision, isAABBCollision } from "./Engine";
+import { distanceTo, Engine, getAABBCollision, getAngle, isAABBCollision } from "./Engine";
 import { Point } from "./Point";
 
 export class DisplayObject extends EventEmitter {
   public pivot: Engine.IPoint = new Point({ x: 0, y: 0 });
   public props: Engine.DisplayObjectProps;
+  protected lastPosition: Engine.IPoint = new Point({ x: 0, y: 0 });
 
   constructor(props: Engine.DisplayObjectProps = {}) {
     super();
     this.props = props;
   }
 
+  private _position = new Point({ x: 0, y: 0 });
+
+  get position(): Point {
+    return this._position;
+  }
+
+  set position(position: Engine.IPoint) {
+    const { x, y } = new Point({ x: this.x - position.x, y: this.y - position.y });
+    if (Math.abs(x + y) > 2) {
+      this.lastPosition = this._position.clone();
+    }
+    this._position.x = position.x;
+    this._position.y = position.y;
+    this.rect.x = this._position.x;
+    this.rect.y = this._position.y;
+  }
+
   protected _rect: Engine.IRect = { x: 0, y: 0, width: 0, height: 0 };
+
+  // public scale: number;
+  // public rotation: number;
 
   get rect(): Engine.IRect {
     return this._rect;
@@ -21,21 +42,6 @@ export class DisplayObject extends EventEmitter {
     this._rect = rect;
     this.position.x = this._rect.x;
     this.position.y = this._rect.y;
-  }
-
-  // public scale: number;
-  // public rotation: number;
-
-  private _position: Engine.IPoint = new Point({ x: 0, y: 0 });
-
-  get position(): Engine.IPoint {
-    return this._position;
-  }
-
-  set position(position: Engine.IPoint) {
-    this._position = position;
-    this.rect.x = this._position.x;
-    this.rect.y = this._position.y;
   }
 
   private _size: Engine.ISize = { width: 0, height: 0 };
@@ -55,9 +61,9 @@ export class DisplayObject extends EventEmitter {
   }
 
   set x(x: number) {
-    this._position = { ...this._position, x };
-    this.rect.x = this._position.x;
-    this.rect.y = this._position.y;
+    this.position = new Point({ ...this._position, x });
+    this.rect.x = this.position.x;
+    this.rect.y = this.position.y;
   }
 
   get y() {
@@ -65,9 +71,9 @@ export class DisplayObject extends EventEmitter {
   }
 
   set y(y: number) {
-    this._position = { ...this._position, y };
-    this.rect.x = this._position.x;
-    this.rect.y = this._position.y;
+    this.position = new Point({ ...this._position, y });
+    this.rect.x = this.position.x;
+    this.rect.y = this.position.y;
   }
 
   get width() {
@@ -93,6 +99,32 @@ export class DisplayObject extends EventEmitter {
 
   distanceTo(point: Engine.IPoint) {
     return distanceTo(point, this.position);
+  }
+
+  angle() {
+    return getAngle(this.lastPosition, this.position);
+  }
+
+  direction(): Engine.HitSide {
+    const angle = this.angle();
+    const dx = this.lastPosition.x - this.position.x;
+    if (dx > 0) {
+      if (angle > 45) {
+        return "top";
+      } else if (angle >= -45) {
+        return "left";
+      } else {
+        return "bottom";
+      }
+    } else {
+      if (angle > 45) {
+        return "top";
+      } else if (angle >= -45) {
+        return "right";
+      } else {
+        return "bottom";
+      }
+    }
   }
 
   getHit(rect: Engine.IRect): Engine.IHit | null {
