@@ -3,13 +3,13 @@ import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
-import Link from "@material-ui/core/Link";
+import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { AxiosError } from "axios";
 import { useFormik } from "formik";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router";
 import { SchemaOf } from "yup";
 import { Alert } from "../../components/Alert";
@@ -17,7 +17,8 @@ import { Alert } from "../../components/Alert";
 import { Footer } from "../../components/Footer";
 import { UNKNOWN_ERROR } from "../../config/constants";
 import { UserSchema } from "../../constants/validationSchema";
-import { getUser, signin, SigninProps } from "../../services/auth";
+import { SigninProps } from "../../services/auth";
+import useAuth from "../../utils/useAuth";
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -38,6 +39,9 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     flexDirection: "column",
   },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
 }));
 
 export const signInSchema = UserSchema.pick(["login", "password"]) as SchemaOf<SigninProps>;
@@ -50,6 +54,8 @@ const initialValues: SigninProps = {
 export default function Login() {
   const classes = useStyles();
   const history = useHistory();
+
+  const auth = useAuth();
 
   const gotoApp = () => {
     history.push("/app");
@@ -68,13 +74,9 @@ export default function Login() {
     initialValues,
     validationSchema: signInSchema,
     onSubmit: (values) => {
-      signin(values).then(gotoApp).catch(handleError);
+      auth.login(values).then(gotoApp).catch(handleError);
     },
   });
-
-  useEffect(() => {
-    getUser().then(gotoApp);
-  }, []);
 
   return (
     <Grid container component="main" className={classes.main}>
@@ -124,13 +126,13 @@ export default function Login() {
                   helperText={formik.touched.password && formik.errors.password}
                 />
 
-                <Button type="submit" color="primary" fullWidth variant="contained">
+                <Button type="submit" color="primary" fullWidth variant="contained" className={classes.submit}>
                   Sign In
                 </Button>
               </form>
               <Grid container>
                 <Grid item>
-                  <Link href="/registration">{"Don't have an account? Sign Up"}</Link>
+                  <Link to="/registration">{"Don't have an account? Sign Up"}</Link>
                 </Grid>
               </Grid>
             </Box>

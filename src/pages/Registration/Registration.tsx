@@ -3,12 +3,12 @@ import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
-import Link from "@material-ui/core/Link";
+import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
 import { useFormik } from "formik";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import InputMask from "react-input-mask";
 import { useHistory } from "react-router";
 import { SchemaOf } from "yup";
@@ -16,9 +16,10 @@ import { Footer } from "../../components/Footer";
 import { Alert } from "../../components/Alert";
 
 import { UserSchema } from "../../constants/validationSchema";
-import { getUser, signup, SignupProps } from "../../services/auth";
+import { SignupProps } from "../../services/auth";
 import { AxiosError } from "axios";
 import { UNKNOWN_ERROR } from "../../config/constants";
+import useAuth from "../../utils/useAuth";
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -38,6 +39,9 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "column",
+  },
+  register: {
+    margin: theme.spacing(3, 0, 2),
   },
 }));
 
@@ -65,6 +69,8 @@ export default function Registration() {
   const classes = useStyles();
   const history = useHistory();
 
+  const auth = useAuth();
+
   const gotoApp = () => {
     history.push("/app");
   };
@@ -82,13 +88,9 @@ export default function Registration() {
     initialValues,
     validationSchema: signUpSchema,
     onSubmit: (values) => {
-      signup(values).then(gotoApp).catch(handleError);
+      auth.register(values).then(gotoApp).catch(handleError);
     },
   });
-
-  useEffect(() => {
-    getUser().then(gotoApp);
-  }, []);
 
   return (
     <Grid container component="main" className={classes.main}>
@@ -214,13 +216,13 @@ export default function Registration() {
                   helperText={formik.touched.password_confirm && formik.errors.password_confirm}
                 />
 
-                <Button color="primary" variant="contained" fullWidth type="submit">
+                <Button color="primary" variant="contained" fullWidth type="submit" className={classes.register}>
                   Sign Up
                 </Button>
               </form>
               <Grid container>
                 <Grid item>
-                  <Link href="/login">{"Have an account? Sign In"}</Link>
+                  <Link to="/login">{"Have an account? Sign In"}</Link>
                 </Grid>
               </Grid>
             </Box>

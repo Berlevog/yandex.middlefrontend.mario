@@ -1,9 +1,22 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
+import { mount, ReactWrapper } from "enzyme";
 import Login from "./Login";
+import store from "../../store";
+import { Provider } from "react-redux";
+import { BrowserRouter } from "react-router-dom";
 
-it("renders without crashing", () => {
-  const div = document.createElement("div");
-  ReactDOM.render(<Login />, div);
-  ReactDOM.unmountComponentAtNode(div);
+describe("render login", () => {
+  let wrapper: ReactWrapper;
+  beforeEach(() => {
+    wrapper = mount(
+      <BrowserRouter>
+        <Provider store={store}>
+          <Login />
+        </Provider>
+      </BrowserRouter>
+    );
+  });
+  it("renders without crashing", () => {
+    expect(wrapper.length).toEqual(1);
+  });
 });

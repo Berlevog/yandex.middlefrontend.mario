@@ -75,9 +75,7 @@ function App() {
       <ThemeProvider theme={lightTheme}>
         <Router history={history}>
           <Switch>
-            {/* <Route exact path="/"> */}
             <Redirect exact from="/" to="/app" />
-            {/* </Route> */}
             <Route exact path="/login" component={Login} />
             <Route exact path="/registration" component={Registration} />
             <Route exact path="/app" component={GamePages} />
