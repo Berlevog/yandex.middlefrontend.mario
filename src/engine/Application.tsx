@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React, { PureComponent } from "react";
-import { DisplayObject } from "./Engine";
+import { DisplayObject } from "./DisplayObject";
 
 interface ApplicationProps {
   color: string;

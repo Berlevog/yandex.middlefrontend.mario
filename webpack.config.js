@@ -12,6 +12,7 @@ module.exports = (env, argv) => {
       main: path.join(__dirname, "src", "index.tsx"),
     },
     target: "web",
+    devtool: "inline-source-map",
     resolve: {
       extensions: [".ts", ".tsx", ".js"],
     },

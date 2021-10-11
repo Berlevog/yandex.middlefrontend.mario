@@ -1,40 +1,50 @@
 import { ResourceImage } from "../pages/Game/Resources";
-import { DisplayObject, Engine, Sprite } from "./Engine";
+import { DisplayObject } from "./DisplayObject";
+import { Engine } from "./Engine";
+import { Point } from "./Point";
 
-class Cloud extends Sprite {
+type CloudProps = {
+  size: number;
+  speed?: number;
+};
+
+class Cloud extends DisplayObject {
   public deleted: boolean = false;
-  private sprite: ResourceImage;
   private interval: NodeJS.Timer;
 
-  constructor(size: number, speed: number = 1) {
-    super();
-    this.sprite = new ResourceImage("images/cloud.png");
+  constructor(props: CloudProps) {
+    super({ ...props, texture: new ResourceImage("images/cloud.png") });
     this.size = { width: 24, height: 24 };
-    this.position = { x: 800, y: Math.floor(Math.random() * 80 + 5) };
+    this.position = new Point({ x: 800, y: Math.floor(Math.random() * 80 + 5) });
     this.interval = setInterval(() => {
-      this.positionX = Math.floor(this.positionX - speed);
+      this.x = Math.floor(this.x - props.speed!);
     }, 100);
   }
 
   render(renderer: Engine.IRenderer) {
-    const { canvas, context } = renderer;
+    const { context } = renderer;
     context.save();
     // context.scale(-1, 1);
-    context.drawImage(this.sprite.img, this.positionX, this.positionY, this.size.width, this.size.height);
+    // context.drawImage(this.texture.img, this.x, this.y, this.width, this.height);
     context.restore();
   }
 }
 
 export default class Clouds extends DisplayObject {
   private clouds: Cloud[];
-  private interval: NodeJS.Timer;
+  private readonly interval: NodeJS.Timer;
 
-  constructor() {
-    super();
-    this.clouds = [new Cloud(3)];
+  constructor(props?: Engine.DisplayObjectProps) {
+    super({ ...props });
+    this.clouds = [new Cloud({ size: 3 })];
     this.interval = setInterval(() => {
       this.clouds = this.clouds.filter((cloud) => !cloud.deleted);
-      this.clouds.push(new Cloud(Math.floor(Math.random() * 3 + 1), Math.floor(Math.random() * 5 + 1)));
+      this.clouds.push(
+        new Cloud({
+          size: Math.floor(Math.random() * 3 + 1),
+          speed: Math.floor(Math.random() * 5 + 1),
+        })
+      );
     }, 10000);
   }
 
@@ -44,7 +54,7 @@ export default class Clouds extends DisplayObject {
 
   render(renderer: Engine.IRenderer) {
     this.clouds.forEach((cloud) => {
-      if (cloud.positionY < 0) {
+      if (cloud.y < 0) {
         cloud.deleted = true;
       }
       cloud.render(renderer);
