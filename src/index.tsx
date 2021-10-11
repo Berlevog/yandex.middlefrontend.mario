@@ -9,6 +9,7 @@ import { Provider } from "react-redux";
 import store from "./store";
 
 import "./index.css";
+import startServiceWorker from "./serviceWorker";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -20,3 +21,5 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById("root")
 );
+
+startServiceWorker();
