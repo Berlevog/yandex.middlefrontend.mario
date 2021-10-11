@@ -24,10 +24,10 @@ export class PhysicalObject extends MapObject implements Engine.IPhysicalObject 
     super(props);
     this.width = 24;
     this.height = 24;
-    this.mass = 10.1;
+    this.mass = 70;
     this.velocityY = 0;
     this.velocityX = 0;
-    this.bounciness = 0;
+    this.bounciness = 0.4;
     this.ay = -2;
     this.dragCoefficient = 0.47;
     this.A = (Math.PI * Math.pow(this.width, 2)) / 10000;
@@ -53,14 +53,12 @@ export class PhysicalObject extends MapObject implements Engine.IPhysicalObject 
       }
 
       if (hit.bottomMiddle) {
-        this.velocity.y *= -this.bounciness;
-        this.velocity.x = 0;
+        this.velocity.y *= this.bounciness;
+        this.velocity.x = 0.2;
 
         this.y = object.y - this.height;
       } else if (hit.topMiddle) {
-        console.log("top");
-        // this.velocity.y = 1;
-        // this.velocity.x = 0;
+        this.velocity.y *= -this.bounciness;
         this.y = object.y + object.height;
       }
 

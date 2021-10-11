@@ -171,7 +171,7 @@ class Player extends PhysicalObject {
     if (keys["ArrowUp"]) {
       if (this.ground) {
         this.ground = false;
-        this.addForce(new Vector({ x: 0, y: -2 }));
+        this.addForce(new Vector({ x: 0, y: -3 }));
       }
     }
   }
