@@ -34,9 +34,11 @@ export default function Profile() {
   const [user, setUser] = useState<User>(initialValues);
   const [showMessage, setShowMessage] = useState(false);
 
-  useEffect(() => {
+  const fetchUser = () => {
     getUser().then((user) => setUser(user));
-  }, []);
+  };
+
+  useEffect(fetchUser, []);
 
   const handleCloseAlert = () => {
     setShowMessage(false);
@@ -65,6 +67,7 @@ export default function Profile() {
       message: SUCCESS_MESSAGE,
       severity: "success",
     });
+    fetchUser();
   };
 
   return (
