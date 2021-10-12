@@ -1,29 +1,80 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { getUser, signout } from "../../services/auth";
-import { User } from "../../services/auth";
-import TextField from "@material-ui/core/TextField";
-import { useHistory } from "react-router";
+import React, { useEffect, useState } from "react";
 import { DefaultLayout } from "../../layouts";
+import ProfileForm from "./components/ProfileForm";
+import PasswordForm from "./components/PasswordForm";
+import AvatarForm from "./components/AvatarForm";
+import { Divider } from "@material-ui/core";
+import { makeStyles } from "@material-ui/styles";
+import { AxiosError, AxiosResponse } from "axios";
+import { SUCCESS_MESSAGE, UNKNOWN_ERROR } from "../../config/constants";
+import { Alert } from "../../components/Alert";
+import { getUser, User } from "../../services/auth";
+import { AlertProps } from "../../components/Alert/Alert";
+
+const useStyles = makeStyles(() => ({
+  divider: {
+    margin: 32,
+  },
+}));
+
+let initialValues: User = {
+  email: "",
+  login: "",
+  first_name: "",
+  second_name: "",
+  display_name: "",
+  phone: "",
+  avatar: "",
+  id: 0,
+};
 
 export default function Profile() {
-  const [user, setUser] = useState<User>();
+  const classes = useStyles();
 
-  const updateUser = useCallback(() => {
+  const [user, setUser] = useState<User>(initialValues);
+  const [showMessage, setShowMessage] = useState(false);
+
+  useEffect(() => {
     getUser().then((user) => setUser(user));
   }, []);
 
-  useEffect(updateUser, []);
+  const handleCloseAlert = () => {
+    setShowMessage(false);
+    setMessage(initialMessage);
+  };
 
-  if (!user) {
-    return <>Not Logged in</>;
-  }
+  const initialMessage: Pick<AlertProps, "message" | "severity"> = {
+    message: "",
+    severity: "error",
+  };
+
+  const [message, setMessage] = useState(initialMessage);
+
+  const handleError = (e: AxiosError) => {
+    const error = e?.response?.data?.reason;
+    setShowMessage(true);
+    setMessage({
+      message: error || UNKNOWN_ERROR,
+      severity: "error",
+    });
+  };
+
+  const handleSuccess = () => {
+    setShowMessage(true);
+    setMessage({
+      message: SUCCESS_MESSAGE,
+      severity: "success",
+    });
+  };
 
   return (
     <DefaultLayout>
-      <TextField value={user.first_name} label="First Name" fullWidth disabled />
-      <TextField value={user.second_name} label="Second Name" fullWidth disabled />
-      <TextField value={user.email} label="Email" fullWidth disabled />
-      <TextField value={user.login} label="Login" fullWidth disabled />
+      <ProfileForm handleSuccess={handleSuccess} handleError={handleError} user={user} />
+      <Divider variant="middle" className={classes.divider} />
+      <PasswordForm handleSuccess={handleSuccess} handleError={handleError} />
+      <Divider variant="middle" className={classes.divider} />
+      <AvatarForm />
+      {!!showMessage && <Alert message={message.message} severity={message.severity} onClose={handleCloseAlert} />}
     </DefaultLayout>
   );
 }
