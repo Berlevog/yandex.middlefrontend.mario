@@ -50,4 +50,8 @@ export const UserSchema: SchemaOf<User> = object().shape({
   password_confirm: string()
     .oneOf([ref("password"), undefined], ERROR_MESSAGES.password_mismatch)
     .required(ERROR_MESSAGES.required),
+  oldPassword: string()
+    .min(VALIDATION.password.min, ERROR_MESSAGES.min(VALIDATION.password.min))
+    .max(VALIDATION.password.max, ERROR_MESSAGES.min(VALIDATION.password.max))
+    .required(ERROR_MESSAGES.required),
 });
