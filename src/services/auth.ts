@@ -1,6 +1,14 @@
 import axios from "axios";
 
-import { SIGNIN_URL, SIGNOUT_URL, SIGNUP_URL, UPDATE_PASSWORD_URL, UPDATE_USER_URL, USER_URL } from "../constants/url";
+import {
+  SIGNIN_URL,
+  SIGNOUT_URL,
+  SIGNUP_URL,
+  UPDATE_AVATAR_URL,
+  UPDATE_PASSWORD_URL,
+  UPDATE_USER_URL,
+  USER_URL,
+} from "../constants/url";
 
 axios.defaults.withCredentials = true;
 
@@ -30,7 +38,7 @@ export type UpdatePasswordProps = {
 };
 
 export type UpdateAvatarProps = {
-  avatar?: File;
+  avatar: File;
 };
 
 export interface SignupResponse {
@@ -61,3 +69,5 @@ export const updateUser = (data: UpdateUserProps): Promise<User> =>
 
 export const updatePassword = (data: { oldPassword: string; newPassword: string }): Promise<string> =>
   axios.put(UPDATE_PASSWORD_URL, data, { withCredentials: true });
+
+export const updateAvatar = (data: FormData): Promise<User> => axios.put(UPDATE_AVATAR_URL, data, {});
