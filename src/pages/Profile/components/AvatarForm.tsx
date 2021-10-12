@@ -1,41 +1,71 @@
-import React from "react";
-import TextField from "@material-ui/core/TextField";
+import React, { BaseSyntheticEvent, useState, FormEvent } from "react";
 import Typography from "@material-ui/core/Typography";
-import { useFormik } from "formik";
-import { UpdateAvatarProps } from "../../../services/auth";
+import { updateAvatar } from "../../../services/auth";
 import Button from "@material-ui/core/Button";
+import CloudUploadIcon from "@material-ui/icons/CloudUpload";
+import { makeStyles } from "@material-ui/core";
+import { AxiosError } from "axios";
+import Avatar from "@material-ui/core/Avatar";
+import { User } from "../../../services/auth";
+import { RESOURCES_URL } from "../../../constants/url";
 
-const initialValues: UpdateAvatarProps = {};
+const useStyles = makeStyles(() => ({
+  avatar: {
+    width: 180,
+    height: 180,
+    margin: "0 auto",
+    marginBottom: 18,
+  },
+  buttonWrapper: {
+    marginBottom: 18,
+  },
+  avatarInput: {
+    marginLeft: 6,
+  },
+}));
 
-export default function AvatarForm() {
-  const formik = useFormik({
-    initialValues,
-    onSubmit: (values) => {
-      console.log(values);
-    },
-  });
+export type AvatarFormProps = {
+  handleSuccess: () => void;
+  handleError: (e: AxiosError) => void;
+  user: User;
+};
+
+export default function AvatarForm({ handleSuccess, handleError, user }: AvatarFormProps) {
+  const classes = useStyles();
+  const [avatar, setAvatar] = useState<File>();
+
+  const handleChange = (event: BaseSyntheticEvent) => {
+    const avatar = event.target.files[0];
+    setAvatar(avatar);
+  };
+
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault();
+    if (!avatar) {
+      return;
+    }
+    const formData = new FormData();
+    formData.append("avatar", avatar);
+    updateAvatar(formData).then(handleSuccess).catch(handleError);
+  };
 
   return (
     <>
       <Typography component="h1" variant="h5">
         Avatar
       </Typography>
-      <form onSubmit={formik.handleSubmit}>
-        <TextField
-          margin="normal"
-          required
+      <Avatar alt={user.login} src={`${RESOURCES_URL}/${user.avatar}`} className={classes.avatar} />
+      <form onSubmit={handleSubmit}>
+        <Button
+          variant="contained"
+          component="label"
           fullWidth
-          name="avatar"
-          label="Avatar"
-          type="file"
-          id="avatar"
-          autoComplete="off"
-          value={formik.values.avatar}
-          onChange={formik.handleChange}
-          error={formik.touched.avatar && Boolean(formik.errors.avatar)}
-          helperText={formik.touched.avatar && formik.errors.avatar}
-        />
-
+          startIcon={<CloudUploadIcon />}
+          className={classes.buttonWrapper}
+        >
+          Choose new avatar
+          <input id="file" name="file" type="file" onChange={handleChange} className={classes.avatarInput} />
+        </Button>
         <Button color="primary" variant="contained" fullWidth type="submit">
           Upload
         </Button>

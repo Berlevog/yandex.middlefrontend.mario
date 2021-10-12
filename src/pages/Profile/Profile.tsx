@@ -5,7 +5,7 @@ import PasswordForm from "./components/PasswordForm";
 import AvatarForm from "./components/AvatarForm";
 import { Divider } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import { AxiosError, AxiosResponse } from "axios";
+import { AxiosError } from "axios";
 import { SUCCESS_MESSAGE, UNKNOWN_ERROR } from "../../config/constants";
 import { Alert } from "../../components/Alert";
 import { getUser, User } from "../../services/auth";
@@ -73,7 +73,7 @@ export default function Profile() {
       <Divider variant="middle" className={classes.divider} />
       <PasswordForm handleSuccess={handleSuccess} handleError={handleError} />
       <Divider variant="middle" className={classes.divider} />
-      <AvatarForm />
+      <AvatarForm handleSuccess={handleSuccess} handleError={handleError} user={user} />
       {!!showMessage && <Alert message={message.message} severity={message.severity} onClose={handleCloseAlert} />}
     </DefaultLayout>
   );
