@@ -4,10 +4,14 @@
 import { createTheme, ThemeProvider } from "@material-ui/core";
 import { createBrowserHistory } from "history";
 import React from "react";
+import { useSelector } from "react-redux";
 import { Route, Router, Switch, Redirect } from "react-router-dom";
 import { Forum, Leaderboard, Login, Profile, Registration } from "./pages";
 
 import { GamePages } from "./pages/Game";
+import { useAppDispatch } from "./store/hooks";
+import { RootState } from "./store/store";
+import { getUser } from "./store/thunks/auth";
 
 declare module "@material-ui/core/styles" {
   interface Theme {
@@ -70,6 +74,9 @@ const lightTheme = createTheme({
 });
 
 function App() {
+  const dispatch = useAppDispatch();
+  dispatch(getUser());
+
   return (
     <div className="App">
       <ThemeProvider theme={lightTheme}>

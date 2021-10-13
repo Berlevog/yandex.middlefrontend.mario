@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 
 import { useHistory } from "react-router-dom";
 
 import { DefaultLayout } from "../../layouts";
 import { sendResults } from "../../services/leaderboard";
+import { RootState } from "../../store/store";
 import { End, END_MODE } from "./components/End";
 
 import { Start, START_MODE } from "./components/Start";
@@ -33,6 +35,10 @@ function GamePages() {
 
   const [stage, setStage] = useState(GameStage.START);
 
+  const userName = useSelector(({ auth }: RootState) => {
+    return auth.user?.display_name || auth.user?.first_name || "";
+  });
+
   const handleGameOver = () => {
     setResults(generateResults());
     setStage(GameStage.END);
@@ -49,7 +55,7 @@ function GamePages() {
         break;
 
       case END_MODE.EXIT:
-        sendResults({ data: { ...results, name: "user" } });
+        sendResults({ data: { ...results, name: userName } });
         history.push("/leaderboard");
         break;
     }
