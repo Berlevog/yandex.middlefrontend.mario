@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import { DefaultLayout } from "../../layouts";
+import { sendResults } from "../../services/leaderboard";
 import { End, END_MODE } from "./components/End";
 
 import { Start, START_MODE } from "./components/Start";
@@ -48,6 +49,7 @@ function GamePages() {
         break;
 
       case END_MODE.EXIT:
+        sendResults({ data: { ...results, name: "user" } });
         history.push("/leaderboard");
         break;
     }
