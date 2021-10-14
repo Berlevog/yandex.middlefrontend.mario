@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom";
 import { DefaultLayout } from "../../layouts";
 import { sendResults } from "../../services/leaderboard";
 import { RootState } from "../../store/store";
+import fetchCityName from "../../utils/fetchCityName";
 import { End, END_MODE } from "./components/End";
 
 import { Start, START_MODE } from "./components/Start";
@@ -48,6 +49,20 @@ function GamePages() {
     setStage(GameStage.GAME);
   };
 
+  const handleResults = () => {
+    navigator.geolocation.getCurrentPosition(
+      async ({ coords }) => {
+        const city = await fetchCityName(coords.latitude, coords.longitude);
+        sendResults({ data: { ...results, city, name: userName } });
+        history.push("/leaderboard");
+      },
+      () => {
+        console.log("geolocation failed");
+        sendResults({ data: { ...results, city: "", name: userName } });
+      }
+    );
+  };
+
   const handleEnd = (endMode: END_MODE) => {
     switch (endMode) {
       case END_MODE.CONTINUE:
@@ -55,8 +70,7 @@ function GamePages() {
         break;
 
       case END_MODE.EXIT:
-        sendResults({ data: { ...results, name: userName } });
-        history.push("/leaderboard");
+        handleResults();
         break;
     }
   };

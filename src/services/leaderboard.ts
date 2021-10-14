@@ -10,6 +10,7 @@ export type UserResult = {
     coins: number;
     time: number;
     name: string;
+    city?: string;
   };
 };
 
