@@ -1,17 +1,20 @@
 import * as React from "react";
 import { mount, ReactWrapper } from "enzyme";
-import { Profile } from ".";
-import store from "../../store";
+import AvatarForm from "./AvatarForm";
+import store from "../../../store";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 
-describe("render profile", () => {
+import { user, handleSuccess, handleError } from "./mockDataForTest";
+
+describe("render avatar form", () => {
   let wrapper: ReactWrapper;
+
   beforeEach(() => {
     wrapper = mount(
       <BrowserRouter>
         <Provider store={store}>
-          <Profile />
+          <AvatarForm handleError={handleError} handleSuccess={handleSuccess} user={user} />
         </Provider>
       </BrowserRouter>
     );
