@@ -3,8 +3,11 @@ import Clouds from "./Clouds";
 import { Engine } from "./Engine";
 import { MapObject } from "./MapObject";
 import Brick from "./objects/Brick";
+import Dwarf from "./objects/enemies/Dwarf";
 import Land from "./objects/Land";
 import Pipe from "./objects/Pipe";
+import Secret from "./objects/Secret";
+import Tiles from "./objects/Tiles";
 import { PhysicalObject } from "./PhysicalObject";
 import { Sprite } from "./Sprite";
 
@@ -22,6 +25,7 @@ export default class World extends Sprite {
   private debugAreas: boolean = false;
   private clouds: Clouds;
   private mapObjects: MapObject[];
+  private enemies: PhysicalObject[];
 
   constructor(props: WorldProps) {
     super({ ...props, texture: new ResourceImage("images/world.png") });
@@ -40,12 +44,22 @@ export default class World extends Sprite {
       new Pipe({ x: 448, y: LAND_Y, height: 32 }),
       new Brick({ x: 320, y: LAND_Y - 64, count: 5 }),
       new Brick({ x: 520, y: LAND_Y - 128, count: 5 }),
+      new Tiles({ x: 820, y: LAND_Y - 128, count: 5 }),
+      new Secret({ x: 256, y: LAND_Y - 64 }),
+      new Secret({ x: 336, y: LAND_Y - 64 }),
+      new Secret({ x: 352, y: LAND_Y - 128 }),
+      new Secret({ x: 368, y: LAND_Y - 64 }),
       new Pipe({ x: 608, y: LAND_Y, height: 48 }),
       new Pipe({ x: 736, y: LAND_Y, height: 64 }),
       new Pipe({ x: 912, y: LAND_Y, height: 64 }),
     ];
+    this.enemies = [
+      new Dwarf({ x: 50, y: LAND_Y - 64 }),
+      new Dwarf({ x: 256, y: LAND_Y - 128 }),
+      new Dwarf({ x: 650, y: LAND_Y - 64 }),
+    ];
   }
-
+  //todo isObjectVisible?
   detectCollisions() {
     this.mapObjects.forEach((object) => {
       if (this.player.testHit(object.rect)) {
@@ -53,8 +67,21 @@ export default class World extends Sprite {
         object.collide(this.player, this.player.direction());
       }
     });
+    this.mapObjects.forEach((object) => {
+      this.enemies.forEach((enemy) => {
+        if (enemy.testHit(object.rect)) {
+          enemy.collide(object, enemy.direction());
+          object.collide(enemy, enemy.direction());
+        }
+      });
+    });
+    this.enemies.forEach((enemy) => {
+      if (this.player.testHit(enemy.rect)) {
+        this.player.collide(enemy, this.player.direction());
+        enemy.collide(this.player, this.player.direction());
+      }
+    });
   }
-
   /*checkCollisions() {
     //ground
     let isFalling = true;
@@ -93,6 +120,9 @@ export default class World extends Sprite {
         this.mapObjects.forEach((rect) => {
           rect.x = rect.x - shift;
         });
+        this.enemies.forEach((rect) => {
+          rect.x = rect.x - shift;
+        });
       }
 
       this.clouds.getClouds().forEach((cloud) => {
@@ -122,6 +152,9 @@ export default class World extends Sprite {
     }
 
     this.mapObjects.forEach((object) => {
+      object.render(renderer);
+    });
+    this.enemies.forEach((object) => {
       object.render(renderer);
     });
 
