@@ -30,6 +30,7 @@ export default function TopPlayersList() {
             <TableCell>Счет</TableCell>
             <TableCell>Монеты</TableCell>
             <TableCell>Время</TableCell>
+            <TableCell>Город</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -39,6 +40,7 @@ export default function TopPlayersList() {
               <TableCell>{data.score}</TableCell>
               <TableCell>{data.coins}</TableCell>
               <TableCell>{data.time}</TableCell>
+              <TableCell>{data.city}</TableCell>
             </TableRow>
           ))}
         </TableBody>

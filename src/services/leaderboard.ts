@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { LEADERBOARD_RESULTS_URL } from "../constants/url";
+import { LEADERBOARD_RESULTS_URL, API_TEAM_NAME, LEADERBOARD_SEND_RESULTS_URL } from "../constants/url";
 
 axios.defaults.withCredentials = true;
 
@@ -10,6 +10,7 @@ export type UserResult = {
     coins: number;
     time: number;
     name: string;
+    city?: string;
   };
 };
 
@@ -23,4 +24,12 @@ export const getResults = (
   data: LeaderboardRequestProps = { ratingFieldName: "score", cursor: 0, limit: 100 }
 ): Promise<UserResult[]> => {
   return axios.post(LEADERBOARD_RESULTS_URL, data).then(({ data }) => data);
+};
+
+export const sendResults = (data: UserResult): Promise<string> => {
+  return axios.post(LEADERBOARD_SEND_RESULTS_URL, {
+    ...data,
+    ratingFieldName: "score",
+    teamName: API_TEAM_NAME,
+  });
 };
