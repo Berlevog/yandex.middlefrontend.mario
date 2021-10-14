@@ -38,7 +38,8 @@ export class PhysicalObject extends MapObject implements Engine.IPhysicalObject 
     this.on("collision", this.handleCollision);
   }
 
-  handleCollision = (object: MapObject) => {
+  //player
+  private handleCollision = (object: MapObject) => {
     if (object.type === Engine.ObjectType.SOLID) {
       const hit = getCollision(this, object);
       if (hit.leftMiddle && this.velocity.x < 0) {

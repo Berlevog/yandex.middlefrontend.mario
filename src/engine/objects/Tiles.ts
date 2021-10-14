@@ -2,18 +2,18 @@ import { ResourceImage } from "../../pages/Game/Resources";
 import { Engine } from "../Engine";
 import { MapObject } from "../MapObject";
 
-type LandProps = {
+type TileProps = {
   x: number;
   y: number;
-  count: number;
+  count?: number;
 };
 
-export default class Land extends MapObject {
+export default class Tiles extends MapObject {
   public type = Engine.ObjectType.SOLID;
   private count: number;
 
-  constructor(props: LandProps) {
-    super({ ...props, texture: new ResourceImage("images/ground.png") });
+  constructor(props: TileProps) {
+    super({ ...props, texture: new ResourceImage("images/tile.png") });
     this.count = props.count || 1;
     this.height = 16;
     this.width = 16 * this.count;
