@@ -54,9 +54,9 @@ export default class Flower extends PhysicalObject {
   }
   handleCollision = (o: MapObject) => {
     const hit = getCollision(this, o);
-    if (hit.leftMiddle || hit.rightMiddle) {
+    if (hit.leftMiddle || hit.topMiddle) {
       console.log("collision with flower");
-      this.velocity.x *= -1;
+      this.velocity.y *= -1;
     }
   };
 
