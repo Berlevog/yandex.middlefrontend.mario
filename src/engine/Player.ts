@@ -287,6 +287,12 @@ class Player extends PhysicalObject {
     this.audio.play();
     this.audio.onended = () => this.props.onGameOver();
   }
+
+  onCollectItem(score: number) {
+    return () => {
+      console.log(`item collected: score +${score}`);
+    };
+  }
 }
 
 export default Player;

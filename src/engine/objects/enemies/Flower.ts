@@ -1,7 +1,7 @@
 import { ResourceImage } from "../../../pages/Game/Resources";
 import { Engine, getCollision } from "../../Engine";
 import { MapObject } from "../../MapObject";
-import { PhysicalObject } from "../../PhysicalObject";
+import { CollectableObject, CollectableObjectProps } from "../../CollectableObject";
 import { Vector } from "../../Point";
 
 type BrickProps = {
@@ -9,7 +9,7 @@ type BrickProps = {
   y: number;
 };
 
-export default class Flower extends PhysicalObject {
+export default class Flower extends CollectableObject {
   public type = Engine.ObjectType.ENEMY;
 
   render(renderer: Engine.IRenderer) {
@@ -33,10 +33,10 @@ export default class Flower extends PhysicalObject {
   private tick: NodeJS.Timer;
   private textureSize = 32;
 
-  constructor(props: BrickProps) {
+  constructor(props: BrickProps & CollectableObjectProps) {
     super({ ...props, texture: new ResourceImage("images/flower.png") });
-    this.height = 32;
-    this.width = 32;
+    this.height = 16;
+    this.width = 16;
     this.x = props.x;
     this.y = props.y;
     this.runningTextures = this.getRunningTexture();
@@ -54,9 +54,11 @@ export default class Flower extends PhysicalObject {
   }
   handleCollision = (o: MapObject) => {
     const hit = getCollision(this, o);
-    if (hit.leftMiddle || hit.topMiddle) {
-      console.log("collision with flower");
-      this.velocity.y *= -1;
+    if (hit.leftMiddle || hit.topMiddle || hit.rightMiddle) {
+      this.height = 0;
+      this.width = 0;
+      this.onCollect();
+      this.destroy();
     }
   };
 
