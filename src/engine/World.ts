@@ -4,6 +4,7 @@ import { Engine } from "./Engine";
 import { MapObject } from "./MapObject";
 import Brick from "./objects/Brick";
 import Dwarf from "./objects/enemies/Dwarf";
+import Flytrap from "./objects/enemies/Flytrap";
 import Land from "./objects/Land";
 import Pipe from "./objects/Pipe";
 import Secret from "./objects/Secret";
@@ -57,6 +58,7 @@ export default class World extends Sprite {
       new Dwarf({ x: 50, y: LAND_Y - 64 }),
       new Dwarf({ x: 256, y: LAND_Y - 128 }),
       new Dwarf({ x: 650, y: LAND_Y - 64 }),
+      new Flytrap({ x: 456, y: LAND_Y - 60, onCollision: this.player.kill }),
     ];
   }
   //todo isObjectVisible?

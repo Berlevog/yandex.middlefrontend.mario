@@ -278,6 +278,10 @@ class Player extends PhysicalObject {
     }
   }
 
+  kill() {
+    console.log("game over");
+  }
+
   restart() {
     this.y = 175;
     this.playerState = PlayerState.WAITING;
