@@ -4,6 +4,7 @@ import { Engine } from "./Engine";
 import { MapObject } from "./MapObject";
 import Brick from "./objects/Brick";
 import Dwarf from "./objects/enemies/Dwarf";
+import Flower from "./objects/enemies/Flower";
 import Land from "./objects/Land";
 import Pipe from "./objects/Pipe";
 import Secret from "./objects/Secret";
@@ -49,7 +50,7 @@ export default class World extends Sprite {
       new Secret({ x: 336, y: LAND_Y - 64 }),
       new Secret({ x: 352, y: LAND_Y - 128 }),
       new Secret({ x: 368, y: LAND_Y - 64 }),
-      new Pipe({ x: 608, y: LAND_Y, height: 48 }),
+      new Pipe({ x: 608, y: LAND_Y, height: 48, isHaunted: true }),
       new Pipe({ x: 736, y: LAND_Y, height: 64 }),
       new Pipe({ x: 912, y: LAND_Y, height: 64 }),
     ];
@@ -57,6 +58,7 @@ export default class World extends Sprite {
       new Dwarf({ x: 50, y: LAND_Y - 64 }),
       new Dwarf({ x: 256, y: LAND_Y - 128 }),
       new Dwarf({ x: 650, y: LAND_Y - 64 }),
+      new Flower({ x: 80, y: LAND_Y - 200 }),
     ];
   }
   //todo isObjectVisible?
