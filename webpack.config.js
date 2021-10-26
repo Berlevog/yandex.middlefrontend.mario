@@ -28,22 +28,27 @@ module.exports = async (env, argv) => {
     }),
     new HtmlWebpackPlugin({
       template: "./public/index.html",
+      window: {
+        devMode: !production,
+      },
     }),
     new MiniCssExtractPlugin({
       filename: "[name].[contenthash:5].css",
     }),
   ];
 
-  webpackPlugins.push(
-    new WorkboxPlugin.GenerateSW({
-      // these options encourage the ServiceWorkers to get in there fast
-      // and not allow any straggling "old" SWs to hang around
-      clientsClaim: true,
-      skipWaiting: true,
-      maximumFileSizeToCacheInBytes: 100 * 1024 * 1024,
-      swDest: "serviceWorker.js",
-    })
-  );
+  if (production) {
+    webpackPlugins.push(
+      new WorkboxPlugin.GenerateSW({
+        // these options encourage the ServiceWorkers to get in there fast
+        // and not allow any straggling "old" SWs to hang around
+        clientsClaim: true,
+        skipWaiting: true,
+        maximumFileSizeToCacheInBytes: 100 * 1024 * 1024,
+        swDest: "serviceWorker.js",
+      })
+    );
+  }
 
   return {
     mode: argv.mode,
