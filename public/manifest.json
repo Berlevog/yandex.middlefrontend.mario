@@ -1,6 +1,7 @@
 {
   "short_name": "Mario Canvas Game",
-  "name": "Mario clone written by canvas, typescript and react",
+  "name": "Super Mario",
+  "description": "Mario clone written by canvas, typescript and react",
   "icons": [
     {
       "src": "favicon.ico",
@@ -11,5 +12,8 @@
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "background_color": "#ffffff",
+  "serviceworker": {
+    "src": "./serviceWorker.js"
+  }
 }
