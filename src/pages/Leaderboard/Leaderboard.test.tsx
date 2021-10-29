@@ -1,13 +1,14 @@
 import * as React from "react";
 import { mount, ReactWrapper } from "enzyme";
 import Leaderboard from "./Leaderboard";
-import store from "../../store";
+import { configureStore } from "../../store";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 
 describe("render leaderboard", () => {
   let wrapper: ReactWrapper;
   beforeEach(() => {
+    const store = configureStore();
     wrapper = mount(
       <BrowserRouter>
         <Provider store={store}>

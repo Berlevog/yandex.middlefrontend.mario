@@ -54,15 +54,13 @@ export function secondaryListItems() {
     history.push("/login");
   }, []);
 
-  let avatar;
-
   const classes = useStyles();
 
   return (
     <div>
       <ListItem button component={Link} to="/profile">
         <ListItemIcon>
-          <Avatar alt="userName" src={avatar || DEFAULT_AVATAR} className={classes.avatar} />
+          <Avatar alt="userName" src={DEFAULT_AVATAR} className={classes.avatar} />
         </ListItemIcon>
         <ListItemText primary="Profile" />
       </ListItem>

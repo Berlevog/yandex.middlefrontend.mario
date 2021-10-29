@@ -2,7 +2,6 @@ import React from "react";
 import { signin, signup, SigninProps, SignupProps } from "../services/auth";
 import { useAppDispatch } from "../store/hooks";
 import { getUser, signout } from "../store/thunks/auth";
-import { createSelector } from "reselect";
 import store from "../store";
 import { RootState } from "../store/store";
 
@@ -23,10 +22,7 @@ export default function useAuth() {
     dispatch(signout());
   };
 
-  const getLoggedIn = createSelector(
-    ({ auth }: RootState) => auth.loggedIn,
-    (loggedIn) => loggedIn
-  );
+  const getLoggedIn = ({ auth }: RootState) => auth.loggedIn;
 
   const state = store.getState();
   return { login, register, logout, loggedIn: getLoggedIn(state) };
