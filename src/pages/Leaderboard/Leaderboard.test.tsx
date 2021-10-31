@@ -1,18 +1,28 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { mount } from "enzyme";
+import { mount, ReactWrapper } from "enzyme";
 import Leaderboard from "./Leaderboard";
+import { configureStore } from "../../store";
+import { Provider } from "react-redux";
+import { BrowserRouter } from "react-router-dom";
 
 describe("render leaderboard", () => {
-  it("renders without crashing", () => {
-    const div = document.createElement("div");
+  let wrapper: ReactWrapper;
+  beforeEach(() => {
+    const store = configureStore();
+    wrapper = mount(
+      <BrowserRouter>
+        <Provider store={store}>
+          <Leaderboard />
+        </Provider>
+      </BrowserRouter>
+    );
+  });
 
-    ReactDOM.render(<Leaderboard />, div);
-    ReactDOM.unmountComponentAtNode(div);
+  it("renders without crashing", () => {
+    expect(wrapper.length).toEqual(1);
   });
 
   it("renders players list", () => {
-    const leaderboard = mount(<Leaderboard />);
-    expect(leaderboard.find("table")).toHaveLength(1);
+    expect(wrapper.find("table")).toHaveLength(1);
   });
 });

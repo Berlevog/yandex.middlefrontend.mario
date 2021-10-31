@@ -2,7 +2,6 @@ import { Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import React, { useEffect, useRef } from "react";
 import Application from "../../engine/Application";
-import PhysicalObject from "../../engine/PhysicalObject";
 import Player from "../../engine/Player";
 
 import World from "../../engine/World";
@@ -39,12 +38,12 @@ function Game({ onGameOver }: GameProps) {
 
   useEffect(() => {
     const player = new Player({ onGameOver });
-    const obj = new PhysicalObject();
-    const world = new World(player);
+    // const obj = new PhysicalObject({ texture: new ResourceImage("images/cloud.png") });
+    const world = new World({ player });
     if (appRef.current) {
       appRef.current.addChild(world);
       appRef.current.addChild(player);
-      appRef.current.addChild(obj);
+      // appRef.current.addChild(obj);
     }
   }, []);
 

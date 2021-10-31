@@ -1,5 +1,8 @@
 import { ResourceImage } from "../pages/Game/Resources";
-import { Engine, linearEquation, Sprite } from "./Engine";
+import { Engine, linearEquation } from "./Engine";
+import { MapObject } from "./MapObject";
+import { PhysicalObject } from "./PhysicalObject";
+import { Point, Vector } from "./Point";
 
 export enum PlayerState {
   "WAITING" = "player/WAITING",
@@ -23,9 +26,10 @@ type PlayerProps = {
   onGameOver: Function;
 };
 
-class Player extends Sprite {
-  public sprite: ResourceImage;
+class Player extends PhysicalObject {
   public playerState: PlayerState = PlayerState.FALLING;
+  public isFalling = true;
+  public props: PlayerProps;
   // private playerDirection: PlayerDirection = PlayerDirection.RIGHT;
   private textureSize: Engine.ISizeData = { width: 128, height: 128 };
   private animateRunningInterval: number | NodeJS.Timer | undefined;
@@ -38,20 +42,18 @@ class Player extends Sprite {
   private animateJumpInterval: number | NodeJS.Timer | undefined;
   private curentJumpAltitude: number = 0;
   private keysPressed: any = {};
-  public isFalling = true;
-  private props: PlayerProps;
   private audio: HTMLAudioElement;
+  private ground: boolean = false;
 
   constructor(props: PlayerProps) {
-    super();
+    super({ ...props, texture: new ResourceImage("images/player.png") });
     this.props = props;
-
-    this.sprite = new ResourceImage("images/player.png");
+    this.bounciness = 0;
     this.registerEvents();
     this.setPlayerState(PlayerState.WAITING);
     // this.rect = { x: 30, y: 0, width: this.playerSize.width - 60, height: this.playerSize.height };
     this.rect = { x: 0, y: 0, width: this.playerSize.width, height: this.playerSize.height };
-    this.pivot = { x: Math.floor(this.playerSize.width / 2), y: Math.floor(this.playerSize.height / 2) };
+    this.pivot = new Point({ x: Math.floor(this.playerSize.width / 2), y: Math.floor(this.playerSize.height / 2) });
     this.restart();
     this.audio = document.createElement("audio");
     this.audio.setAttribute("src", "music/killed.ogg");
@@ -62,6 +64,40 @@ class Player extends Sprite {
     document.addEventListener("keyup", this.handleKeyup);
     this.on("playerstate", this.handleChangeState);
     this.on("keypressed", this.handleKeysPressed);
+    this.on("collision", this.handleCollision);
+  }
+
+  handleCollision = (object: MapObject) => {
+    this.ground = this.y + this.height === object.y;
+  };
+
+  getUserDefinedForceResistance(): number {
+    return this.ground ? 0.5 : 0;
+  }
+
+  render(renderer: Engine.IRenderer) {
+    const { canvas, context } = renderer;
+    // this.calcPhysics();
+    if (this.y > canvas.height) {
+      this.gameOver();
+    }
+
+    const img = this.getPlayerImage(this.playerState);
+    if (img) {
+      context.save();
+      context.drawImage(...img, this.x, this.y, this.playerSize.width, this.playerSize.height);
+      context.restore();
+    }
+
+    // this.playerState = this.isFalling ? PlayerState.FALLING : PlayerState.WAITING;
+  }
+
+  destroy() {
+    clearInterval(this.animateRunningInterval as NodeJS.Timeout);
+    clearInterval(this.animateJumpInterval as NodeJS.Timeout);
+    this.removeAllListeners("collision");
+    this.removeAllListeners("playerstate");
+    this.removeAllListeners("keypressed");
   }
 
   movePlayer(point: Engine.IPoint, speed: number = 1, callback?: Function, keyframes?: [], animationType?: any) {
@@ -72,11 +108,11 @@ class Player extends Sprite {
       console.log(distance);
       if (distance && distance > speed) {
         const progress = distance / startDistance;
-        const dX = this.positionX - point.x;
-        const x = this.positionX + Math.min(speed, distance);
+        const dX = this.x - point.x;
+        const x = this.x + Math.min(speed, distance);
         const y = linearEquation(this.position, point, x);
         console.log(x, y);
-        this.position = { x, y };
+        this.position = new Point({ x, y });
       } else {
         this.position = point;
         clearInterval(interval);
@@ -85,45 +121,58 @@ class Player extends Sprite {
   }
 
   getPlayerImage(state: PlayerState): [HTMLImageElement, number, number, number, number] | undefined {
-    let position: Engine.IPoint = { x: 0, y: 0 };
+    let position: Engine.IPoint = new Point({ x: 0, y: 0 });
 
     switch (state) {
       case PlayerState.WAITING:
-        position = { x: 0, y: 0 };
+        position = new Point({ x: 0, y: 0 });
         break;
       case PlayerState.RUNNING:
         position = this.getRunningImagePosition(this.runningFrame);
         break;
       case PlayerState.FALLING:
-        position = { x: 128, y: 0 };
+        position = new Point({ x: 128, y: 0 });
         break;
       case PlayerState.JUMPING:
         position = this.getJumpingImagePosition(this.jumpingFrame, this.curentJumpAltitude / this.jumpAltitude);
         break;
     }
-    return [this.sprite.img, position.x, position.y, this.textureSize.width, this.textureSize.height];
+    return [this.texture.img, position.x, position.y, this.textureSize.width, this.textureSize.height];
   }
 
   getRunningImagePosition(runningFrame: number): Engine.IPoint {
     const start = 256;
     const step = this.textureSize.width;
-    return { x: start + step * runningFrame, y: 0 };
+    return new Point({ x: start + step * runningFrame, y: 0 });
   }
 
   getJumpingImagePosition(jumpingFrame: number, animationPercent: number): Engine.IPoint {
     const start = 256; // пока возьму текстуру из бега
     const step = this.textureSize.width;
-    return { x: start + step * jumpingFrame, y: 0 };
+    return new Point({ x: start + step * jumpingFrame, y: 0 });
   }
 
   handleKeysPressed(keys: any) {
     if (keys["ArrowRight"]) {
-      this.positionX = this.positionX + 16;
+      if (!this.ground) {
+        this.velocity.x = 0;
+        this.addForce(new Vector({ x: 0.5, y: 0 }));
+      } else {
+        this.addForce(new Vector({ x: 1.5, y: 0 }));
+      }
     } else if (keys["ArrowLeft"]) {
-      this.positionX = this.positionX - 16;
+      if (!this.ground) {
+        this.velocity.x = 0;
+        this.addForce(new Vector({ x: -0.5, y: 0 }));
+      } else {
+        this.addForce(new Vector({ x: -1.5, y: 0 }));
+      }
     }
     if (keys["ArrowUp"]) {
-      this.setPlayerState(PlayerState.JUMPING);
+      if (this.ground) {
+        this.ground = false;
+        this.addForce(new Vector({ x: 0, y: -3 }));
+      }
     }
   }
 
@@ -176,12 +225,12 @@ class Player extends Sprite {
     this.animateJumpInterval = setInterval(() => {
       if (this.curentJumpAltitude < this.jumpAltitude) {
         this.curentJumpAltitude++;
-        this.positionY = this.positionY - this.jumpSpeed;
+        this.y = this.y - this.jumpSpeed;
         if (this.keysPressed["ArrowRight"]) {
-          this.positionX = this.positionX + 1;
+          this.x = this.x + 1;
         }
         if (this.keysPressed["ArrowLeft"]) {
-          this.positionX = this.positionX - 1;
+          this.x = this.x - 1;
         }
       } else {
         this.setPlayerState(PlayerState.FALLING);
@@ -214,7 +263,7 @@ class Player extends Sprite {
     switch (this.playerState) {
       case PlayerState.FALLING:
         // todo второй закон Ньютона
-        this.positionY = this.positionY + this.fallingSpeed;
+        this.y = this.y + this.fallingSpeed;
         break;
       // case PlayerState.JUMPING:
       //   if (this.curentJumpAltitude < this.jumpAltitude) {
@@ -230,30 +279,8 @@ class Player extends Sprite {
   }
 
   restart() {
-    this.positionY = 175;
+    this.y = 175;
     this.playerState = PlayerState.WAITING;
-  }
-
-  render(renderer: Engine.IRenderer) {
-    const { canvas, context } = renderer;
-    this.calcPhysics();
-
-    if (this.positionY > canvas.height) {
-      this.gameOver();
-    }
-
-    const img = this.getPlayerImage(this.playerState);
-    if (img) {
-      context.save();
-      context.drawImage(...img, this.positionX, this.positionY, this.playerSize.width, this.playerSize.height);
-      context.restore();
-    }
-    this.playerState = this.isFalling ? PlayerState.FALLING : PlayerState.WAITING;
-  }
-
-  destroy() {
-    clearInterval(this.animateRunningInterval as NodeJS.Timeout);
-    clearInterval(this.animateJumpInterval as NodeJS.Timeout);
   }
 
   gameOver() {

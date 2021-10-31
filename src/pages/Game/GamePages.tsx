@@ -1,13 +1,18 @@
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 
 import { useHistory } from "react-router-dom";
 
 import { DefaultLayout } from "../../layouts";
+import { sendResults } from "../../services/leaderboard";
+import { RootState } from "../../store/store";
+import fetchCityName from "../../utils/fetchCityName";
 import { End, END_MODE } from "./components/End";
 
 import { Start, START_MODE } from "./components/Start";
 import Game from "./Game";
 import { generateResults } from "./mockData";
+import { createSelector } from "reselect";
 
 export type ResultsProps = {
   score: number;
@@ -32,6 +37,11 @@ function GamePages() {
 
   const [stage, setStage] = useState(GameStage.START);
 
+  const selectAuth = (state: RootState) => state.auth;
+  const selectUserName = createSelector(selectAuth, (auth) => auth.user?.display_name || auth.user?.first_name || "");
+
+  const userName = useSelector(selectUserName);
+
   const handleGameOver = () => {
     setResults(generateResults());
     setStage(GameStage.END);
@@ -41,6 +51,20 @@ function GamePages() {
     setStage(GameStage.GAME);
   };
 
+  const handleResults = () => {
+    navigator.geolocation.getCurrentPosition(
+      async ({ coords }) => {
+        const city = await fetchCityName(coords.latitude, coords.longitude);
+        sendResults({ data: { ...results, city, name: userName } });
+        history.push("/leaderboard");
+      },
+      () => {
+        console.log("geolocation failed");
+        sendResults({ data: { ...results, city: "", name: userName } });
+      }
+    );
+  };
+
   const handleEnd = (endMode: END_MODE) => {
     switch (endMode) {
       case END_MODE.CONTINUE:
@@ -48,7 +72,7 @@ function GamePages() {
         break;
 
       case END_MODE.EXIT:
-        history.push("/leaderboard");
+        handleResults();
         break;
     }
   };
