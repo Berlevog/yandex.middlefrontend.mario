@@ -12,6 +12,7 @@ import { End, END_MODE } from "./components/End";
 import { Start, START_MODE } from "./components/Start";
 import Game from "./Game";
 import { generateResults } from "./mockData";
+import { createSelector } from "reselect";
 
 export type ResultsProps = {
   score: number;
@@ -36,9 +37,10 @@ function GamePages() {
 
   const [stage, setStage] = useState(GameStage.START);
 
-  const userName = useSelector(({ auth }: RootState) => {
-    return auth.user?.display_name || auth.user?.first_name || "";
-  });
+  const selectAuth = (state: RootState) => state.auth;
+  const selectUserName = createSelector(selectAuth, (auth) => auth.user?.display_name || auth.user?.first_name || "");
+
+  const userName = useSelector(selectUserName);
 
   const handleGameOver = () => {
     setResults(generateResults());
