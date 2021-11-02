@@ -3,14 +3,13 @@
  */
 import { createTheme, ThemeProvider } from "@material-ui/core";
 import { createBrowserHistory } from "history";
-import React from "react";
-import { useSelector } from "react-redux";
-import { Route, Router, Switch, Redirect } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Redirect, Route, Router, Switch } from "react-router-dom";
 import { Forum, Leaderboard, Login, Profile, Registration } from "./pages";
 
 import { GamePages } from "./pages/Game";
+import { autorize } from "./services/oauth";
 import { useAppDispatch } from "./store/hooks";
-import { RootState } from "./store/store";
 import { getUser } from "./store/thunks/auth";
 
 declare module "@material-ui/core/styles" {
@@ -75,7 +74,17 @@ const lightTheme = createTheme({
 
 function App() {
   const dispatch = useAppDispatch();
-  dispatch(getUser());
+  const search = new URLSearchParams(document.location.search);
+  const code = search.get("code")!;
+
+  useEffect(() => {
+    (async () => {
+      if (code) {
+        await autorize(code);
+      }
+      dispatch(getUser());
+    })();
+  }, [code]);
 
   return (
     <div className="App">

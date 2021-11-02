@@ -1,13 +1,14 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const fs = require("fs-extra");
 const WorkboxPlugin = require("workbox-webpack-plugin");
-const { InjectManifest } = require("workbox-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
+
+require("dotenv").config({ path: ".env" });
 
 module.exports = async (env, argv) => {
   const production = argv.mode === "production";
+
   const cssLoader = production ? MiniCssExtractPlugin.loader : "style-loader";
   const webpackPlugins = [
     new CopyPlugin({
@@ -30,13 +31,15 @@ module.exports = async (env, argv) => {
       template: "./public/index.html",
       window: {
         devMode: !production,
+        oauth: {
+          yandex: process.env.OAUTH_YANDEX,
+        },
       },
     }),
     new MiniCssExtractPlugin({
       filename: "[name].[contenthash:5].css",
     }),
   ];
-
   if (production) {
     webpackPlugins.push(
       new WorkboxPlugin.GenerateSW({
@@ -120,8 +123,10 @@ module.exports = async (env, argv) => {
       ],
     },
     devServer: {
-      port: 3000,
+      port: process.env.PORT || 3000,
       historyApiFallback: true,
+      host: process.env.HOST || "local.ya-praktikum.tech",
+      https: true,
     },
     plugins: webpackPlugins,
   };

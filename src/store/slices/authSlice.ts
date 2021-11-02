@@ -22,6 +22,10 @@ export const authSlice = createSlice({
         state.user = action.payload;
         state.loggedIn = true;
       })
+      .addCase(getUser.rejected, (state: authState, action) => {
+        state.user = null;
+        state.loggedIn = false;
+      })
       .addCase(signout.fulfilled, (state: authState) => {
         state.user = null;
         state.loggedIn = false;

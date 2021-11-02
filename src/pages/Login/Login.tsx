@@ -3,7 +3,6 @@ import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
-import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
@@ -11,10 +10,12 @@ import { AxiosError } from "axios";
 import { useFormik } from "formik";
 import React, { useState } from "react";
 import { useHistory } from "react-router";
+import { Link } from "react-router-dom";
 import { SchemaOf } from "yup";
 import { Alert } from "../../components/Alert";
 
 import { Footer } from "../../components/Footer";
+import { FormOAuth } from "../../components/OAuthForm/OAuthTorm";
 import { UNKNOWN_ERROR } from "../../config/constants";
 import { UserSchema } from "../../constants/validationSchema";
 import { SigninProps } from "../../services/auth";
@@ -125,6 +126,7 @@ export default function Login() {
                   error={formik.touched.password && Boolean(formik.errors.password)}
                   helperText={formik.touched.password && formik.errors.password}
                 />
+                <FormOAuth />
 
                 <Button type="submit" color="primary" fullWidth variant="contained" className={classes.submit}>
                   Sign In
