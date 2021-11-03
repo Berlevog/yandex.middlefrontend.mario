@@ -42,7 +42,6 @@ class Player extends PhysicalObject {
   private animateJumpInterval: number | NodeJS.Timer | undefined;
   private curentJumpAltitude: number = 0;
   private keysPressed: any = {};
-  private audio: HTMLAudioElement;
   private ground: boolean = false;
 
   constructor(props: PlayerProps) {
@@ -55,8 +54,6 @@ class Player extends PhysicalObject {
     this.rect = { x: 0, y: 0, width: this.playerSize.width, height: this.playerSize.height };
     this.pivot = new Point({ x: Math.floor(this.playerSize.width / 2), y: Math.floor(this.playerSize.height / 2) });
     this.restart();
-    this.audio = document.createElement("audio");
-    this.audio.setAttribute("src", "music/killed.ogg");
   }
 
   registerEvents() {
@@ -284,8 +281,7 @@ class Player extends PhysicalObject {
   }
 
   gameOver() {
-    this.audio.play();
-    this.audio.onended = () => this.props.onGameOver();
+    this.emit("gameover");
   }
 }
 

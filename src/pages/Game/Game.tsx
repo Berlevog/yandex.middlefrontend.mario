@@ -50,7 +50,6 @@ function Game({ onGameOver }: GameProps) {
   return (
     <Box className={classes.root}>
       <Application ref={appRef} width={800} height={500} color={"#93BBEC"} />
-      <audio src={"music/world01.ogg"} loop autoPlay />
     </Box>
   );
 }

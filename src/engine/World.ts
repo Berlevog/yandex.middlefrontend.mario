@@ -2,6 +2,7 @@ import { ResourceImage } from "../pages/Game/Resources";
 import Clouds from "./Clouds";
 import { Engine } from "./Engine";
 import { MapObject } from "./MapObject";
+import Music, { Playlist } from "./Music";
 import Brick from "./objects/Brick";
 import Dwarf from "./objects/enemies/Dwarf";
 import Land from "./objects/Land";
@@ -26,12 +27,22 @@ export default class World extends Sprite {
   private clouds: Clouds;
   private mapObjects: MapObject[];
   private enemies: PhysicalObject[];
+  private music: Music;
 
   constructor(props: WorldProps) {
     super({ ...props, texture: new ResourceImage("images/world.png") });
     this.clouds = new Clouds();
     this.player = props.player;
     this.sprite = new ResourceImage("images/world.png");
+    this.music = new Music();
+    this.music.on("loaded", () => {
+      this.music.playSound(Playlist.world);
+    });
+
+    this.player.once("gameover", () => {
+      this.music.stop(Playlist.world);
+      this.music.playSound(Playlist.killed);
+    });
 
     this.groundRects = [
       // { x: 0, y: LAND_Y, width: 1105, height: 32 },
