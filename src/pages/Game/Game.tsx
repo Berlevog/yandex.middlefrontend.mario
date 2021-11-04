@@ -37,9 +37,9 @@ function Game({ onGameOver }: GameProps) {
   const classes = useStyles();
 
   useEffect(() => {
-    const player = new Player({ onGameOver });
+    const player = new Player();
     // const obj = new PhysicalObject({ texture: new ResourceImage("images/cloud.png") });
-    const world = new World({ player });
+    const world = new World({ player, onGameOver });
     if (appRef.current) {
       appRef.current.addChild(world);
       appRef.current.addChild(player);
@@ -50,7 +50,6 @@ function Game({ onGameOver }: GameProps) {
   return (
     <Box className={classes.root}>
       <Application ref={appRef} width={800} height={500} color={"#93BBEC"} />
-      <audio src={"music/world01.ogg"} loop autoPlay />
     </Box>
   );
 }
