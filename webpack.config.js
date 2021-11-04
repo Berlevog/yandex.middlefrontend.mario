@@ -31,9 +31,6 @@ module.exports = async (env, argv) => {
       template: "./public/index.html",
       window: {
         devMode: !production,
-        oauth: {
-          yandex: process.env.OAUTH_YANDEX,
-        },
       },
     }),
     new MiniCssExtractPlugin({

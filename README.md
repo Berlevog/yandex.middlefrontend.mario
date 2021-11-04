@@ -12,3 +12,17 @@ _Командный проект 5-9 спринта_
 Тесты - `npm run test`
 
 Demo - https://super-mario-yandex.herokuapp.com/
+
+/etc/hosts
+
+```
+127.0.0.1    local.ya-praktikum.tech
+```
+
+.env
+
+```
+HOST=local.ya-praktikum.tech
+PORT=3000
+NODE_ENV=development
+```
