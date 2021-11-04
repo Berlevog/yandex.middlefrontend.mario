@@ -17,6 +17,7 @@ const LAND_Y: number = 207;
 
 type WorldProps = {
   player: PhysicalObject;
+  onGameOver: Function;
 };
 
 export default class World extends Sprite {
@@ -29,7 +30,7 @@ export default class World extends Sprite {
   private enemies: PhysicalObject[];
   private music: Music;
 
-  constructor(props: WorldProps) {
+  constructor(private props: WorldProps) {
     super({ ...props, texture: new ResourceImage("images/world.png") });
     this.clouds = new Clouds();
     this.player = props.player;
@@ -41,7 +42,9 @@ export default class World extends Sprite {
 
     this.player.once("gameover", () => {
       this.music.stop(Playlist.world);
-      this.music.playSound(Playlist.killed);
+      this.music.playSound(Playlist.killed).then(() => {
+        this.props.onGameOver();
+      });
     });
 
     this.groundRects = [

@@ -23,7 +23,7 @@ export enum PlayerSize {
 }
 
 type PlayerProps = {
-  onGameOver: Function;
+  // onGameOver: Function;
 };
 
 class Player extends PhysicalObject {

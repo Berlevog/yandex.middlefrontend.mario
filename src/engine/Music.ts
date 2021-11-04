@@ -11,11 +11,16 @@ class Source {
   }
 
   play() {
-    this.source = this.context.createBufferSource();
-    // @ts-ignore
-    this.source.buffer = this.buffer;
-    this.source.connect(this.context.destination);
-    this.source.start(0);
+    return new Promise((resolve) => {
+      this.source = this.context.createBufferSource();
+      // @ts-ignore
+      this.source.buffer = this.buffer;
+      this.source.connect(this.context.destination);
+      this.source.start(0);
+      this.source.onended = () => {
+        resolve(this.source);
+      };
+    });
   }
 
   stop() {
@@ -54,11 +59,11 @@ export default class Music extends EventEmitter {
     this.bufferLoader.load();
   }
 
-  playSound = (sound: Playlist, loop = false) => {
+  playSound = async (sound: Playlist, loop = false) => {
     // @ts-ignore
     const source = this.sources[sound] as Source;
     if (source) {
-      source.play();
+      await source.play();
     }
   };
 
