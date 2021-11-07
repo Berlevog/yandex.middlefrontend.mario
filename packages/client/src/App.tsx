@@ -29,26 +29,26 @@ declare module "@material-ui/core/styles" {
 
 const history = createBrowserHistory();
 
-const darkTheme = createTheme({
-  typography: {
-    fontFamily: [
-      "-apple-system",
-      "BlinkMacSystemFont",
-      '"Segoe UI"',
-      "Roboto",
-      '"Helvetica Neue"',
-      "Arial",
-      "sans-serif",
-      '"Apple Color Emoji"',
-      '"Segoe UI Emoji"',
-      '"Segoe UI Symbol"',
-    ].join(","),
-  },
-  loginPage: {
-    background: "#00000033",
-    backdropFilter: "blur(10px)",
-  },
-});
+// const darkTheme = createTheme({
+//   typography: {
+//     fontFamily: [
+//       "-apple-system",
+//       "BlinkMacSystemFont",
+//       '"Segoe UI"',
+//       "Roboto",
+//       '"Helvetica Neue"',
+//       "Arial",
+//       "sans-serif",
+//       '"Apple Color Emoji"',
+//       '"Segoe UI Emoji"',
+//       '"Segoe UI Symbol"',
+//     ].join(","),
+//   },
+//   loginPage: {
+//     background: "#00000033",
+//     backdropFilter: "blur(10px)",
+//   },
+// });
 
 const lightTheme = createTheme({
   typography: {

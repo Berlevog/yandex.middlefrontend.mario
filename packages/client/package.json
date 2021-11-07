@@ -1,14 +1,14 @@
 {
   "name": "@mario/client",
   "version": "1.0.0",
-  "main": "dist/main.js",
+  "main": "dist/index.js",
   "description": "Учебный проект Yandex.Praktikum",
   "engines": {
     "node": "17.x"
   },
   "scripts": {
     "start": "webpack-dev-server --mode development --hot --open",
-    "build": "webpack --mode production",
+    "build": "webpack --mode production --watch",
     "test": "jest"
   },
   "repository": {

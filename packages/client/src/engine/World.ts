@@ -23,6 +23,7 @@ type WorldProps = {
 export default class World extends Sprite {
   public sprite: ResourceImage;
   private player: PhysicalObject;
+  // @ts-ignore
   private groundRects: Engine.IRect[];
   private debugAreas: boolean = false;
   private clouds: Clouds;

@@ -38,7 +38,7 @@ export default class Music extends EventEmitter {
   private bufferLoader: BufferLoader;
 
   private sources = {};
-  private playing: AudioBufferSourceNode[] = [];
+  // private playing: AudioBufferSourceNode[] = [];
 
   constructor() {
     super();

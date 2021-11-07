@@ -1,0 +1,46 @@
+/*
+import express, {Request, Response} from 'express';
+import * as path from "path";
+import React from 'react';
+import {Div} from "@mario/client"
+import {renderToString} from 'react-dom/server';
+
+export const server = express();
+function makeHTMLPage(content: string) {
+  return `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>From SSR with Love</title>
+        </head>
+        <body>
+        <div id="root">${content}</div>
+        </body>
+        </html>
+`;
+}
+
+
+
+const mySuperApp = (
+  <div>
+    <Div/>
+  </div>
+);
+
+server.get('/', (req: Request, res: Response) => {
+  const appContentHTML = renderToString(mySuperApp);
+  res.send(makeHTMLPage(appContentHTML));
+});
+
+const port = process.env.PORT || 3000;
+
+server.use('/', express.static(path.resolve(__dirname, '../../../node_modules/@mario/client/build')))
+
+server.listen(port, () => {
+  console.log(`App on http://localhost:${port}`);
+});
+*/

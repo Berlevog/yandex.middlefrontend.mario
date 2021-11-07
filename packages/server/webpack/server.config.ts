@@ -25,7 +25,10 @@ const config: Configuration = {
   resolve: {
     modules: ['src', 'node_modules'],
     extensions: ['*', '.js', '.jsx', '.json', '.ts', '.tsx'],
-    plugins: [new TsconfigPathsPlugin({ configFile: './tsconfig.json' })],
+    plugins: [
+      //@ts-ignore
+      new TsconfigPathsPlugin({ configFile: './tsconfig.json' })
+    ],
   },
 
   devtool: 'source-map',

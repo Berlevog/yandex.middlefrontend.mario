@@ -12,11 +12,11 @@ export type ResultsProps = {
   time: number;
 };
 
-enum GameStage {
-  "START" = "start",
-  "GAME" = "game",
-  "END" = "end",
-}
+// enum GameStage {
+//   "START" = "start",
+//   "GAME" = "game",
+//   "END" = "end",
+// }
 
 const useStyles = makeStyles(() => ({
   root: {

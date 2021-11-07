@@ -104,8 +104,8 @@ class Player extends PhysicalObject {
       const distance = this.distanceTo(point);
       console.log(distance);
       if (distance && distance > speed) {
-        const progress = distance / startDistance;
-        const dX = this.x - point.x;
+        // const progress = distance / startDistance;
+        // const dX = this.x - point.x;
         const x = this.x + Math.min(speed, distance);
         const y = linearEquation(this.position, point, x);
         console.log(x, y);

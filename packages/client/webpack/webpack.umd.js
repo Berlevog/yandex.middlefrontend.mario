@@ -5,7 +5,7 @@ const cssLoader = "style-loader";
 module.exports = async (env, argv) => ({
   mode: argv.mode,
   entry: {
-    main: path.join(rootDir, "src", "main.ts")
+    main: path.join(rootDir, "src", "index.tsx")
   },
   target: "node",
   resolve: {
@@ -18,11 +18,14 @@ module.exports = async (env, argv) => ({
   output: {
     clean: true,
     path: path.join(rootDir, "dist"),
-    filename: "main.js",
+    filename: "index.js",
     library: {
       name: '@mario/client',
       type: "umd",
     },
+  },
+  optimization: {
+    minimize: false
   },
 
   module: {
@@ -33,8 +36,6 @@ module.exports = async (env, argv) => ({
         use:[
           {
             loader: 'ts-loader',
-            options: {
-            },
           },
 
         ],

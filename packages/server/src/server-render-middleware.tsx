@@ -1,37 +1,37 @@
-import React from 'react';
-import { renderToString } from 'react-dom/server';
-import { Request, Response } from 'express';
-import { StaticRouter } from 'react-router-dom';
-import { StaticRouterContext } from 'react-router';
-import { Provider as ReduxProvider } from 'react-redux';
-import { configureStore } from './store/rootStore';
-import { getInitialState } from './store/getInitialState';
-import App from "./app";
+// import { Request, Response } from "express";
+// import React from "react";
+// import { renderToString } from "react-dom/server";
+import { Provider as ReduxProvider } from "react-redux";
+// import { StaticRouterContext } from "react-router";
+// import { StaticRouter } from "react-router-dom";
+// import App from "./app";
+// import { getInitialState } from "./store/getInitialState";
+// import { configureStore } from "./store/rootStore";
 
 // В этой middleware мы формируем первичное состояние приложения на стороне сервера
 // Попробуйте её подебажить, чтобы лучше разобраться, как она работает
-export default (req: Request, res: Response) => {
-  const location = req.url;
-  const context: StaticRouterContext = {};
-  const { store } = configureStore(getInitialState(location), location);
-
-  const jsx = (
-    <ReduxProvider store={store}>
-    <StaticRouter context={context} location={location}>
-    <App />
-    </StaticRouter>
-    </ReduxProvider>
-);
-  const reactHtml = renderToString(jsx);
-  const reduxState = store.getState();
-
-  if (context.url) {
-    res.redirect(context.url);
-    return;
-  }
-
-  res.status(context.statusCode || 200).send(getHtml(reactHtml, reduxState));
-};
+// export default (req: Request, res: Response) => {
+//   const location = req.url;
+//   const context: StaticRouterContext = {};
+//   const { store } = configureStore(getInitialState(location), location);
+//
+//   const jsx = (
+//     <ReduxProvider store={store}>
+//       <StaticRouter context={context} location={location}>
+//         {/*<App />*/}
+//       </StaticRouter>
+//     </ReduxProvider>
+//   );
+//   const reactHtml = renderToString(jsx);
+//   const reduxState = store.getState();
+//
+//   if (context.url) {
+//     res.redirect(context.url);
+//     return;
+//   }
+//
+//   res.status(context.statusCode || 200).send(getHtml(reactHtml, reduxState));
+// };
 
 function getHtml(reactHtml: string, reduxState = {}) {
   return `
@@ -58,3 +58,41 @@ function getHtml(reactHtml: string, reduxState = {}) {
         </html>
     `;
 }
+
+
+import express, {Request, Response} from 'express';
+import * as path from "path";
+import React from 'react';
+import {Div} from "@mario/client"
+import {renderToString} from 'react-dom/server';
+
+export const server = express();
+function makeHTMLPage(content: string) {
+  return `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>From SSR with Love</title>
+        </head>
+        <body>
+        <div id="root">${content}</div>
+        </body>
+        </html>
+`;
+}
+
+
+
+const mySuperApp = (
+  <div>
+    <Div/>
+  </div>
+);
+
+export default (req: Request, res: Response) => {
+  const appContentHTML = renderToString(mySuperApp);
+  res.send(makeHTMLPage(appContentHTML));
+};

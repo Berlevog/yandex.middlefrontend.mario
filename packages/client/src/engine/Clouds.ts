@@ -10,6 +10,7 @@ type CloudProps = {
 
 class Cloud extends DisplayObject {
   public deleted: boolean = false;
+  // @ts-ignore
   private interval: NodeJS.Timer;
 
   constructor(props: CloudProps) {
