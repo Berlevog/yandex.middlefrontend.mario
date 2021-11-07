@@ -1,0 +1,16 @@
+{
+  "name": "@mario/server",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -b && node ./src/index.js"
+  },
+  "dependencies": {
+    "@mario/client": "1.0.0"
+  },
+  "devDependencies": {
+    "declaration-bundler-webpack-plugin": "^1.0.3"
+  }
+}
