@@ -1,16 +1,16 @@
-import path from "path";
-import webpack, { Configuration, Entry, WebpackPluginInstance } from "webpack";
-import { TsconfigPathsPlugin } from "tsconfig-paths-webpack-plugin";
-import MiniCssExtractPlugin from "mini-css-extract-plugin";
-import HtmlWebpackPlugin from "html-webpack-plugin";
-import WorkboxPlugin from "workbox-webpack-plugin";
 import CopyPlugin from "copy-webpack-plugin";
-
-import { IS_DEV, DIST_DIR, SRC_DIR } from "./env";
-
-import fileLoader from "./loaders/file";
+import HtmlWebpackPlugin from "html-webpack-plugin";
+import MiniCssExtractPlugin from "mini-css-extract-plugin";
+import path from "path";
+import { TsconfigPathsPlugin } from "tsconfig-paths-webpack-plugin";
+import webpack, { Configuration, WebpackPluginInstance } from "webpack";
+import WorkboxPlugin from "workbox-webpack-plugin";
+import { DIST_DIR, IS_DEV, SRC_DIR } from "./env";
 import cssLoader from "./loaders/css";
+import fileLoader from "./loaders/file";
 import jsLoader from "./loaders/js";
+import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
+
 
 const webpackPlugins = [
   new CopyPlugin({
@@ -24,23 +24,22 @@ const webpackPlugins = [
         globOptions: {
           dot: true,
           gitignore: true,
-          ignore: ["**/index.html"],
-        },
-      },
-    ],
+          ignore: ["**/index.html"]
+        }
+      }
+    ]
   }),
   new HtmlWebpackPlugin({
     template: "public/index.html",
     window: {
-      devMode: IS_DEV,
-    },
+      devMode: IS_DEV
+    }
   }),
   new MiniCssExtractPlugin({
-    filename: "[name].css",
+    filename: "[name].css"
   }),
-  new webpack.HotModuleReplacementPlugin(),
+  new webpack.HotModuleReplacementPlugin()
 ];
-
 if (!IS_DEV) {
   webpackPlugins.push(
     new WorkboxPlugin.GenerateSW({
@@ -49,41 +48,51 @@ if (!IS_DEV) {
       clientsClaim: true,
       skipWaiting: true,
       maximumFileSizeToCacheInBytes: 100 * 1024 * 1024,
-      swDest: "serviceWorker.js",
+      swDest: "serviceWorker.js"
     })
   );
 }
 
 const config: Configuration = {
   target: "web",
+  //@ts-ignore
   entry: [
-    IS_DEV && "react-hot-loader/patch",
-    // Entry для работы HMR
-    IS_DEV && "webpack-hot-middleware/client",
-    IS_DEV && "css-hot-loader/hotModuleReplacement",
     path.join(SRC_DIR, "index"),
-  ].filter(Boolean) as unknown as Entry,
+    // 'webpack/hot/dev-server',
+    // Entry для работы HMR
+    // "css-hot-loader/hotModuleReplacement",
+    IS_DEV && 'webpack-hot-middleware/client',
+
+  ].filter(Boolean),
   module: {
-    rules: [fileLoader.client, cssLoader.client, jsLoader.client],
+    rules: [jsLoader.client, fileLoader.client, cssLoader.client,
+
+    ]
   },
   output: {
     path: DIST_DIR,
     filename: "[name].js",
-    publicPath: "/",
+    publicPath: "/"
   },
   resolve: {
     modules: ["src", "node_modules"],
-    alias: { "react-dom": "@hot-loader/react-dom" },
+    // alias: { "react-dom": "@hot-loader/react-dom" },
     extensions: ["*", ".js", ".jsx", ".json", ".ts", ".tsx"],
-    plugins: [new TsconfigPathsPlugin({ configFile: "./tsconfig.json" })],
+    plugins: [
+      new TsconfigPathsPlugin({ configFile: "./tsconfig.json" })]
   },
-  plugins: webpackPlugins.filter(Boolean) as WebpackPluginInstance[],
-
+  plugins: [
+    //@ts-ignore
+    IS_DEV && new webpack.HotModuleReplacementPlugin(),
+    //@ts-ignore
+    IS_DEV && new ReactRefreshWebpackPlugin({
+      overlay: {
+        sockIntegration: 'whm',
+      },
+    }), ...webpackPlugins.filter(Boolean) as WebpackPluginInstance[]],
   devtool: "source-map",
-
   performance: {
-    hints: IS_DEV ? false : "warning",
-  },
+    hints: IS_DEV ? false : "warning"
+  }
 };
-
 export default config;

@@ -7,7 +7,7 @@
   },
   "scripts": {
     "clean": "rimraf dist",
-    "start:webpack": "npm run clean && webpack --mode=development",
+    "start:webpack": "npm run clean && webpack --mode=development --hot",
     "start:server": "nodemon index.js --watch dist/server.js",
     "start": "cross-env NODE_ENV=development npm-run-all --print-label --parallel start:*",
     "prod:build": "webpack --mode=production",
@@ -48,7 +48,11 @@
     "recharts": "^2.1.2",
     "redux": "^4.1.1",
     "redux-thunk": "^2.3.0",
-    "reselect": "^4.0.0"
+    "reselect": "^4.0.0",
+    "react-refresh": "^0.9.0",
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
+    "@loadable/babel-plugin": "^5.13.2",
+    "@loadable/component": "^5.14.1"
   },
   "devDependencies": {
     "@babel/core": "^7.15.5",
@@ -73,6 +77,8 @@
     "@types/react-router-dom": "^5.1.8",
     "@types/redux": "^3.6.0",
     "@types/webpack": "^5.28.0",
+    "@types/webpack-dev-middleware": "^5.0.2",
+    "@types/webpack-hot-middleware": "^2.25.5",
     "@types/webpack-node-externals": "^2.5.3",
     "@types/workbox-webpack-plugin": "^5.1.8",
     "@typescript-eslint/eslint-plugin": "^4.31.1",
@@ -81,6 +87,7 @@
     "autoprefixer": "^10.3.4",
     "babel-loader": "^8.2.2",
     "babel-polyfill": "^6.26.0",
+    "babel-preset-react-hmre": "^1.1.1",
     "copy-webpack-plugin": "^9.0.1",
     "cross-env": "^7.0.3",
     "css-hot-loader": "^1.4.4",
@@ -99,6 +106,7 @@
     "husky": "^7.0.2",
     "i": "^0.3.7",
     "jest": "^27.2.0",
+    "json-loader": "^0.5.7",
     "mini-css-extract-plugin": "^2.4.3",
     "nodemon": "^2.0.14",
     "npm": "^8.1.2",
@@ -122,9 +130,6 @@
     "typescript-eslint": "0.0.1-alpha.0",
     "webpack": "^5.61.0",
     "webpack-cli": "^4.8.0",
-    "webpack-dev-middleware": "^5.2.1",
-    "webpack-dev-server": "^4.2.0",
-    "webpack-hot-middleware": "^2.25.1",
     "webpack-node-externals": "^3.0.0",
     "workbox-cacheable-response": "^6.3.0",
     "workbox-cli": "^6.3.0",
@@ -133,7 +138,11 @@
     "workbox-routing": "^6.3.0",
     "workbox-strategies": "^6.3.0",
     "workbox-webpack-plugin": "^6.3.0",
-    "yup": "^0.32.9"
+    "yup": "^0.32.9",
+    "webpack-dev-middleware": "^4.1.0",
+    "webpack-dev-server": "^3.11.2",
+    "webpack-hot-middleware": "^2.25.0",
+    "webpack-hot-server-middleware": "^0.6.1"
   },
   "browserslist": {
     "production": [

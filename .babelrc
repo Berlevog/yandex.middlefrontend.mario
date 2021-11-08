@@ -1,0 +1,4 @@
+{
+  "plugins": ["@babel/plugin-proposal-async-generator-functions", "@babel/plugin-transform-runtime"],
+  "presets": [["@babel/preset-env", { "modules": false }], "@babel/preset-react", "@babel/preset-typescript"]
+}

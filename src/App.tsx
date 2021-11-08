@@ -71,9 +71,8 @@ const lightTheme = createTheme({
 function App() {
   const dispatch = useAppDispatch();
   dispatch(getUser());
-
   return (
-    <div className="App">
+    <div className="App" suppressHydrationWarning={true}>
       <ThemeProvider theme={lightTheme}>
         <Switch>
           <Redirect exact from="/" to="/app" />

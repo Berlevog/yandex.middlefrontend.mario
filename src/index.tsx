@@ -1,19 +1,16 @@
 /*
  * Copyright (c) 2021. Written by Leonid Artemev (me@artemev.it)
  */
-import React from "react";
+import { hot } from "react-hot-loader/root";
+import { ConnectedRouter } from "connected-react-router";
+import React, { FC } from "react";
 import { hydrate } from "react-dom";
 import { Provider } from "react-redux";
 import App from "./App";
 import { ErrorHandler } from "./components/ErrorHandler";
-
 import "./index.css";
 import "./serviceWorker";
-
-import { configureStore } from "./store/rootStore";
-import { State } from "./store/rootStore";
-
-import { ConnectedRouter } from "connected-react-router";
+import { configureStore, State } from "./store/rootStore";
 
 declare global {
   interface Window {
@@ -22,22 +19,26 @@ declare global {
     devMode: Boolean;
   }
 }
-
 const { store, history } = configureStore(window.__INITIAL_STATE__);
 
+const Client:FC<any> = (() => {
+  return (
+    <React.StrictMode>
+      <ErrorHandler>
+        <Provider store={store}>
+          <ConnectedRouter history={history}>
+            <App />
+          </ConnectedRouter>
+        </Provider>
+      </ErrorHandler>
+    </React.StrictMode>
+  );
+});
+
 hydrate(
-  <React.StrictMode>
-    <ErrorHandler>
-      <Provider store={store}>
-        <ConnectedRouter history={history}>
-          <App />
-        </ConnectedRouter>
-      </Provider>
-    </ErrorHandler>
-  </React.StrictMode>,
+  <Client />,
   document.getElementById("root")
 );
-
 if ("serviceWorker" in navigator) {
   // Use the window load event to keep the page load performant
   window.addEventListener("load", () => {
