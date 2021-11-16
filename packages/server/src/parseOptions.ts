@@ -61,7 +61,6 @@ export const parseCommand = ({
 
 export const parseOptions = (): WebpackBuildConfigOptionsType => {
   const rootPath = process.cwd();
-
   const srcPath = path.join(rootPath, SRC_DIRNAME);
   const buildPath = path.join(rootPath, BUILD_DIRNAME);
 
@@ -69,5 +68,6 @@ export const parseOptions = (): WebpackBuildConfigOptionsType => {
     srcPath,
     buildPath,
     rootPath,
+    target:"web"
   };
 };

@@ -1,4 +1,4 @@
-#!/usr/bin/env babel-node --
+#!/usr/bin/env node 
 
 const { run } = require('../dist/index');
 

@@ -1,49 +1,60 @@
-import path from "path";
+import { ServerStyleSheets } from "@material-ui/core/styles";
+import { Request, Response } from "express";
+import React from "react";
+import { renderToString } from "react-dom/server";
+import { Provider as ReduxProvider } from "react-redux";
+import { StaticRouterContext } from "react-router";
+import { StaticRouter } from "react-router-dom";
 
-app.use(async (req: Request, res: Response) => {
-	const serverExtractor = new ChunkExtractor({
-		statsFile: path.resolve(buildPath, 'server', 'loadable-stats.json'),
-	});
-	const { default: App, routes } = serverExtractor.requireEntrypoint() as any;
+export default async (req: Request, res: Response) => {
+	const { getStore, App } = await import("@mario/client");
+	const location = req.url;
+	const context: StaticRouterContext = {};
+	const { store } = getStore(location);
 
-	const clientExtractor = new ChunkExtractor({
-		statsFile: path.resolve(buildPath, 'client', 'loadable-stats.json'),
-	});
+	const sheets = new ServerStyleSheets();
 
-	// load data
+	const jsx = (
+		<ReduxProvider store={store}>
+			<StaticRouter context={context} location={location}>
+				<App />
+			</StaticRouter>
+		</ReduxProvider>
+	);
+	const reactHtml = renderToString(sheets.collect(jsx));
+	const reduxState = store.getState();
 
-	const appUserContext = await App.createContext();
+	if (context.url) {
+		res.redirect(context.url);
+		return;
+	}
 
-	const pageData = await loadRoutesData(routes, req.path, appUserContext);
+	res.status(context.statusCode || 200).send(getHtml(reactHtml, reduxState, sheets.toString()));
+};
 
-	// render
-
-	const routerContext = {};
-
-	const context = {
-		pageData,
-		appContextSerialized: appUserContext.serialize(),
-	};
-
-	const view = (
-		<StaticRouter location={req.url} context={routerContext}>
-	<App serverContext={context} appContext={appUserContext} />
-	</StaticRouter>
-);
-
-	const jsx = clientExtractor.collectChunks(view);
-
-	const appString = renderToString(jsx);
-
-	const scripts = clientExtractor.getScriptTags();
-	const styles = clientExtractor.getStyleTags();
-
-	const renderedHtml = ejs.render(templateHtml, {
-		app: appString,
-		scripts,
-		styles,
-		context: serializeJavascript(context),
-	});
-
-	return res.status(200).send(renderedHtml);
-});
+function getHtml(reactHtml: string, reduxState = {}, css: string) {
+	return `
+        <!DOCTYPE html>
+        <html lang="en">
+          <head>
+              <meta charset="utf-8" />
+              <meta content="width=device-width, initial-scale=1" name="viewport" />
+              <meta content="#000000" name="theme-color" />
+              <meta content="Mario game" name="description" />
+              <link href="manifest.json" rel="manifest" />
+              <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+              <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+              <title>Mario Pro Max | SSR</title>
+              <style id="jss-server-side">${css}</style>
+          </head>
+          <body>
+              <div id="root">${reactHtml}</div>
+              <script>
+                  window.__INITIAL_STATE__ = ${JSON.stringify(reduxState)}
+              </script>
+              <script defer src="/runtime~main.js"></script>
+              <script defer src="/main.js"></script>
+          </body>
+        </html>
+    `;
+}

@@ -1,1 +1,2 @@
-export { configureStore } from "./rootStore";
+export * from "./rootStore";
+export * from "./getInitialState";

@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 
 import { DefaultLayout } from "../../layouts";
 import { sendResults } from "../../services/leaderboard";
-import { RootState } from "../../store/store";
+import { State } from "../../store";
 import fetchCityName from "../../utils/fetchCityName";
 import { End, END_MODE } from "./components/End";
 
@@ -37,7 +37,7 @@ function GamePages() {
 
   const [stage, setStage] = useState(GameStage.START);
 
-  const selectAuth = (state: RootState) => state.auth;
+  const selectAuth = (state: State) => state.auth;
   const selectUserName = createSelector(selectAuth, (auth) => auth.user?.display_name || auth.user?.first_name || "");
 
   const userName = useSelector(selectUserName);

@@ -57,11 +57,12 @@ export async function buildDev(options: WebpackBuildConfigOptionsType) {
 
   options.isProduction = false;
 
-  await buildServer(options);
+  // await buildServer(options);
 
   options.devServer = true;
 
-  return webpack(buildClientConfig(options));
+  // @ts-ignore
+  return webpack(buildClientConfig({ ...options, target:"web" }));
 }
 
 export async function buildProd(options: WebpackBuildConfigOptionsType) {

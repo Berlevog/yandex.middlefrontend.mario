@@ -2,8 +2,10 @@
   "name": "yandex.middlefrontend.mario",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
+    "start": "npm run build && npm -w @mario/client start",
+    "build": "npm -w @mario/client run build:lib && npm -w @mario/server run build:lib",
+    "build:prod": "npm run build && npm -w @mario/client run build:prod",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,6 +19,7 @@
   },
   "homepage": "https://github.com/Berlevog/yandex.middlefrontend.mario#readme",
   "workspaces": [
+    "packages/client",
     "packages/server"
   ]
 }

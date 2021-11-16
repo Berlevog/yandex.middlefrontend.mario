@@ -6,6 +6,7 @@ import thunk from "redux-thunk";
 
 export interface State {
   auth: {
+    user:any
     loggedIn: Boolean;
   };
   leaderboard: {};

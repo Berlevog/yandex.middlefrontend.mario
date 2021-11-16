@@ -3,7 +3,6 @@ import path from 'path';
 import webpack from 'webpack';
 import autoprefixer from 'autoprefixer';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
-import LoadablePlugin from '@loadable/webpack-plugin';
 
 import { WebpackBuildConfigOptionsType } from './types';
 
@@ -153,10 +152,6 @@ export const buildCommonConfig = ({
           NODE_ENV: JSON.stringify(process.env.NODE_ENV),
         },
         isProduction: JSON.stringify(isProduction),
-      }),
-      new LoadablePlugin({
-        filename: 'loadable-stats.json',
-        writeToDisk: true,
       }),
     ].filter(Boolean),
   };

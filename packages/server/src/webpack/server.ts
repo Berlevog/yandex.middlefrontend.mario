@@ -2,9 +2,6 @@ import * as path from 'path';
 
 import { merge } from 'webpack-merge';
 import nodeExternals from 'webpack-node-externals';
-
-import packageJson from '../../package.json';
-
 import { buildCommonConfig } from './common';
 import { WebpackBuildConfigOptionsType } from './types';
 
@@ -25,8 +22,6 @@ export const buildServerConfig = (options: WebpackBuildConfigOptionsType) => {
     },
     externals: [
       nodeExternals(),
-      '@loadable/component',
-      ...Object.keys(packageJson.peerDependencies),
     ],
     node: {
       __dirname: false,
