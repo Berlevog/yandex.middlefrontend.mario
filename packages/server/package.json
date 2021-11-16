@@ -1,5 +1,5 @@
 {
-  "name": "yandex.middlefrontend.mario",
+  "name": "server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -15,8 +15,5 @@
   "bugs": {
     "url": "https://github.com/Berlevog/yandex.middlefrontend.mario/issues"
   },
-  "homepage": "https://github.com/Berlevog/yandex.middlefrontend.mario#readme",
-  "workspaces": [
-    "packages/server"
-  ]
+  "homepage": "https://github.com/Berlevog/yandex.middlefrontend.mario#readme"
 }
