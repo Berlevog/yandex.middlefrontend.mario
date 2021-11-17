@@ -6,7 +6,7 @@
     "start": "npm run build && npm -w @mario/client start",
     "build": "npm -w @mario/client run build:lib && npm -w @mario/server run build:lib",
     "build:prod": "npm run build && npm -w @mario/client run build:prod",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test:client": "npm run test -w @mario/client"
   },
   "repository": {
     "type": "git",
