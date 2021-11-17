@@ -20,6 +20,7 @@ type WorldProps = {
   onGameOver: Function;
 };
 
+//@ts-ignore
 export default class World extends Sprite {
   public sprite: ResourceImage;
   private player: PhysicalObject;

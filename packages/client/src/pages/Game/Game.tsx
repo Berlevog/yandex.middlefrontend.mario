@@ -37,10 +37,11 @@ function Game({ onGameOver }: GameProps) {
   const classes = useStyles();
 
   useEffect(() => {
-    const player = new Player();
+    const player = new Player({});
     // const obj = new PhysicalObject({ texture: new ResourceImage("images/cloud.png") });
     const world = new World({ player, onGameOver });
     if (appRef.current) {
+      //@ts-ignore
       appRef.current.addChild(world);
       appRef.current.addChild(player);
       // appRef.current.addChild(obj);
