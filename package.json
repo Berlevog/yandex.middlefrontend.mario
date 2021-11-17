@@ -6,7 +6,9 @@
     "start": "npm run build && npm -w @mario/client start",
     "build": "npm -w @mario/client run build:lib && npm -w @mario/server run build:lib",
     "build:prod": "npm run build && npm -w @mario/client run build:prod",
-    "test:client": "npm run test -w @mario/client"
+    "test:client": "npm run test -w @mario/client",
+    "docker:build": "docker-compose build",
+    "docker:start": "docker-compose up"
   },
   "repository": {
     "type": "git",

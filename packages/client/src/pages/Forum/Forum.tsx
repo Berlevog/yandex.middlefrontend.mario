@@ -9,6 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import { connect } from "react-redux";
 
 import { threads } from "./mockData";
+import axios from "axios";
 
 const useStyles = makeStyles(() =>
   createStyles({

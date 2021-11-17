@@ -1,0 +1,10 @@
+COMPOSE_PROJECT_NAME=MARIO
+DB_HOST=db
+DB_PORT=5432
+DB_DRIVER=postgres # sequelize dialect: mysql, postgres, sqlite, mariadb or mssql
+DB_USER=root
+DB_PASS=root
+DB_DATABASE=mariodb
+DB_VOLUME=.dbdata
+
+APP_PORT=3000
