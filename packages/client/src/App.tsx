@@ -5,6 +5,7 @@ import { createTheme, ThemeProvider } from "@material-ui/core";
 import React from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { Forum, Leaderboard, Login, Profile, Registration } from "./pages";
+import { StylesProvider, createGenerateClassName } from "@material-ui/core/styles";
 
 import { GamePages } from "./pages/Game";
 import { useAppDispatch } from "./store/hooks";
@@ -68,22 +69,28 @@ const lightTheme = createTheme({
   },
 });
 
+const generateClassName = createGenerateClassName({
+  disableGlobal: true,
+});
+
 function App() {
   const dispatch = useAppDispatch();
   dispatch(getUser());
   return (
     <div className="App" suppressHydrationWarning={true}>
-      <ThemeProvider theme={lightTheme}>
-        <Switch>
-          <Redirect exact from="/" to="/app" />
-          <Route exact path="/login" component={Login} />
-          <Route exact path="/registration" component={Registration} />
-          <Route exact path="/app" component={GamePages} />
-          <Route exact path="/leaderboard" component={Leaderboard} />
-          <Route exact path="/forum" component={Forum} />
-          <Route exact path="/profile" component={Profile} />
-        </Switch>
-      </ThemeProvider>
+      <StylesProvider generateClassName={generateClassName}>
+        <ThemeProvider theme={lightTheme}>
+          <Switch>
+            <Redirect exact from="/" to="/app" />
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/registration" component={Registration} />
+            <Route exact path="/app" component={GamePages} />
+            <Route exact path="/leaderboard" component={Leaderboard} />
+            <Route exact path="/forum" component={Forum} />
+            <Route exact path="/profile" component={Profile} />
+          </Switch>
+        </ThemeProvider>
+      </StylesProvider>
     </div>
   );
 }
