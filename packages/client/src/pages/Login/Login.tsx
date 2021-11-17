@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundSize: "cover",
     backgroundPosition: "left",
     animationName: "from-left-to-right",
-    animationDuration: "4s",
+    animationDuration: ".4s",
   },
 
   formContainer: {

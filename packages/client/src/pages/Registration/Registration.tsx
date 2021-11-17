@@ -19,7 +19,7 @@ import { UserSchema } from "../../constants/validationSchema";
 import { SignupProps } from "../../services/auth";
 import { AxiosError } from "axios";
 import { UNKNOWN_ERROR } from "../../config/constants";
-// import useAuth from "../../utils/useAuth";
+import useAuth from "../../utils/useAuth";
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     backgroundSize: "cover",
     backgroundPosition: "left",
     animationName: "from-left-to-right",
-    animationDuration: "4s",
+    animationDuration: ".4s",
   },
 
   formContainer: {
@@ -69,7 +69,7 @@ export default function Registration() {
   const classes = useStyles();
   const history = useHistory();
 
-  // const auth = useAuth();
+  const auth = useAuth();
 
   const gotoApp = () => {
     history.push("/app");
@@ -88,7 +88,7 @@ export default function Registration() {
     initialValues,
     validationSchema: signUpSchema,
     onSubmit: (values) => {
-      // auth.register(values).then(gotoApp).catch(handleError);
+      auth.register(values).then(gotoApp).catch(handleError);
     },
   });
 
