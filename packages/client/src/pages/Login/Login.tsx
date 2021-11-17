@@ -15,6 +15,7 @@ import { SchemaOf } from "yup";
 import { Alert } from "../../components/Alert";
 
 import { Footer } from "../../components/Footer";
+import { FormOAuth } from "../../components/OAuthForm/OAuthTorm";
 import { UNKNOWN_ERROR } from "../../config/constants";
 import { UserSchema } from "../../constants/validationSchema";
 import { SigninProps } from "../../services/auth";
@@ -126,6 +127,7 @@ export default function Login() {
                   error={formik.touched.password && Boolean(formik.errors.password)}
                   helperText={formik.touched.password && formik.errors.password}
                 />
+                <FormOAuth />
 
                 <Button type="submit" color="primary" fullWidth variant="contained" className={classes.submit}>
                   Sign In
