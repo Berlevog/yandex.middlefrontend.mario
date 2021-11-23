@@ -5,6 +5,6 @@ export const emojies = Router();
 
 emojies.get("/", emojiController.index);
 
-emojies.post("/:emojiId/comment/:commentId", emojiController.createEmojiComment);
+emojies.post("/", emojiController.createEmojiComment);
 
-emojies.delete("/:emojiId/comment/:commentId", emojiController.destroyEmojiComment);
+emojies.delete("/", emojiController.destroyEmojiComment);

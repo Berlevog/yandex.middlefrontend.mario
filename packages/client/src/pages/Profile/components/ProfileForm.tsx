@@ -47,7 +47,7 @@ export default function ProfileForm({ handleSuccess, handleError, user }: Profil
             label="Display name"
             name="display_name"
             autoComplete="off"
-            value={formik.values.display_name}
+            value={formik.values?.display_name}
             onChange={formik.handleChange}
             error={formik.touched.display_name && Boolean(formik.errors.display_name)}
             helperText={formik.touched.display_name && formik.errors.display_name}

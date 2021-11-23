@@ -21,7 +21,7 @@ declare global {
 }
 const { store, history } = configureStore(window.__INITIAL_STATE__);
 
-const Client:FC<any> = (() => {
+const Client: FC<any> = () => {
   return (
     <React.StrictMode>
       <ErrorHandler>
@@ -33,12 +33,9 @@ const Client:FC<any> = (() => {
       </ErrorHandler>
     </React.StrictMode>
   );
-});
+};
 
-hydrate(
-  <Client />,
-  document.getElementById("root")
-);
+hydrate(<Client />, document.getElementById("root"));
 if ("serviceWorker" in navigator) {
   // Use the window load event to keep the page load performant
   window.addEventListener("load", () => {

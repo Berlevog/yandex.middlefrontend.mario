@@ -1,5 +1,6 @@
-import { Column, HasMany, Model, Scopes, Table } from "sequelize-typescript";
+import { BelongsTo, Column, ForeignKey, HasMany, Model, Scopes, Table } from "sequelize-typescript";
 import { Comment } from "./Comment";
+import { User } from "./User";
 
 @Scopes(() => ({
   withComments: {
@@ -7,7 +8,12 @@ import { Comment } from "./Comment";
       {
         model: Comment,
       },
+      {
+        model: User,
+        attributes: ["name", "avatar"],
+      },
     ],
+    order: [["id", "DESC"]],
   },
 }))
 @Table({
@@ -21,8 +27,12 @@ export class Thread extends Model<Thread> {
   @Column
   content!: string;
 
+  @ForeignKey(() => User)
   @Column
   userId!: number;
+
+  @BelongsTo(() => User)
+  user!: User;
 
   @HasMany(() => Comment)
   comments!: Comment[];

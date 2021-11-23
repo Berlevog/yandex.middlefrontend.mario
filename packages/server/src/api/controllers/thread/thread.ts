@@ -5,7 +5,7 @@ import { StatusCodes } from "http-status-codes";
 
 export const index = async (req: Request, res: Response) => {
   try {
-    const threads = await Thread.findAll();
+    const threads = await Thread.scope("withComments").findAll();
     res.status(StatusCodes.OK).json(threads);
   } catch (e) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);

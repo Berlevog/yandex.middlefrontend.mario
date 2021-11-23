@@ -11,8 +11,9 @@ import Grid from "@material-ui/core/Grid";
 
 import { PostList } from "../PostList";
 
-import { ThreadProps } from "../types";
 import { DEFAULT_AVATAR } from "../../../../config/constants";
+import { RESOURCES_URL } from "../../../../constants/url";
+import { PostProps } from "../Post/Post";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -26,36 +27,47 @@ const useStyles = makeStyles(() =>
   })
 );
 
-const Thread: FC<ThreadProps> = (thread) => {
+export type ThreadProps = {
+  id: number;
+  userId: number;
+  title: string;
+  content: string;
+  comments?: [];
+  createdAt: Date;
+  user: {
+    name: string;
+    avatar?: string;
+  };
+};
+
+export default function Thread(thread: ThreadProps) {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
       <Accordion>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1c-content"
-          id="panel1c-header"
-        >
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1c-content" id="panel1c-header">
           <Grid container spacing={2} className={classes.root}>
             <Grid item xs={3}>
               <Avatar
                 alt={thread.user.name}
-                src={thread.user.avatar || DEFAULT_AVATAR}
+                src={`${RESOURCES_URL}${thread.user.avatar}` || DEFAULT_AVATAR}
                 className={classes.avatar}
               />
               <Typography variant="body1">{thread.user.name}</Typography>
               <Typography variant="body2" color="textSecondary">
-                {thread.date}
+                {new Date(thread.createdAt).toLocaleDateString("ru", {
+                  weekday: "long",
+                  year: "numeric",
+                  day: "numeric",
+                  month: "short",
+                  hour: "numeric",
+                  minute: "numeric",
+                })}
               </Typography>
             </Grid>
             <Grid item xs={9}>
-              <Typography
-                gutterBottom
-                variant="h5"
-                color="textSecondary"
-                component="h3"
-              >
+              <Typography gutterBottom variant="h5" color="textSecondary" component="h3">
                 {thread.title}
               </Typography>
             </Grid>
@@ -67,10 +79,8 @@ const Thread: FC<ThreadProps> = (thread) => {
           </Typography>
         </AccordionDetails>
         <Divider />
-        <PostList threadId={thread.id} />
+        <PostList posts={thread?.comments} threadId={thread.id} />
       </Accordion>
     </div>
   );
-};
-
-export default Thread;
+}

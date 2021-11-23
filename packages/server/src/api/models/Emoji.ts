@@ -1,6 +1,5 @@
-import { BelongsToMany, Column, DefaultScope, Model, Table } from "sequelize-typescript";
+import { Column, Model, Table, HasMany, DefaultScope } from "sequelize-typescript";
 import { EmojiComment } from "./EmojiComment";
-import { Comment } from "./Comment";
 
 @Table({
   tableName: "emoji",
@@ -10,6 +9,6 @@ export class Emoji extends Model<Emoji> {
   @Column
   name!: string;
 
-  @BelongsToMany(() => Comment, () => EmojiComment)
-  comment!: Comment[];
+  @HasMany(() => EmojiComment)
+  emojiComments?: EmojiComment[];
 }

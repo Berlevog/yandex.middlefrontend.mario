@@ -1,5 +1,7 @@
-import { BelongsTo, Column, ForeignKey, Model, PrimaryKey, Scopes, Table } from "sequelize-typescript";
+import { BelongsTo, Column, ForeignKey, Model, PrimaryKey, Scopes, Table, HasMany } from "sequelize-typescript";
 import { Theme } from "./Theme";
+import { EmojiComment } from "./EmojiComment";
+import { Emoji } from "./Emoji";
 
 @Scopes(() => ({
   withTheme: {
@@ -18,7 +20,7 @@ import { Theme } from "./Theme";
 export class User extends Model<User> {
   @PrimaryKey
   @Column
-  apiUserId!: number;
+  id!: number;
 
   @ForeignKey(() => Theme)
   @Column
@@ -26,4 +28,13 @@ export class User extends Model<User> {
 
   @BelongsTo(() => Theme)
   theme!: Theme;
+
+  @HasMany(() => EmojiComment)
+  emojiComments?: EmojiComment[];
+
+  @Column
+  name!: string;
+
+  @Column
+  avatar!: string;
 }

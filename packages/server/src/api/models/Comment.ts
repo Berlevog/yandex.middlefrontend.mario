@@ -1,13 +1,26 @@
-import { BelongsTo, BelongsToMany, Column, DefaultScope, ForeignKey, Model, Table } from "sequelize-typescript";
-import { Emoji } from "./Emoji";
+import {
+  BelongsTo,
+  Column,
+  DefaultScope,
+  ForeignKey,
+  HasMany,
+  Model,
+  Table,
+  PrimaryKey,
+  AutoIncrement,
+} from "sequelize-typescript";
 import { EmojiComment } from "./EmojiComment";
 import { Thread } from "./Thread";
+import { User } from "./User";
 
 @DefaultScope(() => ({
   include: [
     {
-      model: Emoji,
-      through: { attributes: [] },
+      model: EmojiComment,
+    },
+    {
+      model: User,
+      attributes: ["name", "avatar"],
     },
   ],
 }))
@@ -16,14 +29,25 @@ import { Thread } from "./Thread";
   underscored: true,
 })
 export class Comment extends Model<Comment> {
+  @PrimaryKey
+  @AutoIncrement
+  @Column
+  id!: number;
+
   @Column
   title!: string;
 
   @Column
   content!: string;
 
+  @ForeignKey(() => User)
   @Column
   userId!: number;
+
+  @BelongsTo(() => User, {
+    onDelete: "CASCADE",
+  })
+  user!: User;
 
   @ForeignKey(() => Thread)
   @Column
@@ -34,6 +58,6 @@ export class Comment extends Model<Comment> {
   })
   thread!: Thread;
 
-  @BelongsToMany(() => Emoji, () => EmojiComment)
-  emojies?: Emoji[];
+  @HasMany(() => EmojiComment)
+  emojiComments?: EmojiComment[];
 }

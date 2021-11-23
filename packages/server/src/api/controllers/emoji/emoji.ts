@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { EmojiComment } from "../../models/EmojiComment";
 import { Emoji } from "../../models/Emoji";
 import { StatusCodes } from "http-status-codes";
+import validation from "./validation";
 
 export const index = async (req: Request, res: Response) => {
   try {
@@ -12,30 +13,42 @@ export const index = async (req: Request, res: Response) => {
   }
 };
 
-export const createEmojiComment = async (req: Request, res: Response) => {
-  try {
-    await EmojiComment.create<EmojiComment>({
-      // @ts-ignore
-      emojiId: req.params.emojiId,
-      // @ts-ignore
-      commentId: req.params.commentId,
-    });
-    res.sendStatus(StatusCodes.OK);
-  } catch (e) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
-  }
-};
+export const createEmojiComment = [
+  ...validation,
+  async (req: Request, res: Response) => {
+    try {
+      const { emojiId, commentId, userId } = req.body;
+      const emojiComment = await EmojiComment.findOne({
+        where: { emojiId, commentId, userId },
+      });
+      if (emojiComment) {
+        res.sendStatus(StatusCodes.FORBIDDEN);
+      }
 
-export const destroyEmojiComment = async (req: Request, res: Response) => {
-  try {
-    await EmojiComment.destroy<EmojiComment>({
-      where: {
-        emojiId: req.params.emojiId,
-        commentId: req.params.commentId,
-      },
-    });
-    res.sendStatus(StatusCodes.OK);
-  } catch (e) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
-  }
-};
+      await EmojiComment.create<EmojiComment>(req.body);
+      res.sendStatus(StatusCodes.OK);
+    } catch (e) {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+    }
+  },
+];
+
+export const destroyEmojiComment = [
+  ...validation,
+  async (req: Request, res: Response) => {
+    try {
+      const { emojiId, commentId, userId } = req.body;
+
+      await EmojiComment.destroy<EmojiComment>({
+        where: {
+          emojiId,
+          commentId,
+          userId,
+        },
+      });
+      res.sendStatus(StatusCodes.OK);
+    } catch (e) {
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
+    }
+  },
+];

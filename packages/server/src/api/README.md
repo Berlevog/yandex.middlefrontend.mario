@@ -4,18 +4,18 @@
 
 ## Форум
 
-| Путь                               | Метод  | Описание                                                                                       |
-| ---------------------------------- | ------ | ---------------------------------------------------------------------------------------------- |
-| /thread                            | GET    | Получить все темы форума (без связей)                                                          |
-| /thread                            | POST   | Создать новую тему: { title: string; content: string; userId: number}                          |
-| /thread/:id                        | GET    | Получить тему по id (вместе с комментариями и эмоджи)                                          |
-| /thread/:id                        | PUT    | Обновить тему                                                                                  |
-| /thread/:id                        | DELETE | Удалить тему                                                                                   |
-| /comment/                          | POST   | Создать новый комментарий: { title: string; content: string; userId: number; threadId: number} |
-| /comment/:id                       | DELETE | Удалить комментарий                                                                            |
-| /emoji                             | GET    | Получить список всех эмоджи                                                                    |
-| /emoji/:emojiId/comment/:commentId | POST   | Добавить эмоджи к комментарию                                                                  |
-| /emoji/:emojiId/comment/:commentId | DELETE | Удалить эмоджи у комментария                                                                   |
+| Путь         | Метод  | Описание                                                                                       |
+| ------------ | ------ | ---------------------------------------------------------------------------------------------- |
+| /thread      | GET    | Получить все темы форума (без связей)                                                          |
+| /thread      | POST   | Создать новую тему: { title: string; content: string; userId: number}                          |
+| /thread/:id  | GET    | Получить тему по id (вместе с комментариями и эмоджи)                                          |
+| /thread/:id  | PUT    | Обновить тему                                                                                  |
+| /thread/:id  | DELETE | Удалить тему                                                                                   |
+| /comment/    | POST   | Создать новый комментарий: { title: string; content: string; userId: number; threadId: number} |
+| /comment/:id | DELETE | Удалить комментарий                                                                            |
+| /emoji       | GET    | Получить список всех эмоджи                                                                    |
+| /emoji/      | POST   | Добавить эмоджи к комментарию                                                                  |
+| /emoji/      | DELETE | Удалить эмоджи у комментария                                                                   |
 
 ## Темизация
 

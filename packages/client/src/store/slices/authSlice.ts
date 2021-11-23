@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { User } from "../../services/auth";
-import { getUser, signout } from "../thunks/auth";
+import { getUser as fetchUserAPI } from "../../services/auth";
 
 export interface authState {
   user: User | null;
@@ -15,18 +15,26 @@ const initialState: authState = {
 export const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(getUser.fulfilled, (state: authState, action) => {
-        state.user = action.payload;
-        state.loggedIn = true;
-      })
-      .addCase(signout.fulfilled, (state: authState) => {
-        state.user = null;
-        state.loggedIn = false;
-      });
+  reducers: {
+    setUser: (state, action) => {
+      state.user = action.payload;
+    },
   },
 });
+
+const { setUser } = authSlice.actions;
+
+// @ts-ignore
+export const fetchUser = () => async (dispatch) => {
+  try {
+    await fetchUserAPI().then((user) => {
+      dispatch(setUser(user));
+    });
+    // @ts-ignore
+  } catch (e) {
+    // @ts-ignore
+    return console.log(e.message);
+  }
+};
 
 export default authSlice.reducer;

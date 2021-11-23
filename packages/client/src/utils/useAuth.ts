@@ -1,23 +1,24 @@
 import React from "react";
+import { DEFAULT_THEME, setCurrent } from "store/theme/themeSlice";
+// import { fetchUser } from "store/slices/authSlice";
 import { signin, signup, SigninProps, SignupProps } from "../services/auth";
 import { useAppDispatch } from "../store/hooks";
-import { getUser, signout } from "../store/thunks/auth";
+import { signout } from "../store/thunks/auth";
 
 export default function useAuth() {
   const dispatch = useAppDispatch();
 
   const login = async (data: SigninProps) => {
     await signin(data);
-    dispatch(getUser());
   };
 
   const register = async (data: SignupProps) => {
     await signup(data);
-    dispatch(getUser());
   };
 
   const logout = () => {
     dispatch(signout());
+    dispatch(setCurrent(DEFAULT_THEME));
   };
 
   return { login, register, logout };
