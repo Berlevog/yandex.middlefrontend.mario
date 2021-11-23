@@ -1,5 +1,5 @@
 import React from "react";
-import { DEFAULT_THEME, setCurrent } from "store/theme/themeSlice";
+import { DEFAULT_THEME, setCurrent } from "../store/theme/themeSlice";
 // import { fetchUser } from "store/slices/authSlice";
 import { signin, signup, SigninProps, SignupProps } from "../services/auth";
 import { useAppDispatch } from "../store/hooks";
