@@ -1,4 +1,5 @@
 import { ServerStyleSheets } from "@material-ui/core/styles";
+import chalk from "chalk";
 import { Request, Response } from "express";
 import React from "react";
 import { renderToString } from "react-dom/server";
@@ -14,6 +15,7 @@ export default async (req: Request, res: Response) => {
 
 	const sheets = new ServerStyleSheets();
 
+
 	const jsx = (
 		<ReduxProvider store={store}>
 			<StaticRouter context={context} location={location}>
@@ -28,7 +30,7 @@ export default async (req: Request, res: Response) => {
 		res.redirect(context.url);
 		return;
 	}
-
+	console.log(chalk.cyan("SSR:", req.url));
 	res.status(context.statusCode || 200).send(getHtml(reactHtml, reduxState, sheets.toString()));
 };
 

@@ -3,6 +3,7 @@ import chalk from "chalk";
 import express, { Express } from "express";
 import * as path from "path";
 import * as React from "react";
+import loggerMiddleware from "./middlewares/loggerMiddleware";
 import { renderMiddleware } from "./middlewares";
 
 // import serializeJavascript from "serialize-javascript";
@@ -30,6 +31,7 @@ export async function startDevServer(
 		writeToDisk:true,
 	});
 
+	app.use(loggerMiddleware)
 	app.use(devServer);
 
 	// @ts-ignore
