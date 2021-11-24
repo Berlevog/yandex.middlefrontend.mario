@@ -1,4 +1,4 @@
-import { BelongsTo, Column, ForeignKey, HasMany, Model, Scopes, Table } from "sequelize-typescript";
+import { BelongsTo, Column, DefaultScope, ForeignKey, HasMany, Model, Scopes, Table } from "sequelize-typescript";
 import { Comment } from "./Comment";
 import { User } from "./User";
 

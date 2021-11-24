@@ -36,11 +36,11 @@ function App() {
       <StylesProvider generateClassName={generateClassName}>
         <ThemeProvider theme={theme}>
           <Switch>
-            <Redirect exact from="/" to="/app" />
             <Route exact path="/login" component={Login} />
             <Route exact path="/registration" component={Registration} />
-            <Route exact path="/app" component={GamePages} />
             <AuthWrapper>
+              <Redirect exact from="/" to="/app" />
+              <Route exact path="/app" component={GamePages} />
               <Route exact path="/leaderboard" component={Leaderboard} />
               <Route exact path="/forum" component={Forum} />
               <Route exact path="/profile" component={Profile} />

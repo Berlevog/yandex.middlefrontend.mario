@@ -16,6 +16,7 @@ import useAuth from "../../utils/useAuth";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../../store/hooks";
 import { RESOURCES_URL } from "../../constants/url";
+import { isLoggedInSelector, userSelector } from "../../store/slices/authSlice";
 
 export const mainListItems = (
   <div>
@@ -47,9 +48,11 @@ export function secondaryListItems() {
 
   const classes = useStyles();
 
-  const { user } = useAppSelector((state) => state.auth);
+  const isLoggedIn = useAppSelector(isLoggedInSelector);
 
-  if (!user || !user.login) {
+  const user = useAppSelector(userSelector);
+
+  if (!isLoggedIn) {
     return (
       <ListItem button component={Link} to="/login">
         <ListItemIcon>
