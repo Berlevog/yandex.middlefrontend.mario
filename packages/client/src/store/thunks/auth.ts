@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { autorize } from "services/oauth";
+import { autorize } from "../../services/oauth";
 import { getUser as getUserAPI, signout as signoutAPI } from "../../services/auth";
 
 export const getUser = createAsyncThunk("auth/getUser", async (code: string | undefined) => {
