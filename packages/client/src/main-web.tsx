@@ -47,10 +47,10 @@ if ("serviceWorker" in navigator) {
 	// Use the window load event to keep the page load performant
 	window.addEventListener("load", () => {
 		navigator.serviceWorker
-			.register("/serviceWorker.js")
+			.register("/service-worker.js")
 			.then((registration) => {
 				console.log("Registration succeeded.");
-				if (process.env.NODE_ENV !== "development") {
+				if (process.env.NODE_ENV === "development") {
 					registration.unregister().then((boolean) => {
 						console.log("Unregister succeeded!");
 					});

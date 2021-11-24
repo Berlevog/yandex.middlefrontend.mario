@@ -11,6 +11,7 @@
     "build:lib": "tsc -b",
     "build:prod": "server build",
     "start": "server dev",
+    "start:prod": "server prod",
     "test": "jest"
   },
   "repository": {

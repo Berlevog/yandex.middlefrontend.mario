@@ -176,4 +176,9 @@ export default class World extends Sprite {
     this.clouds.render(renderer);
     context.restore();
   }
+
+  destroy() {
+    super.destroy();
+    this.music.stopAll();
+  }
 }

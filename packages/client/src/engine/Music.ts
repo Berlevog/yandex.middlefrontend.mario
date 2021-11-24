@@ -4,7 +4,13 @@ import BufferLoader from "./BufferLoader";
 class Source {
   private source: AudioBufferSourceNode | null | undefined;
 
-  constructor(private context: AudioContext, private buffer: AudioBuffer | null, play = false) {
+  private context: AudioContext;
+
+  private buffer: AudioBuffer | null;
+
+  constructor(context: AudioContext, buffer: AudioBuffer | null, play = false) {
+    this.buffer = buffer;
+    this.context = context;
     if (play) {
       this.play();
     }
@@ -29,8 +35,8 @@ class Source {
 }
 
 export enum Playlist {
-  world = "music/world01.ogg",
-  killed = "music/killed.ogg",
+  world = "/music/world01.ogg",
+  killed = "/music/killed.ogg",
 }
 
 export default class Music extends EventEmitter {
@@ -74,4 +80,8 @@ export default class Music extends EventEmitter {
       source.stop();
     }
   };
+
+  stopAll(){
+    this.context.close();
+  }
 }

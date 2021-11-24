@@ -71,7 +71,8 @@ export async function buildProd(options: WebpackBuildConfigOptionsType) {
   options.isProduction = true;
 
   return runCompiler(
-    webpack([buildClientConfig(options), buildServerConfig(options)]),
+    // @ts-ignore
+    webpack(buildClientConfig(options)),
     () => {
       console.log(chalk.green('built'));
     }

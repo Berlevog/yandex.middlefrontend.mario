@@ -4,6 +4,7 @@
   "description": "",
   "scripts": {
     "start": "npm run build && npm -w @mario/client start",
+    "start:prod": "npm run build && npm -w @mario/client run start:prod",
     "build": "npm -w @mario/client run build:lib && npm -w @mario/server run build:lib",
     "build:prod": "npm run build && npm -w @mario/client run build:prod",
     "test:client": "npm run test -w @mario/client"

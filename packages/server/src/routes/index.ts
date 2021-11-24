@@ -10,8 +10,8 @@ export function routes(app: express.Application, options:WebpackBuildConfigOptio
 
 	// for PWA
 	app.use('/service-worker.js', express.static(path.join(options.buildPath,'service-worker.js')));
+	app.use('/manifest.json', express.static(path.join(options.buildPath,'manifest.json')));
 	app.use('/manifest.webmanifest', express.static(path.join(options.buildPath,'manifest.webmanifest')));
-
 
 	app.get("/*", renderMiddleware);
 	app.use(express.static(options.buildPath));

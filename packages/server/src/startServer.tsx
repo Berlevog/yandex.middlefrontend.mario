@@ -46,8 +46,8 @@ export function startProdServer(options: WebpackBuildConfigOptionsType, serverCo
 	const app = createApp();
 
 	app.use(
-		"/static",
-		express.static(path.join(options.buildPath, "client", "static"))
+		"/",
+		express.static(path.join(options.buildPath, "web"))
 	);
 
 	runServer(app, options, serverConfig);
@@ -57,7 +57,9 @@ const runServer = (
 	app: Express, options: WebpackBuildConfigOptionsType,
 	{ host, port }: ServerConfig = DEFAULT_SERVER_CONFIG
 ) => {
+
 	routes(app, options);
+
 	app.use(renderMiddleware)
 
 	app.listen(port, host, () => {

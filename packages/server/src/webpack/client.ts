@@ -161,7 +161,7 @@ export const buildClientConfig = (options: WebpackBuildConfigOptionsType) => {
 
 		output: {
 			path: path.join(options.buildPath, target),
-			filename: isProduction ? "[name]-bundle-[chunkhash:8].js" : "[name].js",
+			filename:  "[name].js",
 			publicPath: `/`,
 			libraryTarget: target === "node" ? "commonjs2" : undefined
 		},
@@ -192,7 +192,7 @@ export const buildClientConfig = (options: WebpackBuildConfigOptionsType) => {
 				}
 			}),
 			new MiniCssExtractPlugin({
-				filename: "static/css/bundle.[name].[contenthash].css"
+				filename: "static/css/bundle.css"
 			}),
 			isProduction && new PwaManifest({
 				filename: "manifest.webmanifest",
