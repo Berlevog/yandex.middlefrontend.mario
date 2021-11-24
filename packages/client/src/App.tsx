@@ -76,13 +76,14 @@ const generateClassName = createGenerateClassName({
 
 function App() {
 	const dispatch = useAppDispatch();
-	const search = new URLSearchParams(document.location.search);
-	const code = search.get("code")!;
+	if (typeof window !== "undefined") {
+		const search = new URLSearchParams(document.location.search);
+		const code = search.get("code")!;
 
-	useEffect(() => {
-		dispatch(getUser(code));
-	}, [code]);
-
+		useEffect(() => {
+			dispatch(getUser(code));
+		}, [code]);
+	}
 	return (
 		<div className="App" suppressHydrationWarning={true}>
 			<StylesProvider generateClassName={generateClassName}>
