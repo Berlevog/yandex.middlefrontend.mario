@@ -37,4 +37,10 @@ export const fetchUser = () => async (dispatch) => {
   }
 };
 
+// @ts-ignore
+export const userSelector = (state) => state.auth.user;
+
+// @ts-ignore
+export const isLoggedInSelector = (state) => !!state.auth.user?.login;
+
 export default authSlice.reducer;

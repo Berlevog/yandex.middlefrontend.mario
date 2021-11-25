@@ -23,6 +23,7 @@ import { User } from "./User";
       attributes: ["name", "avatar"],
     },
   ],
+  order: [["id", "ASC"]],
 }))
 @Table({
   tableName: "comment",

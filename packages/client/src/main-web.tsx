@@ -3,9 +3,12 @@
  */
 import { ConnectedRouter } from "connected-react-router";
 // import "core-js/stable";
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { hydrate } from "react-dom";
 import { Provider } from "react-redux";
+import { getUser } from "services/auth";
+import { autorize } from "services/oauth";
+import { useAppDispatch } from "store/hooks";
 // import "regenerator-runtime/runtime";
 import App from "./App";
 import { ErrorHandler } from "./components/ErrorHandler";
@@ -47,7 +50,7 @@ if ("serviceWorker" in navigator) {
 			.register("/serviceWorker.js")
 			.then((registration) => {
 				console.log("Registration succeeded.");
-				if (window.devMode) {
+				if (process.env.NODE_ENV !== "development") {
 					registration.unregister().then((boolean) => {
 						console.log("Unregister succeeded!");
 					});

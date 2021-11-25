@@ -2,15 +2,16 @@
  * Copyright (c) 2021. Written by Leonid Artemev (me@artemev.it)
  */
 import { createTheme, ThemeProvider } from "@material-ui/core";
+import { createGenerateClassName, StylesProvider } from "@material-ui/core/styles";
 import React, { useEffect } from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import { Forum, Leaderboard, Login, Profile, Registration } from "./pages";
-import { StylesProvider, createGenerateClassName } from "@material-ui/core/styles";
 
 import { GamePages } from "./pages/Game";
 import { AuthWrapper } from "./components/AuthWrapper/AuthWrapper";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { currentThemeSelector, getThemes } from "./store/theme/themeSlice";
+import { getUser } from "./store/thunks/auth";
 
 const generateClassName = createGenerateClassName({
   disableGlobal: true,
@@ -18,9 +19,15 @@ const generateClassName = createGenerateClassName({
 
 function App() {
   const dispatch = useAppDispatch();
-  useEffect(() => {
-    dispatch(getThemes());
-  }, []);
+  if (typeof window !== "undefined") {
+    const search = new URLSearchParams(document.location.search);
+    const code = search.get("code")!;
+
+    useEffect(() => {
+      dispatch(getUser(code));
+      dispatch(getThemes());
+    }, [code]);
+  }
   const currentTheme = useAppSelector(currentThemeSelector);
   const theme = createTheme(currentTheme?.theme);
 
@@ -29,11 +36,11 @@ function App() {
       <StylesProvider generateClassName={generateClassName}>
         <ThemeProvider theme={theme}>
           <Switch>
-            <Redirect exact from="/" to="/app" />
             <Route exact path="/login" component={Login} />
             <Route exact path="/registration" component={Registration} />
-            <Route exact path="/app" component={GamePages} />
             <AuthWrapper>
+              <Redirect exact from="/" to="/app" />
+              <Route exact path="/app" component={GamePages} />
               <Route exact path="/leaderboard" component={Leaderboard} />
               <Route exact path="/forum" component={Forum} />
               <Route exact path="/profile" component={Profile} />

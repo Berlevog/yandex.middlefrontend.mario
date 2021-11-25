@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { User } from "../../services/auth";
 import { getUser as getUserAPI } from "../../services/auth";
 import { updateUser as updateAppUserAPI, getUser as getAppUserAPI } from "../../services/appAuth";
-import { DEFAULT_THEME, setCurrent } from "store/theme/themeSlice";
+import { DEFAULT_THEME, setCurrent } from "../../store/theme/themeSlice";
 
 export const getUser = createAsyncThunk("user/getApiUser", async (_, { dispatch }) => {
   const user = await getUserAPI();
@@ -39,7 +39,7 @@ export const authSlice = createSlice({
   },
 });
 
-const { setUser } = authSlice.actions;
+export const { setUser } = authSlice.actions;
 
 //@ts-ignore
 export const yandexUserSelector = (state) => state.user.user;
