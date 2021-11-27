@@ -44,7 +44,7 @@ function getHtml(reactHtml: string, reduxState = {}, css: string) {
               <meta content="#000000" name="theme-color" />
               <meta content="Mario game" name="description" />
               <link href="manifest.json" rel="manifest" />
-              <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+              <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&family=VT323&display=swap" rel="stylesheet" />
               <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
               <title>Mario Pro Max | SSR</title>
               <style id="jss-server-side">${css}</style>
