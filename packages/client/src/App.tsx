@@ -12,6 +12,7 @@ import { AuthWrapper } from "./components/AuthWrapper/AuthWrapper";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { currentThemeSelector, getThemes } from "./store/theme/themeSlice";
 import { getUser } from "./store/thunks/auth";
+import { isLoggedInSelector } from "store/slices/authSlice";
 
 const generateClassName = createGenerateClassName({
   disableGlobal: true,
@@ -39,11 +40,13 @@ function App() {
             <Route exact path="/login" component={Login} />
             <Route exact path="/registration" component={Registration} />
             <AuthWrapper>
-              <Redirect exact from="/" to="/app" />
-              <Route exact path="/app" component={GamePages} />
-              <Route exact path="/leaderboard" component={Leaderboard} />
-              <Route exact path="/forum" component={Forum} />
-              <Route exact path="/profile" component={Profile} />
+              <Switch>
+                <Redirect exact from="/" to="/app" />
+                <Route exact path="/app" component={GamePages} />
+                <Route exact path="/leaderboard" component={Leaderboard} />
+                <Route exact path="/forum" component={Forum} />
+                <Route exact path="/profile" component={Profile} />
+              </Switch>
             </AuthWrapper>
           </Switch>
         </ThemeProvider>

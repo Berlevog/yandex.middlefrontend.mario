@@ -2,10 +2,13 @@ import { Thread } from "../../models/Thread";
 import { Request, Response } from "express";
 import validation from "./validation";
 import { StatusCodes } from "http-status-codes";
+import { Comment } from "../../models/Comment";
 
 export const index = async (req: Request, res: Response) => {
   try {
-    const threads = await Thread.scope("withComments").findAll();
+    const threads = await Thread.scope("withComments").findAll({
+      order: [[Comment, "id", "DESC"]],
+    });
     res.status(StatusCodes.OK).json(threads);
   } catch (e) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
