@@ -1,4 +1,4 @@
-import { MapObject } from "engine/MapObject";
+import { MapObject } from "./MapObject";
 import { ResourceImage } from "../pages/Game/Resources";
 import { DisplayObject } from "./DisplayObject";
 import { Engine } from "./Engine";
