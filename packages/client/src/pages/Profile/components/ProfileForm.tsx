@@ -38,9 +38,7 @@ export default function ProfileForm({ handleSuccess, handleError, user }: Profil
       <Typography component="h1" variant="h5">
         User
       </Typography>
-      {/* <FormikProvider value={formik}> */}
       <form onSubmit={formik.handleSubmit}>
-        {/* <Field name="display_name" type="text" label="Display name" component={TextFieldFormik} /> */}
         <TextField
           margin="normal"
           required
@@ -62,7 +60,7 @@ export default function ProfileForm({ handleSuccess, handleError, user }: Profil
           label="Email Address"
           name="email"
           autoComplete="email"
-          value={formik.values.email}
+          value={formik.values.email || ""}
           onChange={formik.handleChange}
           error={formik.touched.email && Boolean(formik.errors.email)}
           helperText={formik.touched.email && formik.errors.email}
@@ -75,7 +73,7 @@ export default function ProfileForm({ handleSuccess, handleError, user }: Profil
           label="Login"
           name="login"
           autoComplete="off"
-          value={formik.values.login}
+          value={formik.values.login || ""}
           onChange={formik.handleChange}
           error={formik.touched.login && Boolean(formik.errors.login)}
           helperText={formik.touched.login && formik.errors.login}
@@ -88,7 +86,7 @@ export default function ProfileForm({ handleSuccess, handleError, user }: Profil
           label="First Name"
           name="first_name"
           autoComplete="off"
-          value={formik.values.first_name}
+          value={formik.values.first_name || ""}
           onChange={formik.handleChange}
           error={formik.touched.first_name && Boolean(formik.errors.first_name)}
           helperText={formik.touched.first_name && formik.errors.first_name}
@@ -101,14 +99,14 @@ export default function ProfileForm({ handleSuccess, handleError, user }: Profil
           label="Second Name"
           name="second_name"
           autoComplete="off"
-          value={formik.values.second_name}
+          value={formik.values.second_name || ""}
           onChange={formik.handleChange}
           error={formik.touched.second_name && Boolean(formik.errors.second_name)}
           helperText={formik.touched.second_name && formik.errors.second_name}
         />
         <InputMask
           mask="+7 (999) 999-99-99"
-          value={formik.values.phone}
+          value={formik.values.phone || ""}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
         >
@@ -132,7 +130,6 @@ export default function ProfileForm({ handleSuccess, handleError, user }: Profil
           Update
         </Button>
       </form>
-      {/* </FormikProvider> */}
     </>
   );
 }
