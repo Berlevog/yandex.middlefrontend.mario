@@ -23,6 +23,11 @@ export default class Brick extends MapObject {
     this.y = props.y;
   }
 
+  handleBottomCollision(object: MapObject) {
+    super.handleBottomCollision(object);
+    this.startDestroyAnimation()
+  }
+
   render(renderer: Engine.IRenderer) {
     const { context } = renderer;
     context.save();
@@ -33,5 +38,9 @@ export default class Brick extends MapObject {
       c++;
     }
     context.restore();
+  }
+
+  startDestroyAnimation() {
+
   }
 }
