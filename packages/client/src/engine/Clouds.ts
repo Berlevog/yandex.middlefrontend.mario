@@ -1,3 +1,4 @@
+import { MapObject } from "./MapObject";
 import { ResourceImage } from "../pages/Game/Resources";
 import { DisplayObject } from "./DisplayObject";
 import { Engine } from "./Engine";
@@ -8,7 +9,7 @@ type CloudProps = {
   speed?: number;
 };
 
-class Cloud extends DisplayObject {
+class Cloud extends MapObject {
   public deleted: boolean = false;
   private interval: NodeJS.Timer;
 
@@ -24,8 +25,8 @@ class Cloud extends DisplayObject {
   render(renderer: Engine.IRenderer) {
     const { context } = renderer;
     context.save();
-    // context.scale(-1, 1);
-    // context.drawImage(this.texture.img, this.x, this.y, this.width, this.height);
+    context.scale(-1, 1);
+    context.drawImage(this.texture.img, this.x, this.y, this.width, this.height);
     context.restore();
   }
 }
