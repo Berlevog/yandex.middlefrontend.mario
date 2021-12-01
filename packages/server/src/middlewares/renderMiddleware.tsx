@@ -8,34 +8,33 @@ import { StaticRouterContext } from "react-router";
 import { StaticRouter } from "react-router-dom";
 
 export default async (req: Request, res: Response) => {
-	const { getStore, App } = await import("@mario/client");
-	const location = req.url;
-	const context: StaticRouterContext = {};
-	const { store } = getStore(location);
+  const { getStore, App } = await import("@mario/client");
+  const location = req.url;
+  const context: StaticRouterContext = {};
+  const { store } = getStore(location);
 
-	const sheets = new ServerStyleSheets();
+  const sheets = new ServerStyleSheets();
 
+  const jsx = (
+    <ReduxProvider store={store}>
+      <StaticRouter context={context} location={location}>
+        <App />
+      </StaticRouter>
+    </ReduxProvider>
+  );
+  const reactHtml = renderToString(sheets.collect(jsx));
+  const reduxState = store.getState();
 
-	const jsx = (
-		<ReduxProvider store={store}>
-			<StaticRouter context={context} location={location}>
-				<App />
-			</StaticRouter>
-		</ReduxProvider>
-	);
-	const reactHtml = renderToString(sheets.collect(jsx));
-	const reduxState = store.getState();
-
-	if (context.url) {
-		res.redirect(context.url);
-		return;
-	}
-	console.log(chalk.cyan("SSR:", req.url));
-	res.status(context.statusCode || 200).send(getHtml(reactHtml, reduxState, sheets.toString()));
+  if (context.url) {
+    res.redirect(context.url);
+    return;
+  }
+  console.log(chalk.cyan("SSR:", req.url));
+  res.status(context.statusCode || 200).send(getHtml(reactHtml, reduxState, sheets.toString()));
 };
 
 function getHtml(reactHtml: string, reduxState = {}, css: string) {
-	return `
+  return `
         <!DOCTYPE html>
         <html lang="en">
           <head>
