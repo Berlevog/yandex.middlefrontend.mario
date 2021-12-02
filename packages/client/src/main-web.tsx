@@ -18,12 +18,14 @@ import { configureStore, State } from "./store/rootStore";
 
 declare global {
 	interface Window {
-		__INITIAL_STATE__: State;
+		// __INITIAL_STATE__: State;
 		__REDUX_DEVTOOLS_EXTENSION_COMPOSE__: Function;
 		devMode: Boolean;
 	}
 }
-const { store, history } = configureStore(window.__INITIAL_STATE__);
+const initialData = JSON.parse(document.getElementById('initial-data')!.getAttribute('data-json')!);
+
+const { store, history } = configureStore(initialData);
 
 const Client: FC<any> = (() => {
 	return (

@@ -6,10 +6,22 @@ import { renderToString } from "react-dom/server";
 import { Provider as ReduxProvider } from "react-redux";
 import { StaticRouterContext } from "react-router";
 import { StaticRouter } from "react-router-dom";
+import Helmet from 'react-helmet';
+
+const escape = (str: string) => {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+};
+
 
 export default async (req: Request, res: Response) => {
   const { getStore, App } = await import("@mario/client");
   const location = req.url;
+  const { nonce } = res.locals;
   const context: StaticRouterContext = {};
   const { store } = getStore(location);
 
@@ -23,17 +35,21 @@ export default async (req: Request, res: Response) => {
     </ReduxProvider>
   );
   const reactHtml = renderToString(sheets.collect(jsx));
-  const reduxState = store.getState();
-
+  const reduxState = JSON.stringify(store.getState());
+  const helmetContent = Helmet.renderStatic();
+  const meta = `
+      ${helmetContent.meta.toString()}
+      ${helmetContent.title.toString()}
+    `.trim();
   if (context.url) {
     res.redirect(context.url);
     return;
   }
   console.log(chalk.cyan("SSR:", req.url));
-  res.status(context.statusCode || 200).send(getHtml(reactHtml, reduxState, sheets.toString()));
+  res.status(context.statusCode || 200).send(getHtml(reactHtml, reduxState, sheets.toString(), nonce, meta));
 };
 
-function getHtml(reactHtml: string, reduxState = {}, css: string) {
+function getHtml(reactHtml: string, reduxState:string, css: string ,nonce:string, meta:any) {
   return `
         <!DOCTYPE html>
         <html lang="en">
@@ -46,15 +62,15 @@ function getHtml(reactHtml: string, reduxState = {}, css: string) {
               <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&family=VT323&display=swap" rel="stylesheet" />
               <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
               <title>Mario Pro Max | SSR</title>
-              <style id="jss-server-side">${css}</style>
+              <meta property="csp-nonce" content="${nonce}">
+              ${meta}
+              <style id="jss-server-side" nonce="${nonce}">${css}</style>
           </head>
           <body>
               <div id="root">${reactHtml}</div>
-              <script>
-                  window.__INITIAL_STATE__ = ${JSON.stringify(reduxState)}
-              </script>
-              <script defer src="/runtime~main.js"></script>
-              <script defer src="/main.js"></script>
+              <script nonce="${nonce}" id="initial-data" type="text/plain" data-json="${escape(reduxState)}"></script>
+              <script defer src="/runtime~main.js" nonce="${nonce}"></script>
+              <script defer src="/main.js" nonce="${nonce}"></script>
           </body>
         </html>
     `;
