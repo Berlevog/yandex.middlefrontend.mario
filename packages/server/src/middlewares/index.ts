@@ -1,1 +1,1 @@
-export {default as renderMiddleware} from "src/middlewares/render/renderMiddleware"
+export {default as renderMiddleware} from "./render/renderMiddleware"
