@@ -37,6 +37,9 @@ class Source {
 export enum Playlist {
   world = "/music/world01.ogg",
   killed = "/music/killed.ogg",
+  coin = "/music/coin.ogg",
+  jump = "/music/jump.ogg",
+  // brick = "/music/killed.ogg",
 }
 
 export default class Music extends EventEmitter {
