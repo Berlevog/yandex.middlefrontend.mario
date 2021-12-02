@@ -1,7 +1,8 @@
-import Secret from "engine/objects/Secret";
+import Gamepad from "engine/Gamepad";
 import { ResourceImage } from "../pages/Game/Resources";
 import { Engine, linearEquation } from "./Engine";
 import { MapObject } from "./MapObject";
+import Secret from "./objects/Secret";
 import { PhysicalObject } from "./PhysicalObject";
 import { Point, Vector } from "./Point";
 
@@ -44,6 +45,7 @@ class Player extends PhysicalObject {
 	private curentJumpAltitude: number = 0;
 	private keysPressed: any = {};
 	private ground: boolean = false;
+	private gamepad: Gamepad;
 
 	constructor(props: PlayerProps) {
 		super({ ...props, texture: new ResourceImage("images/player.png") });
@@ -55,6 +57,11 @@ class Player extends PhysicalObject {
 		this.rect = { x: 0, y: 0, width: this.playerSize.width, height: this.playerSize.height };
 		this.pivot = new Point({ x: Math.floor(this.playerSize.width / 2), y: Math.floor(this.playerSize.height / 2) });
 		this.restart();
+		this.gamepad = new Gamepad();
+
+		// setInterval(() => {
+		//
+		// }, 500);
 	}
 
 	registerEvents() {
@@ -65,17 +72,65 @@ class Player extends PhysicalObject {
 		// this.on("collision", this.handleCollision);
 	}
 
+	collide(object: MapObject, hit: any) {
+		switch (object.type) {
+			case Engine.ObjectType.ENEMY: {
+				if (hit.bottom) {
+					this.emit("kill", object);
+				} else if (hit.left || hit.right) {
+					this.isDead = true;
+					this.gameOver();
+				}
+				break;
+			}
+			case Engine.ObjectType.COIN:
+				this.emit("harvest", object);
+				break;
+			case Engine.ObjectType.SECRET:
+				if (hit.topMiddle) {
+					const secret = object as Secret;
+					if (secret.coins > 0) {
+						this.emit("spoil", secret.coins > 0);
+					}
+				}
+				break;
+			case Engine.ObjectType.BRICK:
+			case Engine.ObjectType.SOLID:
+				break;
+			default:
+				console.log("Player: Unknown object type", object.type);
+		}
+		super.collide(object, hit);
+	}
+
 	handleBottomCollision(object: MapObject) {
 		super.handleBottomCollision(object);
 		// if(this.velocity.y>0.1){
-			this.velocity.x= this.velocity.x/1.5;
+		this.velocity.x = this.velocity.x / 1.5;
 		// }
 		this.ground = this.y + this.height === object.y;
 	}
 
 	render(renderer: Engine.IRenderer) {
 		const { canvas, context } = renderer;
-		// this.calcPhysics();
+
+		if (this.gamepad.gamepad) {
+			const { left, right, up, down } = this.gamepad.getDirection();
+			if(left){
+				this.addForce(new Vector({ x: -0.5, y: 0 }));
+			}
+			if(right){
+				this.addForce(new Vector({ x: 0.5, y: 0 }));
+			}
+			if(up){
+				if (this.ground) {
+					this.emit("jump");
+					this.ground = false;
+					this.addForce(new Vector({ x: 0, y: -3.2 }));
+				}
+			}
+		}
+
 		if (this.y > canvas.height) {
 			this.isDead = true;
 		}
@@ -95,38 +150,7 @@ class Player extends PhysicalObject {
 		this.removeAllListeners("collision");
 		this.removeAllListeners("playerstate");
 		this.removeAllListeners("keypressed");
-	}
-
-	collide(object: MapObject, hit: any) {
-
-		switch (object.type) {
-			case Engine.ObjectType.ENEMY:{
-				if(hit.bottom){
-					this.emit('kill', object);
-				} else if (hit.left || hit.right) {
-					this.isDead = true;
-					this.gameOver();
-				}
-				break;
-			}
-			case Engine.ObjectType.COIN:
-				this.emit('harvest', object);
-				break;
-			case Engine.ObjectType.SECRET:
-				if(hit.topMiddle){
-					const secret = object as Secret;
-					if(secret.coins>0){
-						this.emit('spoil', secret.coins>0);
-					}
-				}
-				break;
-			case Engine.ObjectType.BRICK:
-			case Engine.ObjectType.SOLID:
-				break;
-			default:
-				console.log("Player: Unknown object type", object.type);
-		}
-		super.collide(object, hit);
+		this.gamepad.destroy();
 	}
 
 	movePlayer(point: Engine.IPoint, speed: number = 1, callback?: Function, keyframes?: [], animationType?: any) {
@@ -182,27 +206,27 @@ class Player extends PhysicalObject {
 	}
 
 	handleKeysPressed(keys: any) {
-		if(keys[" "]){
-			this.emit('log');
+		if (keys[" "]) {
+			this.emit("log");
 		}
 		if (keys["ArrowRight"]) {
 			// if (!this.ground) {
 			//   this.velocity.x = 0;
-			  this.addForce(new Vector({ x: 0.8, y: 0 }));
+			this.addForce(new Vector({ x: 0.8, y: 0 }));
 			// } else {
 			// this.addForce(new Vector({ x: 0.8, y: 0 }));
 			// }
 		} else if (keys["ArrowLeft"]) {
 			// if (!this.ground) {
 			//   this.velocity.x = 0;
-			  this.addForce(new Vector({ x: -0.8, y: 0 }));
+			this.addForce(new Vector({ x: -0.8, y: 0 }));
 			// } else {
 			// this.addForce(new Vector({ x: -0.8, y: 0 }));
 			// }
 		}
 		if (keys["ArrowUp"]) {
 			if (this.ground) {
-				this.emit('jump');
+				this.emit("jump");
 				this.ground = false;
 				this.addForce(new Vector({ x: 0, y: -4.2 }));
 			}
@@ -233,55 +257,6 @@ class Player extends PhysicalObject {
 		}
 	}
 
-	// animateRunningFrame() {
-	//   // @ts-ignore
-	//   this.animateRunningInterval = setInterval(() => {
-	//     if (this.runningFrame >= 2) {
-	//       this.runningFrame = 0;
-	//     } else {
-	//       this.runningFrame++;
-	//     }
-	//     // this.runningFrame = 2;
-	//   }, 120);
-	// }
-
-	// stopAnimateRunningFrame() {
-	//   if (this.animateRunningInterval) {
-	//     // @ts-ignore
-	//     clearInterval(this.animateRunningInterval);
-	//   }
-	// }
-
-	// animateJumpFrame() {
-	//   // @ts-ignore
-	//   this.curentJumpAltitude = 0;
-	//   this.jumpingFrame = 0;
-	//   this.animateJumpInterval = setInterval(() => {
-	//     if (this.curentJumpAltitude < this.jumpAltitude) {
-	//       this.curentJumpAltitude++;
-	//       this.y = this.y - this.jumpSpeed;
-	//       if (this.keysPressed["ArrowRight"]) {
-	//         this.x = this.x + 1;
-	//       }
-	//       if (this.keysPressed["ArrowLeft"]) {
-	//         this.x = this.x - 1;
-	//       }
-	//     } else {
-	//       this.setPlayerState(PlayerState.FALLING);
-	//       clearInterval(this.animateJumpInterval as NodeJS.Timeout);
-	//     }
-	//     // this.positionY = this.positionY + 10;
-	//     // this.runningFrame = 2;
-	//   }, 10);
-	// }
-
-	// stopAnimateJumpFrame() {
-	//   if (this.animateJumpInterval) {
-	//     // @ts-ignore
-	//     clearInterval(this.animateJumpInterval);
-	//   }
-	// }
-
 	canPlayerRun() {
 		return true;
 	}
@@ -292,25 +267,6 @@ class Player extends PhysicalObject {
 			this.emit("playerstate", this.playerState);
 		}
 	}
-
-	// calcPhysics() {
-	//   switch (this.playerState) {
-	//     case PlayerState.FALLING:
-	//       // todo второй закон Ньютона
-	//       // this.y = this.y + this.fallingSpeed;
-	//       break;
-	//     // case PlayerState.JUMPING:
-	//     //   if (this.curentJumpAltitude < this.jumpAltitude) {
-	//     //     this.curentJumpAltitude++;
-	//     //     this.positionY = this.positionY - this.jumpSpeed;
-	//     //   } else {
-	//     //     // console.log("fall");
-	//     //     // this.setPlayerState(PlayerState.FALLING);
-	//     //   }
-	//     //
-	//     //   break;
-	//   }
-	// }
 
 	restart() {
 		this.y = 165;
