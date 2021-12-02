@@ -10,3 +10,5 @@ DB_VOLUME=.dbdata
 APP_PORT=3000
 UID=1000
 GID=1000
+
+#blah
