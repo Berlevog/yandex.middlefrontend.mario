@@ -71,6 +71,10 @@ export default class World extends Sprite {
       this.music.playSound(Playlist.jump);
     });
 
+    this.player.on("kill", () => {
+      this.music.playSound(Playlist.kill);
+    });
+
     this.player.on("log", () => {
       console.log(
         new Point({

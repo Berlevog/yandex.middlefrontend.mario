@@ -39,6 +39,7 @@ export enum Playlist {
   killed = "/music/killed.ogg",
   coin = "/music/coin.ogg",
   jump = "/music/jump.ogg",
+  kill = "/music/kill.ogg",
   // brick = "/music/killed.ogg",
 }
 
