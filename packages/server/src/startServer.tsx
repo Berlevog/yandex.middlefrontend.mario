@@ -66,6 +66,7 @@ const runServer = (
   app.use(json());
 
   routes(app, options);
+
   app.use(renderMiddleware);
 
   app.listen(port, host, () => {
