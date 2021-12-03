@@ -12,12 +12,6 @@ export type ResultsProps = {
   time: number;
 };
 
-enum GameStage {
-  "START" = "start",
-  "GAME" = "game",
-  "END" = "end",
-}
-
 const useStyles = makeStyles(() => ({
   root: {
     display: "flex",
@@ -38,19 +32,17 @@ function Game({ onGameOver }: GameProps) {
 
   useEffect(() => {
     const player = new Player({});
-    // const obj = new PhysicalObject({ texture: new ResourceImage("images/cloud.png") });
     const world = new World({ player, onGameOver });
     if (appRef.current) {
       //@ts-ignore
       appRef.current.addChild(world);
       appRef.current.addChild(player);
-      // appRef.current.addChild(obj);
     }
   }, []);
 
   return (
     <Box className={classes.root}>
-      <Application ref={appRef} width={800} height={500} color={"#93BBEC"} />
+      <Application ref={appRef} width={800} height={500} color={"#000"} />
     </Box>
   );
 }
