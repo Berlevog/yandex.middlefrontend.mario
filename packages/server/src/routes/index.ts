@@ -6,9 +6,10 @@ import path from "path";
 import { comments, emojies, themes, threads, users } from "../api/routes/v1";
 import { csp, generateNonceId } from "../csp";
 import { renderMiddleware } from "../middlewares";
-import { authMiddleware } from "../middlewares/authMiddleware";
 import * as health from "../middlewares/health";
 import { WebpackBuildConfigOptionsType } from "../webpack/types";
+
+import { authMiddleware } from "../middlewares/authMiddleware";
 
 export function routes(app: express.Application, options: WebpackBuildConfigOptionsType) {
   app.use("/favicon.ico", (req, res) => res.status(200).send());

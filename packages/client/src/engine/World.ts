@@ -34,10 +34,12 @@ export default class World extends Sprite {
   private music: Music;
   private resources: MapObject[];
   private score: { score: number; coins: number };
+  private startTime: number;
 
   constructor(private props: WorldProps) {
     super({ ...props, texture: new ResourceImage("images/world.png") });
     this.score = { coins: 0, score: 0 };
+    this.startTime = new Date().getTime();
 
     this.clouds = new Clouds();
     this.player = props.player as Player;
@@ -50,7 +52,7 @@ export default class World extends Sprite {
     this.player.once("gameover", () => {
       this.music.stop(Playlist.world);
       this.music.playSound(Playlist.killed).then(() => {
-        this.props.onGameOver();
+        this.props.onGameOver({ ...this.score, time: new Date().getTime() - this.startTime });
       });
     });
 

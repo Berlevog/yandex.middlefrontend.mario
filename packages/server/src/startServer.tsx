@@ -13,6 +13,10 @@ import hotMiddleware from "webpack-hot-middleware";
 import { DEFAULT_SERVER_CONFIG, ServerConfig } from "./conf";
 import { routes } from "./routes";
 import { sequelize } from "./api/sequelize";
+import cookieParser from "cookie-parser";
+import https from "https";
+import fs from "fs";
+import { resolve } from "path";
 
 import { WebpackBuildConfigOptionsType } from "./webpack/types";
 
@@ -64,12 +68,30 @@ const runServer = (
   })();
 
   app.use(json());
+  app.use(cookieParser());
 
   routes(app, options);
 
   app.use(renderMiddleware);
 
-  app.listen(port, host, () => {
+  const SSL_MODE = process.env.SSL_MODE;
+
+  let server;
+  if (SSL_MODE === "on") {
+    server = https.createServer(
+      {
+        key: fs.readFileSync(resolve("cert", "selfsigned.key")),
+        cert: fs.readFileSync(resolve("cert", "selfsigned.cert")),
+      },
+      app
+    );
+    console.log("SSL MODE ENABLED", SSL_MODE);
+  } else {
+    server = app;
+    console.log("SSL MODE DISABLED", SSL_MODE);
+  }
+
+  server.listen(port, host, () => {
     console.log(chalk.green(`Running on http://${host}:${port}/`));
   });
 };
