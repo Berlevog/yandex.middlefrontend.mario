@@ -9,6 +9,8 @@ import { renderMiddleware } from "../middlewares";
 import * as health from "../middlewares/health";
 import { WebpackBuildConfigOptionsType } from "../webpack/types";
 
+import { authMiddleware } from "../middlewares/authMiddleware";
+
 export function routes(app: express.Application, options: WebpackBuildConfigOptionsType) {
   app.use("/favicon.ico", (req, res) => res.status(200).send());
   app.use("/robots.txt", express.static(path.join(options.buildPath, "robots.txt")));
@@ -44,6 +46,6 @@ export function routes(app: express.Application, options: WebpackBuildConfigOpti
   app.use("/api/v1/theme", themes);
   app.use("/api/v1/user", users);
 
-  app.get("/*", renderMiddleware);
+  app.get("/*", authMiddleware, renderMiddleware);
   app.use(express.static(options.buildPath));
 }

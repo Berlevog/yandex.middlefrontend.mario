@@ -7,7 +7,6 @@ import Helmet from "react-helmet";
 import { Provider as ReduxProvider } from "react-redux";
 import { StaticRouterContext } from "react-router";
 import { StaticRouter } from "react-router-dom";
-import { authMiddleware } from "../authMiddleware";
 import { renderPage } from "./renderPage";
 
 export default async (req: Request, res: Response, next: NextFunction) => {
@@ -16,8 +15,6 @@ export default async (req: Request, res: Response, next: NextFunction) => {
   const { nonce } = res.locals;
   const context: StaticRouterContext = {};
   const { store } = getStore(location);
-
-  await authMiddleware(req);
 
   const sheets = new ServerStyleSheets();
 
