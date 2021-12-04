@@ -5,7 +5,8 @@
   "bin": "bin/server.js",
   "main": "src/index.ts",
   "scripts": {
-    "build:lib": "tsc -b",
+    "build:lib": "npm run copy:cert && tsc -b",
+    "copy:cert": "copyfiles -f ./src/cert/* dist/cert",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -25,12 +26,14 @@
     "body-parser": "1.19.0",
     "compression": "1.7.4",
     "cookie-parser": "^1.4.6",
+    "copyfiles": "^2.4.1",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-http-context": "^1.2.4",
     "express-validator": "^6.13.0",
     "helmet": "3.21.3",
     "http-status-codes": "^2.1.4",
+    "https": "^1.0.0",
     "module-from-string": "^3.1.2",
     "nanoid": "3.1.30",
     "pg": "^8.7.1",
