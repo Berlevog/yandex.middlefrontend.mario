@@ -1,23 +1,31 @@
 import axios from "axios";
 import { NextFunction, Request, Response } from "express";
 
-export async function authMiddleware(req: Request, res: Response, next: NextFunction) {
+const AUTH_URL = "https://ya-praktikum.tech/api/v2/auth/user";
+
+export async function authMiddleware(req: Request) {
   enum protectedRoutes {
-    "/forum",
-    "/profile",
+    "/forum" = "forum",
+    "/login" = "login",
   }
 
-  console.log("hello auth middleware: ", req.url);
+  //@ts-ignore
+  const isProtectedRoute = protectedRoutes[req.url];
 
-  try {
-    // Получить пользователя
-    // Положить пользователя в стор
-    console.log("authMiddleware: fetch user and fill the store");
-  } catch (e) {
-    // Проверить req.url на protectedRoute
-    // Редиректнуть на /login если роут защищённый
-    console.log("authMiddleware: not logged in");
+  if (isProtectedRoute) {
+    try {
+      // const cookie = `authCookie=${req.cookies.authCookie}`;
+
+      console.log(req.cookies);
+
+      // const { data } = await axios.get(AUTH_URL, {
+      //   headers: { Cookie: cookie },
+      // });
+
+      // console.log(data);
+    } catch (e) {
+      //@ts-ignore
+      console.log("redirect to /login", e, e.message);
+    }
   }
-
-  await next();
 }

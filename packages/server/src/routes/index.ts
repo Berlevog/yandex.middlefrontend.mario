@@ -6,7 +6,6 @@ import path from "path";
 import { comments, emojies, themes, threads, users } from "../api/routes/v1";
 import { csp, generateNonceId } from "../csp";
 import { renderMiddleware } from "../middlewares";
-import { authMiddleware } from "../middlewares/authMiddleware";
 import * as health from "../middlewares/health";
 import { WebpackBuildConfigOptionsType } from "../webpack/types";
 
@@ -45,6 +44,6 @@ export function routes(app: express.Application, options: WebpackBuildConfigOpti
   app.use("/api/v1/theme", themes);
   app.use("/api/v1/user", users);
 
-  app.get("/*", authMiddleware, renderMiddleware);
+  app.get("/*", renderMiddleware);
   app.use(express.static(options.buildPath));
 }

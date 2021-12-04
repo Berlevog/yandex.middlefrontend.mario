@@ -24,6 +24,7 @@
     "@mario/client": "1.0.0",
     "body-parser": "1.19.0",
     "compression": "1.7.4",
+    "cookie-parser": "^1.4.6",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-http-context": "^1.2.4",
@@ -42,6 +43,7 @@
   },
   "devDependencies": {
     "@types/compression": "^1.7.2",
+    "@types/cookie-parser": "^1.4.2",
     "@types/express": "^4.17.13",
     "@types/helmet": "^0.0.45",
     "@types/nanoid": "^3.0.0",
