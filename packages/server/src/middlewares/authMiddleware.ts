@@ -13,6 +13,7 @@ export async function authMiddleware(req: Request, res: Response, next: NextFunc
   const isProtectedRoute = protectedRoutes[req.url];
 
   console.log(req.cookies);
+  console.log("Signed Cookies: ", req.signedCookies);
   next();
   // if (isProtectedRoute) {
   //   try {
