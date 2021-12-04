@@ -5,15 +5,13 @@ import { User } from "./User";
 @Scopes(() => ({
   withComments: {
     include: [
-      {
-        model: Comment,
-      },
-      {
-        model: User,
-        attributes: ["name", "avatar"],
-      },
+      { model: Comment, as: "comment", include: [User] },
+      { model: User, attributes: ["name", "avatar"] },
     ],
-    order: [["id", "DESC"]],
+    order: [
+      ["id", "DESC"],
+      [{ model: Comment, as: "comment" }, "id", "ASC"],
+    ],
   },
 }))
 @Table({
@@ -35,5 +33,5 @@ export class Thread extends Model<Thread> {
   user!: User;
 
   @HasMany(() => Comment)
-  comments!: Comment[];
+  comment!: Comment[];
 }
