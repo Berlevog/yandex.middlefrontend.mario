@@ -22,7 +22,7 @@ const useStyles = makeStyles(() => ({
     alignItems: "center",
     justifyContent: "space-around",
     marginTop: 59,
-    position:"relative"
+    position: "relative",
   },
   results: {
     display: "flex",
@@ -32,16 +32,17 @@ const useStyles = makeStyles(() => ({
     // marginBottom: 270,
     color: "white",
     fontSize: 20,
+    zIndex: 20,
   },
   score: { marginRight: 180, width: 50 },
   coins: { marginRight: 560, width: 20 },
   options: {
     listStyle: "none",
     color: "#FFF",
-    backgroundColor:"#00000099",
+    backgroundColor: "#00000099",
     fontSize: 54,
     cursor: "pointer",
-    zIndex:999,
+    zIndex: 999,
     // paddingTop:99,
   },
   active: {
@@ -86,32 +87,31 @@ const End: FC<EndProps> = ({ onEnd, results }) => {
 
   return (
     <>
-    <div className={classes.root}>
-      <div className={classes.results}>
-        <div className={classes.score}>{results.score}</div>
-        <div className={classes.coins}>{results.coins}</div>
-        <div>{results.time}</div>
+      <div className={classes.root}>
+        <div className={classes.results}>
+          <div className={classes.score}>{results.score}</div>
+          <div className={classes.coins}>{results.coins}</div>
+          <div>{results.time}</div>
+        </div>
+        <ul className={classes.options}>
+          <li
+            data-game-mode={END_MODE.CONTINUE}
+            onClick={handleClick}
+            className={mode === END_MODE.CONTINUE ? classes.active : ""}
+          >
+            {END_MODE.CONTINUE}
+          </li>
+          <li
+            data-game-mode={END_MODE.EXIT}
+            onClick={handleClick}
+            className={mode === END_MODE.EXIT ? classes.active : ""}
+          >
+            {END_MODE.EXIT}
+          </li>
+        </ul>
+        <video src={"images/endgame.mp4"} autoPlay style={{ position: "absolute", top: 0, zIndex: 10 }} />
       </div>
-      <ul className={classes.options}>
-        <li
-          data-game-mode={END_MODE.CONTINUE}
-          onClick={handleClick}
-          className={mode === END_MODE.CONTINUE ? classes.active : ""}
-        >
-          {END_MODE.CONTINUE}
-        </li>
-        <li
-          data-game-mode={END_MODE.EXIT}
-          onClick={handleClick}
-          className={mode === END_MODE.EXIT ? classes.active : ""}
-        >
-          {END_MODE.EXIT}
-        </li>
-      </ul>
-      <video  src={"images/endgame.mp4"} autoPlay style={{position:"absolute" ,top:0}}/>
-    </div>
-
-  </>
+    </>
   );
 };
 
