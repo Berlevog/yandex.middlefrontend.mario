@@ -14,6 +14,9 @@ import { DEFAULT_SERVER_CONFIG, ServerConfig } from "./conf";
 import { routes } from "./routes";
 import { sequelize } from "./api/sequelize";
 import cookieParser from "cookie-parser";
+import https from "https";
+import fs from "fs";
+import { resolve } from "path";
 
 import { WebpackBuildConfigOptionsType } from "./webpack/types";
 
@@ -71,7 +74,15 @@ const runServer = (
 
   app.use(renderMiddleware);
 
-  app.listen(port, host, () => {
+  const server = https.createServer(
+    {
+      key: fs.readFileSync(resolve("cert", "selfsigned.key")),
+      cert: fs.readFileSync(resolve("cert", "selfsigned.cert")),
+    },
+    app
+  );
+
+  server.listen(port, host, () => {
     console.log(chalk.green(`Running on http://${host}:${port}/`));
   });
 };

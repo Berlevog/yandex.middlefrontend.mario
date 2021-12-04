@@ -26,7 +26,9 @@ export default async (req: Request, res: Response, next: NextFunction) => {
     </ReduxProvider>
   );
   const reactHtml = renderToString(sheets.collect(jsx));
-  const reduxState = JSON.stringify(store.getState());
+  const user = res.locals.user ? res.locals.user : {};
+  console.log(user);
+  const reduxState = JSON.stringify(store.getState() && { auth: { user } });
   const helmetContent = Helmet.renderStatic();
   const meta = `
       ${helmetContent.meta.toString()}
