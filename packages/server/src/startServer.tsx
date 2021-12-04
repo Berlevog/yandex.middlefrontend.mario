@@ -74,13 +74,22 @@ const runServer = (
 
   app.use(renderMiddleware);
 
-  const server = https.createServer(
-    {
-      key: fs.readFileSync(resolve("cert", "selfsigned.key")),
-      cert: fs.readFileSync(resolve("cert", "selfsigned.cert")),
-    },
-    app
-  );
+  const SSL_MODE = process.env.SSL_MODE;
+
+  let server;
+  if (SSL_MODE === "on") {
+    server = https.createServer(
+      {
+        key: fs.readFileSync(resolve("cert", "selfsigned.key")),
+        cert: fs.readFileSync(resolve("cert", "selfsigned.cert")),
+      },
+      app
+    );
+    console.log("SSL MODE ENABLED", SSL_MODE);
+  } else {
+    server = app;
+    console.log("SSL MODE DISABLED", SSL_MODE);
+  }
 
   server.listen(port, host, () => {
     console.log(chalk.green(`Running on http://${host}:${port}/`));

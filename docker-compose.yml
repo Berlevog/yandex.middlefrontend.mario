@@ -38,6 +38,7 @@ services:
       DB_PASSWORD: ${DB_PASS}
       DB_DATABASE: ${DB_DATABASE}
       APP_PORT: ${APP_PORT}
+      SSL_MODE: ${SSL_MODE}
     depends_on:
       - db 
     networks:
