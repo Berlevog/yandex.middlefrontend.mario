@@ -11,7 +11,6 @@ import { End, END_MODE } from "./components/End";
 
 import { Start, START_MODE } from "./components/Start";
 import Game from "./Game";
-import { generateResults } from "./mockData";
 import { createSelector } from "reselect";
 
 export type ResultsProps = {
@@ -42,8 +41,8 @@ function GamePages() {
 
   const userName = useSelector(selectUserName);
 
-  const handleGameOver = () => {
-    setResults(generateResults());
+  const handleGameOver = (score: ResultsProps) => {
+    setResults(score);
     setStage(GameStage.END);
   };
 

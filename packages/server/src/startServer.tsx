@@ -13,6 +13,7 @@ import hotMiddleware from "webpack-hot-middleware";
 import { DEFAULT_SERVER_CONFIG, ServerConfig } from "./conf";
 import { routes } from "./routes";
 import { sequelize } from "./api/sequelize";
+import cookieParser from "cookie-parser";
 
 import { WebpackBuildConfigOptionsType } from "./webpack/types";
 
@@ -64,8 +65,10 @@ const runServer = (
   })();
 
   app.use(json());
+  app.use(cookieParser());
 
   routes(app, options);
+
   app.use(renderMiddleware);
 
   app.listen(port, host, () => {

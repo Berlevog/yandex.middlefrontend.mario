@@ -32,7 +32,7 @@ export type ThreadProps = {
   userId: number;
   title: string;
   content: string;
-  comments?: [];
+  comment?: [];
   createdAt: Date;
   user: {
     name: string;
@@ -79,7 +79,7 @@ export default function Thread(thread: ThreadProps) {
           </Typography>
         </AccordionDetails>
         <Divider />
-        <PostList posts={thread?.comments} threadId={thread.id} />
+        <PostList posts={thread?.comment} threadId={thread.id} />
       </Accordion>
     </div>
   );
