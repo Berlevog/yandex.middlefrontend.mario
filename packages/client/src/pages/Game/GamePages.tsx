@@ -42,8 +42,8 @@ function GamePages() {
 
   const userName = useSelector(selectUserName);
 
-  const handleGameOver = () => {
-    setResults(generateResults());
+  const handleGameOver = (score: ResultsProps) => {
+    setResults(score);
     setStage(GameStage.END);
   };
 
