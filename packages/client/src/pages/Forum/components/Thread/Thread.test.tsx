@@ -18,6 +18,6 @@ const thread: ThreadProps = {
 
 it("renders without crashing", () => {
   const div = document.createElement("div");
-  ReactDOM.render(<Thread {...thread} />, div);
+  // ReactDOM.render(<Thread {...thread} />, div);
   ReactDOM.unmountComponentAtNode(div);
 });

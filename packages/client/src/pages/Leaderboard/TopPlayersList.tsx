@@ -19,7 +19,7 @@ export default function TopPlayersList() {
 
   return (
     <React.Fragment>
-      <Typography component="h2" variant="h6" color="primary" gutterBottom>
+      <Typography component="h2" variant="h6" gutterBottom>
         Топ игроков
       </Typography>
 

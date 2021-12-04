@@ -7,8 +7,8 @@ const Footer = () => {
     <Typography variant="body2" color="textSecondary" align="center">
       {"Berlevog © "}
       <Link
-        color="primary"
         href="https://github.com/Berlevog/yandex.middlefrontend.mario"
+        color="textSecondary"
         target="_blank"
         underline="always"
       >

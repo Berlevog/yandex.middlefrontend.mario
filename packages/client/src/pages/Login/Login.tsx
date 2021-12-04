@@ -18,8 +18,9 @@ import { Footer } from "../../components/Footer";
 import { FormOAuth } from "../../components/OAuthForm/OAuthTorm";
 import { UNKNOWN_ERROR } from "../../config/constants";
 import { UserSchema } from "../../constants/validationSchema";
-import { SigninProps } from "../../services/auth";
+import { getUser, SigninProps } from "../../services/auth";
 import useAuth from "../../utils/useAuth";
+import { useAppDispatch } from "../../store/hooks";
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -33,8 +34,8 @@ const useStyles = makeStyles((theme) => ({
   },
 
   formContainer: {
-    background: theme.loginPage?.background,
-    backdropFilter: theme.loginPage?.backdropFilter,
+    background: "#FFFFFF88",
+    backdropFilter: "blur(10px)",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -58,14 +59,16 @@ export default function Login() {
 
   const auth = useAuth();
 
+  const dispatch = useAppDispatch();
+
   const gotoApp = () => {
-    history.push("/app");
+    history.push("/profile");
+    dispatch(getUser());
   };
 
   const [error, setError] = useState("");
 
   const handleError = (e: AxiosError) => {
-    console.log(e);
     const error = e?.response?.data?.reason;
     setError(error || UNKNOWN_ERROR);
   };

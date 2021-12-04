@@ -8,8 +8,10 @@ import { makeStyles } from "@material-ui/styles";
 import { AxiosError } from "axios";
 import { SUCCESS_MESSAGE, UNKNOWN_ERROR } from "../../config/constants";
 import { Alert } from "../../components/Alert";
-import { getUser, User } from "../../services/auth";
+import { User } from "../../services/auth";
 import { AlertProps } from "../../components/Alert/Alert";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+// import { fetchUser } from "store/slices/authSlice";
 
 const useStyles = makeStyles(() => ({
   divider: {
@@ -17,28 +19,13 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-let initialValues: User = {
-  email: "",
-  login: "",
-  first_name: "",
-  second_name: "",
-  display_name: "",
-  phone: "",
-  avatar: "",
-  id: 0,
-};
-
 export default function Profile() {
   const classes = useStyles();
+  const dispatch = useAppDispatch();
 
-  const [user, setUser] = useState<User>(initialValues);
   const [showMessage, setShowMessage] = useState(false);
 
-  const fetchUser = () => {
-    getUser().then((user) => setUser(user));
-  };
-
-  useEffect(fetchUser, []);
+  const { user } = useAppSelector((state) => state.auth);
 
   const handleCloseAlert = () => {
     setShowMessage(false);
@@ -67,13 +54,11 @@ export default function Profile() {
       message: SUCCESS_MESSAGE,
       severity: "success",
     });
-    fetchUser();
+    // dispatch(fetchUser());
   };
 
   return (
     <DefaultLayout>
-
-      sdfsdfsf
       <ProfileForm handleSuccess={handleSuccess} handleError={handleError} user={user} />
       <Divider variant="middle" className={classes.divider} />
       <PasswordForm handleSuccess={handleSuccess} handleError={handleError} />

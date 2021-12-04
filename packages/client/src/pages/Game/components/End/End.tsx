@@ -15,19 +15,21 @@ type EndProps = {
 
 const useStyles = makeStyles(() => ({
   root: {
-    width: 1024,
-    height: 702,
-    background: "url(images/game-end.png) center center no-repeat",
+    width: "100%",
+    // height: 702,
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    justifyContent: "space-around",
+    marginTop: 59,
+    position:"relative"
   },
   results: {
     display: "flex",
     width: "100%",
     marginLeft: 150,
     marginTop: 67,
-    marginBottom: 270,
+    // marginBottom: 270,
     color: "white",
     fontSize: 20,
   },
@@ -35,9 +37,12 @@ const useStyles = makeStyles(() => ({
   coins: { marginRight: 560, width: 20 },
   options: {
     listStyle: "none",
-    color: "white",
+    color: "#FFF",
+    backgroundColor:"#00000099",
     fontSize: 54,
     cursor: "pointer",
+    zIndex:999,
+    // paddingTop:99,
   },
   active: {
     listStyle: "square",
@@ -80,8 +85,8 @@ const End: FC<EndProps> = ({ onEnd, results }) => {
   const classes = useStyles();
 
   return (
+    <>
     <div className={classes.root}>
-      <audio src={"music/game-over.ogg"} autoPlay />
       <div className={classes.results}>
         <div className={classes.score}>{results.score}</div>
         <div className={classes.coins}>{results.coins}</div>
@@ -103,7 +108,10 @@ const End: FC<EndProps> = ({ onEnd, results }) => {
           {END_MODE.EXIT}
         </li>
       </ul>
+      <video  src={"images/endgame.mp4"} autoPlay style={{position:"absolute" ,top:0}}/>
     </div>
+
+  </>
   );
 };
 

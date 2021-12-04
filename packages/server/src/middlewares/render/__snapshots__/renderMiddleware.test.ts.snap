@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should create safe html 1`] = `
+"
+        <!DOCTYPE html>
+        <html lang=\\"en\\">
+          <head>
+              <meta charset=\\"utf-8\\" />
+              <meta content=\\"width=device-width, initial-scale=1\\" name=\\"viewport\\" />
+              <meta content=\\"#000000\\" name=\\"theme-color\\" />
+              <meta content=\\"Mario game\\" name=\\"description\\" />
+              <link href=\\"manifest.json\\" rel=\\"manifest\\" />
+              <link href=\\"https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&family=VT323&display=swap\\" rel=\\"stylesheet\\" />
+              <link href=\\"https://fonts.googleapis.com/icon?family=Material+Icons\\" rel=\\"stylesheet\\" />
+              <title>Mario Pro Max | SSR</title>
+              <meta property=\\"csp-nonce\\" content=\\"nonce\\">
+              <meta>meta</meta>
+              <style id=\\"jss-server-side\\" nonce=\\"nonce\\"><style>style</style></style>
+          </head>
+          <body>
+              <div id=\\"root\\"><body>body</body></div>
+              <script nonce=\\"nonce\\" id=\\"initial-data\\" type=\\"text/plain\\" data-json=\\"{&quot;arr&quot;:[&quot;foo&quot;,&quot;bar&quot;],&quot;obj&quot;:{&quot;foo&quot;:1,&quot;bar&quot;:1},&quot;str&quot;:&quot;foo bar&quot;}\\"></script>
+              <script defer src=\\"/runtime~main.js\\" nonce=\\"nonce\\"></script>
+              <script defer src=\\"/main.js\\" nonce=\\"nonce\\"></script>
+          </body>
+        </html>
+    "
+`;

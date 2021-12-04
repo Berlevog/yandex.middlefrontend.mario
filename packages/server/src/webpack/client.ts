@@ -12,7 +12,7 @@ import webpack from "webpack";
 // @ts-ignore
 import { BundleAnalyzerPlugin } from "webpack-bundle-analyzer";
 import nodeExternals from "webpack-node-externals";
-// import PwaManifest from "webpack-pwa-manifest";
+import PwaManifest from "webpack-pwa-manifest";
 import { GenerateSW } from "workbox-webpack-plugin";
 import { WebpackBuildConfigOptionsType } from "./types";
 
@@ -194,21 +194,21 @@ export const buildClientConfig = (options: WebpackBuildConfigOptionsType) => {
 			new MiniCssExtractPlugin({
 				filename: "static/css/bundle.[name].[contenthash].css"
 			}),
-			// isProduction && new PwaManifest({
-			// 	filename: "manifest.webmanifest",
-			// 	name: "super-mario",
-			// 	short_name: "mario",
-			// 	theme_color: "#3498db",
-			// 	description: "Yandex Praktikum Education Project",
-			// 	background_color: "#f5f5f5",
-			// 	crossorigin: "use-credentials",
-			// 	icons: [
-			// 		{
-			// 			src: resolve("./assets/avatar.png"),
-			// 			sizes: [96, 128, 192, 256, 384, 512]
-			// 		}
-			// 	]
-			// }),
+			isProduction && new PwaManifest({
+				filename: "manifest.webmanifest",
+				name: "super-mario",
+				short_name: "mario",
+				theme_color: "#3498db",
+				description: "Yandex Praktikum Education Project",
+				background_color: "#f5f5f5",
+				crossorigin: "use-credentials",
+				icons: [
+					{
+						src: path.resolve(srcPath,"../public/assets/mario-background.jpeg"),
+						sizes: [96, 128, 192, 256, 384, 512]
+					}
+				]
+			}),
 			isProduction && new GenerateSW({
 				clientsClaim: true,
 				skipWaiting: true,

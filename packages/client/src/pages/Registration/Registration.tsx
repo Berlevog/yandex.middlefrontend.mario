@@ -33,8 +33,8 @@ const useStyles = makeStyles((theme) => ({
   },
 
   formContainer: {
-    background: theme.loginPage?.background,
-    backdropFilter: theme.loginPage?.backdropFilter,
+    background: "#FFFFFF88",
+    backdropFilter: "blur(10px)",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",

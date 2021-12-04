@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { useEffect, useState } from "react";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Divider from "@material-ui/core/Divider";
@@ -6,9 +6,12 @@ import { Thread } from "./components/Thread";
 import { DefaultLayout } from "../../layouts";
 import { CreateThread } from "./components/CreateThread";
 import Typography from "@material-ui/core/Typography";
-import { connect } from "react-redux";
 
-import { threads } from "./mockData";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { allThreadsSelector, getThreads } from "../../store/thread/threadSlice";
+import { useSelector } from "react-redux";
+import { getEmojies } from "../../store/emoji/emojiSlice";
+import { ThreadProps } from "./components/Thread/Thread";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -19,8 +22,16 @@ const useStyles = makeStyles(() =>
   })
 );
 
-const Forum: FC = () => {
+export default function Forum() {
   const classes = useStyles();
+
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(getThreads());
+    dispatch(getEmojies());
+  }, []);
+
+  const threads: ThreadProps[] = useSelector(allThreadsSelector);
 
   return (
     <DefaultLayout>
@@ -38,6 +49,4 @@ const Forum: FC = () => {
       </Grid>
     </DefaultLayout>
   );
-};
-
-export default Forum;
+}

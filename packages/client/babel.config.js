@@ -14,10 +14,14 @@ module.exports = api => {
       "@babel/preset-typescript",
       "@babel/preset-react",
       [
-        "@babel/preset-env",
+        "@babel/preset-env"
 
       ]
     ],
-    plugins: ["@babel/plugin-syntax-dynamic-import", "@babel/plugin-proposal-async-generator-functions", "@babel/plugin-transform-runtime"]
+    plugins: [
+      "@babel/plugin-syntax-dynamic-import",
+      "@babel/plugin-proposal-async-generator-functions",
+      "@babel/plugin-transform-runtime",
+    ]
   };
 };

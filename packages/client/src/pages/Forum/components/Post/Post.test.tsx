@@ -18,6 +18,6 @@ const post: PostProps = {
 
 it("renders without crashing", () => {
   const div = document.createElement("div");
-  ReactDOM.render(<Post {...post} />, div);
+  // ReactDOM.render(<Post {...post} />, div);
   ReactDOM.unmountComponentAtNode(div);
 });

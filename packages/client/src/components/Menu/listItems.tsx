@@ -8,11 +8,15 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import SportsEsportsIcon from "@material-ui/icons/SportsEsports";
 import ForumIcon from "@material-ui/icons/Forum";
 import Avatar from "@material-ui/core/Avatar";
+import LockOpenIcon from "@material-ui/icons/LockOpen";
 import { DEFAULT_AVATAR } from "../../config/constants";
 import { makeStyles } from "@material-ui/core/styles";
 
 import useAuth from "../../utils/useAuth";
 import { Link } from "react-router-dom";
+import { useAppSelector } from "../../store/hooks";
+import { RESOURCES_URL } from "../../constants/url";
+import { isLoggedInSelector, userSelector } from "../../store/slices/authSlice";
 
 export const mainListItems = (
   <div>
@@ -21,18 +25,6 @@ export const mainListItems = (
         <SportsEsportsIcon />
       </ListItemIcon>
       <ListItemText primary="Game" />
-    </ListItem>
-    <ListItem button component={Link} to="/leaderboard">
-      <ListItemIcon>
-        <ShowChartIcon />
-      </ListItemIcon>
-      <ListItemText primary="Leaderboard" />
-    </ListItem>
-    <ListItem button component={Link} to="/forum">
-      <ListItemIcon>
-        <ForumIcon />
-      </ListItemIcon>
-      <ListItemText primary="Forum" />
     </ListItem>
   </div>
 );
@@ -56,11 +48,38 @@ export function secondaryListItems() {
 
   const classes = useStyles();
 
+  const isLoggedIn = useAppSelector(isLoggedInSelector);
+
+  const user = useAppSelector(userSelector);
+
+  if (!isLoggedIn) {
+    return (
+      <ListItem button component={Link} to="/login">
+        <ListItemIcon>
+          <LockOpenIcon />
+        </ListItemIcon>
+        <ListItemText primary="Login" />
+      </ListItem>
+    );
+  }
+
   return (
     <div>
+      <ListItem button component={Link} to="/leaderboard">
+        <ListItemIcon>
+          <ShowChartIcon />
+        </ListItemIcon>
+        <ListItemText primary="Leaderboard" />
+      </ListItem>
+      <ListItem button component={Link} to="/forum">
+        <ListItemIcon>
+          <ForumIcon />
+        </ListItemIcon>
+        <ListItemText primary="Forum" />
+      </ListItem>
       <ListItem button component={Link} to="/profile">
         <ListItemIcon>
-          <Avatar alt="userName" src={DEFAULT_AVATAR} className={classes.avatar} />
+          <Avatar alt="userName" src={`${RESOURCES_URL}${user.avatar}` || DEFAULT_AVATAR} className={classes.avatar} />
         </ListItemIcon>
         <ListItemText primary="Profile" />
       </ListItem>

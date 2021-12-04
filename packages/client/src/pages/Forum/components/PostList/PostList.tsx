@@ -1,12 +1,14 @@
-import React, { FC, useCallback, useState } from "react";
+import React, { FC, MouseEventHandler, useCallback, useState } from "react";
 import { createStyles, makeStyles } from "@material-ui/core/styles";
 import { Post } from "../Post";
-import { getPostsByThreadId } from "../../mockData";
 import Divider from "@material-ui/core/Divider";
 import Grid from "@material-ui/core/Grid";
 import { CreatePost } from "../CreatePost";
 
-type Props = {
+import { PostProps } from "../Post/Post";
+
+type PostListProps = {
+  posts?: PostProps[];
   threadId: number;
 };
 
@@ -19,29 +21,23 @@ const useStyles = makeStyles(() =>
   })
 );
 
-const fetchPosts = (threadId: number) => {
-  return getPostsByThreadId(threadId);
-};
-
-const PostList: FC<Props> = ({ threadId }) => {
+export default function PostList({ posts, threadId }: PostListProps) {
   const classes = useStyles();
-  const posts = fetchPosts(threadId);
 
   return (
     <Grid container>
       <Grid item md={12} className={classes.postList}>
-        {posts.map((post, index) => (
-          <div key={`${threadId}-post-${index}`}>
-            <Post {...post} />
-            <Divider />
-          </div>
-        ))}
+        {posts &&
+          posts.map((post, index) => (
+            <div key={`${threadId}-post-${index}`}>
+              <Post {...post} />
+              <Divider />
+            </div>
+          ))}
       </Grid>
       <Grid item md={12}>
-        <CreatePost />
+        <CreatePost threadId={threadId} />
       </Grid>
     </Grid>
   );
-};
-
-export default PostList;
+}

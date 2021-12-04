@@ -6,8 +6,9 @@ import Box from "@material-ui/core/Box";
 import { Header } from "../../components/Header";
 import { Menu } from "../../components/Menu";
 import { Footer } from "../../components/Footer";
-import { Loader } from "../../components/Loader";
 import { NO_CONTENT } from "../../config/constants";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { isOpenSelector, toggleIsOpen } from "../../store/drawer/drawerSlice";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     height: "100vh",
     overflow: "auto",
+    background: theme.palette.background.default,
   },
   container: {
     paddingTop: theme.spacing(4),
@@ -28,17 +30,18 @@ const useStyles = makeStyles((theme) => ({
 const DefaultLayout: FC = ({ children }) => {
   const classes = useStyles();
 
-  const [open, setOpen] = useState(true);
+  const isOpen = useAppSelector(isOpenSelector);
+  const dispatch = useAppDispatch();
 
   const toggleDrawerOpen = () => {
-    setOpen(!open);
+    dispatch(toggleIsOpen());
   };
 
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <Header open={open} onClick={toggleDrawerOpen} />
-      <Menu open={open} onClick={toggleDrawerOpen} />
+      <Header open={isOpen} onClick={toggleDrawerOpen} />
+      <Menu open={isOpen} onClick={toggleDrawerOpen} />
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>

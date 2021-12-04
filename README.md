@@ -12,3 +12,9 @@ _Командный проект 5-9 спринта_
 Тесты - `npm run test`
 
 Demo - https://super-mario-yandex.herokuapp.com/
+
+## Темизация
+
+После запуска проекта в докере, в БД нужно внести две записи в таблицу theme:
+name: light, theme: {}
+name: dark, theme: {"palette": {"type": "dark", "primary": {"main": "#303030"}}}

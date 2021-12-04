@@ -1,0 +1,48 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:12-bullseye
+    ports:
+      - "${DB_PORT}:5432"
+    user: "${UID}:${GID}"
+    environment:
+      POSTGRES_PASSWORD: ${DB_USER}
+      POSTGRES_USER: ${DB_PASS}
+      POSTGRES_DB: ${DB_DATABASE}
+    volumes:
+      - ${DB_VOLUME}:/var/lib/postgresql/data
+    networks:
+      - net1
+
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080
+    networks:
+      - net1
+
+  app:
+    build:
+      context: .
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    volumes:
+      - ./:/usr/src/app
+    user: "${UID}:${GID}"
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_DRIVER: ${DB_DRIVER}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASS}
+      DB_DATABASE: ${DB_DATABASE}
+      APP_PORT: ${APP_PORT}
+    depends_on:
+      - db 
+    networks:
+      - net1
+
+networks:
+  net1:
+      driver: bridge
