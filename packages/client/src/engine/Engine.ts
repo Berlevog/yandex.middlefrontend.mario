@@ -48,6 +48,7 @@ export namespace Engine {
 		COIN = "Type/COIN",
 		SECRET = "Type/SECRET",
 		BRICK = "Type/BRICK",
+		BOSS = "Type/BOSS",
 	}
 
 	export type DisplayObjectProps = {};

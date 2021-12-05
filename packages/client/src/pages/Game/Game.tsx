@@ -24,15 +24,16 @@ const useStyles = makeStyles(() => ({
 
 type GameProps = {
   onGameOver: Function;
+  onVictory: Function;
 };
 
-function Game({ onGameOver }: GameProps) {
+function Game({ onGameOver, onVictory }: GameProps) {
   const appRef = useRef<Application>(null);
   const classes = useStyles();
 
   useEffect(() => {
     const player = new Player({});
-    const world = new World({ player, onGameOver });
+    const world = new World({ player, onGameOver, onVictory });
     if (appRef.current) {
       //@ts-ignore
       appRef.current.addChild(world);

@@ -23,13 +23,13 @@ export default class GamepadAPI {
 
 	getDirection(): { right: boolean, up: boolean, down: boolean, left: boolean } {
 		// @ts-ignore
-		this.gamepad = navigator.getGamepads ? navigator.getGamepads()[0] : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
+		this.gamepad = navigator.getGamepads ? navigator.getGamepads()[0] : (navigator.webkitGetGamepads[0] ? navigator.webkitGetGamepads[0] : null);
 
 		return {
-			up: this.gamepad.buttons[12].pressed,
-			down: this.gamepad.buttons[13].pressed,
-			left: this.gamepad.buttons[14].pressed,
-			right: this.gamepad.buttons[15].pressed
+			up: this.gamepad?.buttons[12]?.pressed,
+			down: this.gamepad?.buttons[13]?.pressed,
+			left: this.gamepad?.buttons[14]?.pressed,
+			right: this.gamepad?.buttons[15]?.pressed
 		};
 	}
 

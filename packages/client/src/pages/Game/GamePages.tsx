@@ -45,6 +45,10 @@ function GamePages() {
     setResults(score);
     setStage(GameStage.END);
   };
+  const handleVictory = (score: ResultsProps) => {
+    setResults(score);
+    history.push("/leaderboard")
+  };
 
   const handleStart = (startMode: START_MODE) => {
     setStage(GameStage.GAME);
@@ -90,7 +94,7 @@ function GamePages() {
         </DefaultLayout>
       );
     case GameStage.GAME:
-      return <Game onGameOver={handleGameOver} />;
+      return <Game onGameOver={handleGameOver} onVictory={handleVictory}/>;
     default:
       return <div />;
   }
