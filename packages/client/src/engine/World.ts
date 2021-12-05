@@ -91,14 +91,7 @@ export default class World extends Sprite {
       this.music.playSound(Playlist.kill);
     });
 
-    this.player.on("log", () => {
-      const pos = new Point({
-        x: Math.abs(this.position.x) + this.player.position.x,
-        y: Math.abs(this.position.y) + this.player.position.y,
-      })
-      console.log(pos);
-      this.enemies.push(new Peach({x:this.player.position.x+100, y:this.player.position.y}))
-    });
+
 
     this.player.on("kill", (item: MapObject) => {
       this.score.score += 100;
