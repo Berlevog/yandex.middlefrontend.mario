@@ -11,7 +11,7 @@ _Командный проект 5-9 спринта_
 
 Тесты - `npm run test`
 
-Demo - https://super-mario-yandex.herokuapp.com/
+Demo - https://berlevog-mario-08.ya-praktikum.tech/app
 
 ## Темизация
 
