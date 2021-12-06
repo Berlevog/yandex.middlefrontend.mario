@@ -7,7 +7,8 @@
   "scripts": {
     "build:lib": "npm run copy:cert && tsc -b",
     "copy:cert": "copyfiles -f ./src/cert/* dist/cert",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "repository": {
     "type": "git",
@@ -61,5 +62,13 @@
     "supertest": "4.0.2",
     "ts-node": "^10.4.0",
     "typescript": "^4.4.4"
+  },
+  "jest": {
+    "verbose": true,
+    "testEnvironment": "jsdom",
+    "testPathIgnorePatterns": ["/node_modules/", "<rootDir>/build/", "<rootDir>/dist/"],
+    "setupFilesAfterEnv": [
+      "./enzymeSetup.js"
+    ]
   }
 }
