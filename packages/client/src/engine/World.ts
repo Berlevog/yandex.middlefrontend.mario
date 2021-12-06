@@ -87,13 +87,8 @@ export default class World extends Sprite {
       this.music.playSound(Playlist.jump);
     });
 
-    this.player.on("kill", () => {
-      this.music.playSound(Playlist.kill);
-    });
-
-
-
     this.player.on("kill", (item: MapObject) => {
+      this.music.playSound(Playlist.kill);
       this.score.score += 100;
       this.enemies = this.enemies.filter((resource) => resource !== item);
     });

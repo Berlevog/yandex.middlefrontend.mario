@@ -176,6 +176,7 @@
   "jest": {
     "verbose": true,
     "testEnvironment": "jsdom",
+    "testPathIgnorePatterns": ["/node_modules/", "<rootDir>/build/", "<rootDir>/dist/"],
     "setupFilesAfterEnv": [
       "./enzymeSetup.js"
     ]
