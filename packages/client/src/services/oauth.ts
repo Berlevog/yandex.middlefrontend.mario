@@ -4,7 +4,7 @@ import { API_BASE_URL } from "../constants/url";
 export const redirectUrl =
   process.env.NODE_ENV !== "production"
     ? "http://local.ya-praktikum.tech:3000"
-    : "https://super-mario-yandex.herokuapp.com";
+    : "https://berlevog-mario-08.ya-praktikum.tech";
 
 export const getOAuthUrl = (serviceId: string) =>
   `https://oauth.yandex.ru/authorize/?response_type=code&client_id=${serviceId}&redirect_uri=${redirectUrl}`;
