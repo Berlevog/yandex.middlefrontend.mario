@@ -3,18 +3,20 @@
 _Командный проект 5-9 спринта_
 
 [![build-test](https://github.com/Berlevog/yandex.middlefrontend.mario/actions/workflows/actions.yml/badge.svg)](https://github.com/Berlevog/yandex.middlefrontend.mario/actions/workflows/actions.yml)
-[![Heroku](https://heroku-badge.herokuapp.com/?app=super-mario-yandex&style=flat)](https://super-mario-yandex.herokuapp.com/)
 
-Запуск проекта - `npm start`
+Запуск проекта:
 
-Сборка - `npm run build`
+`npm run docker:build`
 
-Тесты - `npm run test`
+`npm run docker:start`
 
-Demo - https://super-mario-yandex.herokuapp.com/
+После запуска узнать CONTAINER_ID контейнера mario_app:
 
-## Темизация
+`docker ps`
+Засидировать БД:
 
-После запуска проекта в докере, в БД нужно внести две записи в таблицу theme:
-name: light, theme: {}
-name: dark, theme: {"palette": {"type": "dark", "primary": {"main": "#303030"}}}
+`docker exec -it {CONTAINER_ID} npm run db:seed:undo`
+
+`docker exec -it {CONTAINER_ID} npm run db:seed`
+
+Demo - https://berlevog-mario-08.ya-praktikum.tech/app

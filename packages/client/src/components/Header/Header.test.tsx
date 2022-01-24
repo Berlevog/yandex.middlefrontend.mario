@@ -1,18 +1,25 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { mount } from "enzyme";
+import { mount, ReactWrapper } from "enzyme";
 import Header from "./Header";
+import { Provider } from "react-redux";
+import { BrowserRouter } from "react-router-dom";
+import { configureStore } from "../../store";
+import { getInitialState } from "../../store/getInitialState";
 
 describe("render header", () => {
-  it("renders without crashing", () => {
-    const div = document.createElement("div");
-
-    ReactDOM.render(<Header open={true} />, div);
-    ReactDOM.unmountComponentAtNode(div);
+  let wrapper: ReactWrapper;
+  beforeEach(() => {
+    const { store } = configureStore(getInitialState());
+    wrapper = mount(
+      <BrowserRouter>
+        <Provider store={store}>
+          <Header open={true} />
+        </Provider>
+      </BrowserRouter>
+    );
   });
-
-  it("props 'open' passed successfully", () => {
-    const header = mount(<Header open={false} />);
-    expect(header.prop("open")).toEqual(false);
+  it("renders without crashing", () => {
+    expect(wrapper.length).toEqual(1);
   });
 });

@@ -1,3 +1,4 @@
+import Peach from "./objects/enemies/Peach";
 import Player from "./Player";
 import { Point } from "./Point";
 import { ResourceImage } from "../pages/Game/Resources";
@@ -21,6 +22,7 @@ const LAND_Y: number = 207;
 type WorldProps = {
   player: PhysicalObject;
   onGameOver: Function;
+  onVictory: Function;
 };
 
 //@ts-ignore
@@ -46,7 +48,7 @@ export default class World extends Sprite {
     this.sprite = new ResourceImage("images/world.png");
     this.music = new Music();
     this.music.on("loaded", () => {
-      this.music.playSound(Playlist.world);
+      this.music.playSound(Playlist.world, true);
     });
 
     this.player.once("gameover", () => {
@@ -54,6 +56,18 @@ export default class World extends Sprite {
       this.music.playSound(Playlist.killed).then(() => {
         this.props.onGameOver({ ...this.score, time: new Date().getTime() - this.startTime });
       });
+    });
+
+    this.player.once("victory", () => {
+      this.music.stop(Playlist.boss);
+      this.music.playSound(Playlist.victory).then(() => {
+        this.props.onVictory({ ...this.score, time: new Date().getTime() - this.startTime });
+      });
+    });
+
+    this.once("boss", () => {
+      this.music.stop(Playlist.world);
+      this.music.playSound(Playlist.boss, true, 23);
     });
 
     this.player.on("harvest", (item: MapObject) => {
@@ -73,20 +87,8 @@ export default class World extends Sprite {
       this.music.playSound(Playlist.jump);
     });
 
-    this.player.on("kill", () => {
-      this.music.playSound(Playlist.kill);
-    });
-
-    this.player.on("log", () => {
-      console.log(
-        new Point({
-          x: Math.abs(this.position.x) + this.player.position.x,
-          y: Math.abs(this.position.y) + this.player.position.y,
-        })
-      );
-    });
-
     this.player.on("kill", (item: MapObject) => {
+      this.music.playSound(Playlist.kill);
       this.score.score += 100;
       this.enemies = this.enemies.filter((resource) => resource !== item);
     });
@@ -166,8 +168,16 @@ export default class World extends Sprite {
       new Tiles({ x: 2976, y: LAND_Y - 96, count: 4 }),
       new Tiles({ x: 2992, y: LAND_Y - 112, count: 3 }),
       new Tiles({ x: 3008, y: LAND_Y - 128, count: 2 }),
-
       new Tiles({ x: 3168, y: LAND_Y - 16, count: 1 }),
+
+      new Tiles({ x: 3370, y: LAND_Y - 16, count: 1 }),
+      new Tiles({ x: 3370, y: LAND_Y - 32, count: 1 }),
+      new Tiles({ x: 3370, y: LAND_Y - 48, count: 1 }),
+      new Tiles({ x: 3370, y: LAND_Y - 64, count: 1 }),
+      new Tiles({ x: 3370, y: LAND_Y - 80, count: 1 }),
+      new Tiles({ x: 3370, y: LAND_Y - 96, count: 1 }),
+      new Tiles({ x: 3370, y: LAND_Y - 112, count: 1 }),
+      new Tiles({ x: 3370, y: LAND_Y - 128, count: 1 }),
     ];
     this.enemies = [
       new Dwarf({ x: 50, y: LAND_Y - 64 }),
@@ -179,7 +189,7 @@ export default class World extends Sprite {
       new Dwarf({ x: 2706, y: LAND_Y - 128 }),
       new Dwarf({ x: 3150, y: LAND_Y - 128 }),
       new Dwarf({ x: 3160, y: LAND_Y - 128 }),
-      new Dwarf({ x: 3230, y: LAND_Y - 128 }),
+      new Peach({ x: 3200, y: LAND_Y - 128 }),
     ];
   }
 
@@ -257,6 +267,15 @@ export default class World extends Sprite {
     context.restore();
   }
 
+  drawBoss(renderer: Engine.IRenderer) {
+    const { canvas, context } = renderer;
+    const y = 64;
+    context.save();
+    context.font = "26px monospace";
+    context.fillText("BOSS: PEACH", 300, y);
+    context.restore();
+  }
+
   render(renderer: Engine.IRenderer) {
     const { canvas, context } = renderer;
     this.detectCollisions();
@@ -285,6 +304,10 @@ export default class World extends Sprite {
 
     this.clouds.render(renderer);
     this.drawStats(renderer);
+    if(Math.abs(this.position.x) + this.player.position.x>2800){
+      this.drawBoss(renderer);
+      this.emit('boss');
+    }
     context.restore();
   }
 

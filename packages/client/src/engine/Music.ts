@@ -16,13 +16,15 @@ class Source {
     }
   }
 
-  play() {
+  play(loop=false, loopEnd=0) {
     return new Promise((resolve) => {
       this.source = this.context.createBufferSource();
       // @ts-ignore
       this.source.buffer = this.buffer;
       this.source.connect(this.context.destination);
       this.source.start(0);
+      this.source.loop = loop;
+      this.source.loopEnd = loopEnd;
       this.source.onended = () => {
         resolve(this.source);
       };
@@ -40,6 +42,8 @@ export enum Playlist {
   coin = "/music/coin.ogg",
   jump = "/music/jump.ogg",
   kill = "/music/kill.ogg",
+  victory = "/music/victory.ogg",
+  boss = "/music/boss.ogg",
   // brick = "/music/killed.ogg",
 }
 
@@ -69,11 +73,11 @@ export default class Music extends EventEmitter {
     this.bufferLoader.load();
   }
 
-  playSound = async (sound: Playlist, loop = false) => {
+  playSound = async (sound: Playlist, loop = false, loopEnd=0) => {
     // @ts-ignore
     const source = this.sources[sound] as Source;
     if (source) {
-      await source.play();
+      await source.play(loop, loopEnd);
     }
   };
 

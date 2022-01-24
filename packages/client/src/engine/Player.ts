@@ -83,6 +83,16 @@ class Player extends PhysicalObject {
         }
         break;
       }
+      case Engine.ObjectType.BOSS: {
+        if (hit.bottom) {
+          this.emit("kill", object);
+          this.victory();
+        } else if (hit.left || hit.right) {
+          this.isDead = true;
+          this.gameOver();
+        }
+        break;
+      }
       case Engine.ObjectType.COIN:
         this.emit("harvest", object);
         break;
@@ -274,6 +284,9 @@ class Player extends PhysicalObject {
 
   gameOver() {
     this.emit("gameover");
+  }
+  victory() {
+    this.emit("victory");
   }
 }
 
